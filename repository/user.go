@@ -7,15 +7,15 @@ import (
 
 type User struct {
 	gorm.Model
-	Name            string
-	Avatar          string
-	BackgroundImage string
-	Signature       string
-	FollowingCount  int64
-	FollowerCount   int64
-	TotalFavorited  int64
-	WorkCount       int64
-	FavoriteCount   int64
+	Name            string `json:"name"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	FollowingCount  uint   `json:"follow_count"`
+	FollowerCount   uint   `json:"follower_count"`
+	TotalFavorited  uint   `json:"total_favorited"`
+	WorkCount       uint   `json:"work_count"`
+	FavoriteCount   uint   `json:"favorite_count"`
 }
 
 type UserDao struct {
@@ -31,7 +31,7 @@ func NewUserDaoInstance() *UserDao {
 	return userDao
 }
 
-func (*UserDao) CreateUser(name string, followingCnt int64, followerCnt int64) error {
+func (*UserDao) CreateUser(name string, followingCnt uint, followerCnt uint) error {
 	newUser := User{
 		Name:           name,
 		FollowingCount: followingCnt,

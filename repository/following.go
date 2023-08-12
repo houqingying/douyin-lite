@@ -1,14 +1,15 @@
 package repository
 
 import (
+	"errors"
 	"gorm.io/gorm"
 	"sync"
 )
 
 type Following struct {
 	gorm.Model
-	HostId  int64 `gorm:"uniqueIndex:host_guest"`
-	GuestId int64 `gorm:"uniqueIndex:host_guest"`
+	HostId  uint `gorm:"uniqueIndex:host_guest"`
+	GuestId uint `gorm:"uniqueIndex:host_guest"`
 }
 
 func (Following) TableName() string {
@@ -28,7 +29,7 @@ func NewFollowingDaoInstance() *FollowingDao {
 	return followingDao
 }
 
-func (*FollowingDao) FollowAction(hostId int64, guestId int64) error {
+func (*FollowingDao) FollowAction(hostId uint, guestId uint) error {
 	errTran := db.Transaction(func(tx *gorm.DB) error {
 		err := followingDao.CreateFollowing(hostId, guestId)
 		if err != nil {
@@ -50,7 +51,7 @@ func (*FollowingDao) FollowAction(hostId int64, guestId int64) error {
 	return nil
 }
 
-func (*FollowingDao) UnfollowAction(hostId int64, guestId int64) error {
+func (*FollowingDao) UnfollowAction(hostId uint, guestId uint) error {
 	errTran := db.Transaction(func(tx *gorm.DB) error {
 		err := followingDao.DeleteFollowing(hostId, guestId)
 		if err != nil {
@@ -72,7 +73,7 @@ func (*FollowingDao) UnfollowAction(hostId int64, guestId int64) error {
 	return nil
 }
 
-func (*FollowingDao) QueryFollowingListByHostId(hostId int64) ([]*User, error) {
+func (*FollowingDao) QueryFollowingListByHostId(hostId uint) ([]*User, error) {
 	var FollowingList []*Following
 	err := db.Where("host_id = ?", hostId).Find(&FollowingList).Error
 	if err != nil {
@@ -91,7 +92,7 @@ func (*FollowingDao) QueryFollowingListByHostId(hostId int64) ([]*User, error) {
 	return UserList, nil
 }
 
-func (*FollowingDao) CreateFollowing(hostId int64, guestId int64) error {
+func (*FollowingDao) CreateFollowing(hostId uint, guestId uint) error {
 	newFollowing := Following{
 		HostId:  hostId,
 		GuestId: guestId,
@@ -103,7 +104,7 @@ func (*FollowingDao) CreateFollowing(hostId int64, guestId int64) error {
 	return nil
 }
 
-func (*FollowingDao) DeleteFollowing(hostId int64, guestId int64) error {
+func (*FollowingDao) DeleteFollowing(hostId uint, guestId uint) error {
 	err := db.Where("host_id = ? AND guest_id = ?", hostId, guestId).
 		Delete(&Following{}).Error
 	if err != nil {
@@ -112,7 +113,7 @@ func (*FollowingDao) DeleteFollowing(hostId int64, guestId int64) error {
 	return nil
 }
 
-func (*FollowingDao) IncFollowingCnt(hostId int64) error {
+func (*FollowingDao) IncFollowingCnt(hostId uint) error {
 	err := db.Model(&User{}).Where("id = ?", hostId).
 		UpdateColumn("following_count", gorm.Expr("following_count + ?", 1)).Error
 	if err != nil {
@@ -121,11 +122,24 @@ func (*FollowingDao) IncFollowingCnt(hostId int64) error {
 	return nil
 }
 
-func (*FollowingDao) DecFollowingCnt(hostId int64) error {
+func (*FollowingDao) DecFollowingCnt(hostId uint) error {
 	err := db.Model(&User{}).Where("id = ?", hostId).
 		UpdateColumn("following_count", gorm.Expr("following_count - ?", 1)).Error
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (*FollowingDao) QueryisFollow(hostId uint, guestId uint) (bool, error) {
+	followItem := &Following{}
+	err := db.Where("host_id = ? AND guest_id = ?", hostId, guestId).First(&followItem).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, err
+		}
+		return true, err
+	}
+
+	return true, nil
 }

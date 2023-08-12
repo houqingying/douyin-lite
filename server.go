@@ -1,8 +1,10 @@
 package main
 
 import (
+	"douyin-lite/handler"
 	"douyin-lite/repository"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"os"
 )
 
@@ -15,6 +17,16 @@ func main() {
 		c.JSON(200, gin.H{
 			"message": "hello",
 		})
+	})
+	r.GET("/douyin/relation/follow/list/query", func(c *gin.Context) {
+		userIdStr := c.Query("user_id")
+		//tokenStr := c.Param("token")
+		followListResp, err := handler.QueryFollowListHandler(userIdStr)
+		if err != nil {
+			c.JSON(http.StatusOK, followListResp)
+			return
+		}
+		c.JSON(http.StatusOK, followListResp)
 	})
 
 	err := r.Run()

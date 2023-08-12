@@ -2,7 +2,7 @@ package repository
 
 import "gorm.io/gorm"
 
-func (*FollowingDao) QueryFollowerListByHostId(hostId int64) ([]*Following, error) {
+func (*FollowingDao) QueryFollowerListByHostId(hostId uint) ([]*Following, error) {
 	var FollowerList []*Following
 	err := db.Where("guest_id = ?", hostId).Find(&FollowerList).Error
 	if err != nil {
@@ -11,7 +11,7 @@ func (*FollowingDao) QueryFollowerListByHostId(hostId int64) ([]*Following, erro
 	return FollowerList, nil
 }
 
-func (*FollowingDao) IncFollowerCnt(guestId int64) error {
+func (*FollowingDao) IncFollowerCnt(guestId uint) error {
 	err := db.Model(&User{}).Where("id = ?", guestId).
 		UpdateColumn("follower_count", gorm.Expr("follower_count + ?", 1)).Error
 	if err != nil {
@@ -20,7 +20,7 @@ func (*FollowingDao) IncFollowerCnt(guestId int64) error {
 	return nil
 }
 
-func (*FollowingDao) DecFollowerCnt(guestId int64) error {
+func (*FollowingDao) DecFollowerCnt(guestId uint) error {
 	err := db.Model(&User{}).Where("id = ?", guestId).
 		UpdateColumn("follower_count", gorm.Expr("follower_count - ?", 1)).Error
 	if err != nil {
