@@ -1,5 +1,5 @@
 package config
 
 type ServerConfiguration struct {
-	Port string
+	Port int `yaml:"port"`
 }

@@ -23,8 +23,6 @@ type Configuration struct {
 
 // Setup initialize configuration
 func Setup() error {
-	var configuration *Configuration
-
 	viper.SetConfigName(FileName)
 	viper.SetConfigType(FileType)
 	viper.AddConfigPath(FilePath)
@@ -37,18 +35,16 @@ func Setup() error {
 	viper.WatchConfig()
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		klog.Infof("Config file changed: %s\n", e.Name)
-		Config = GetConfig(viper.GetViper())
+		Config = getConfig(viper.GetViper())
 	})
 	viper.AllSettings()
-	Config = GetConfig(viper.GetViper())
-
-	Config = configuration
+	Config = getConfig(viper.GetViper())
 
 	return nil
 }
 
 // GetConfig helps you to get configuration data
-func GetConfig(vip *viper.Viper) *Configuration {
+func getConfig(vip *viper.Viper) *Configuration {
 	setting := new(Configuration)
 	// unmarshal config
 	if err := vip.Unmarshal(setting); err != nil {
@@ -56,4 +52,8 @@ func GetConfig(vip *viper.Viper) *Configuration {
 		os.Exit(-1)
 	}
 	return setting
+}
+
+func GetConfig() *Configuration {
+	return Config
 }
