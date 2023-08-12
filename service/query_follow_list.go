@@ -30,7 +30,8 @@ func QueryFollowListInfo(hostId uint) (*FollowListInfo, error) {
 type QueryFollowInfoFlow struct {
 	hostId         uint
 	followListInfo *FollowListInfo
-	userinfoList   []*UserInfo
+
+	userinfoList []*UserInfo
 }
 
 func NewQueryFollowListInfoFlow(hostId uint) *QueryFollowInfoFlow {
@@ -44,11 +45,11 @@ func (f *QueryFollowInfoFlow) Do() (*FollowListInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = f.prepareInfo()
+	err = f.prepareFollowInfo()
 	if err != nil {
 		return nil, err
 	}
-	err = f.packFollowListInfo()
+	err = f.packFollowInfo()
 	if err != nil {
 		return nil, err
 	}
@@ -57,15 +58,15 @@ func (f *QueryFollowInfoFlow) Do() (*FollowListInfo, error) {
 
 func (f *QueryFollowInfoFlow) checkParam() error {
 	if f.hostId <= 0 {
-		return errors.New("topic id should be larger than 0")
+		return errors.New("host id should be larger than 0")
 	}
 	return nil
 }
 
-func (f *QueryFollowInfoFlow) prepareInfo() error {
+func (f *QueryFollowInfoFlow) prepareFollowInfo() error {
 	userList, err := repository.NewFollowingDaoInstance().QueryFollowingListByHostId(f.hostId)
 	if err != nil {
-		return errors.New("DB Find Error")
+		return errors.New("DB Find Following Error")
 	}
 	var userInfoList = make([]*UserInfo, len(userList))
 	for i := 0; i < len(userList); i++ {
@@ -86,7 +87,7 @@ func (f *QueryFollowInfoFlow) prepareInfo() error {
 	return nil
 }
 
-func (f *QueryFollowInfoFlow) packFollowListInfo() error {
+func (f *QueryFollowInfoFlow) packFollowInfo() error {
 	f.followListInfo = &FollowListInfo{
 		UserInfoList: f.userinfoList,
 	}

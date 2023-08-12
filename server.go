@@ -29,6 +29,17 @@ func main() {
 		c.JSON(http.StatusOK, followListResp)
 	})
 
+	r.GET("/douyin/relation/follower/list/query", func(c *gin.Context) {
+		userIdStr := c.Query("user_id")
+		//tokenStr := c.Param("token")
+		followListResp, err := handler.QueryFollowerListHandler(userIdStr)
+		if err != nil {
+			c.JSON(http.StatusOK, followListResp)
+			return
+		}
+		c.JSON(http.StatusOK, followListResp)
+	})
+
 	err := r.Run()
 	if err != nil {
 		return

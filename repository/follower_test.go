@@ -7,12 +7,12 @@ import (
 
 func TestFollowingDao_QueryFollowerListByHostId(t *testing.T) {
 	Init()
-	res, err := followingDao.QueryFollowerListByHostId(3)
+	userList, err := followingDao.QueryFollowerListByHostId(1)
 	if err != nil {
 		panic(err)
 	}
-	for _, id := range res {
-		fmt.Println(id.HostId, " ", id.GuestId)
+	for _, user := range userList {
+		fmt.Println(user.Name, " ", user.ID)
 	}
 }
 
