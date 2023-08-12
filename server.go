@@ -29,7 +29,7 @@ func main() {
 		c.JSON(http.StatusOK, followListResp)
 	})
 
-	r.GET("/douyin/relation/follower/list/query", func(c *gin.Context) {
+	r.GET("/douyin/relation/follower/list", func(c *gin.Context) {
 		userIdStr := c.Query("user_id")
 		//tokenStr := c.Param("token")
 		followListResp, err := handler.QueryFollowerListHandler(userIdStr)
