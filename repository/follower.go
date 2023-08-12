@@ -19,3 +19,12 @@ func (*FollowingDao) IncFollowerCnt(guestId int64) error {
 	}
 	return nil
 }
+
+func (*FollowingDao) DecFollowerCnt(guestId int64) error {
+	err := db.Model(&User{}).Where("id = ?", guestId).
+		UpdateColumn("follower_count", gorm.Expr("follower_count - ?", 1)).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

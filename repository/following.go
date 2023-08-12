@@ -28,6 +28,50 @@ func NewFollowingDaoInstance() *FollowingDao {
 	return followingDao
 }
 
+func (*FollowingDao) FollowAction(hostId int64, guestId int64) error {
+	errTran := db.Transaction(func(tx *gorm.DB) error {
+		err := followingDao.CreateFollowing(hostId, guestId)
+		if err != nil {
+			return err
+		}
+		err = followingDao.IncFollowingCnt(hostId)
+		if err != nil {
+			return err
+		}
+		err = followingDao.IncFollowerCnt(guestId)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if errTran != nil {
+		return errTran
+	}
+	return nil
+}
+
+func (*FollowingDao) UnfollowAction(hostId int64, guestId int64) error {
+	errTran := db.Transaction(func(tx *gorm.DB) error {
+		err := followingDao.DeleteFollowing(hostId, guestId)
+		if err != nil {
+			return err
+		}
+		err = followingDao.DecFollowingCnt(hostId)
+		if err != nil {
+			return err
+		}
+		err = followingDao.DecFollowerCnt(guestId)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if errTran != nil {
+		return errTran
+	}
+	return nil
+}
+
 func (*FollowingDao) QueryFollowingListByHostId(hostId int64) ([]*User, error) {
 	var FollowingList []*Following
 	err := db.Where("host_id = ?", hostId).Find(&FollowingList).Error
@@ -59,6 +103,15 @@ func (*FollowingDao) CreateFollowing(hostId int64, guestId int64) error {
 	return nil
 }
 
+func (*FollowingDao) DeleteFollowing(hostId int64, guestId int64) error {
+	err := db.Where("host_id = ? AND guest_id = ?", hostId, guestId).
+		Delete(&Following{}).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (*FollowingDao) IncFollowingCnt(hostId int64) error {
 	err := db.Model(&User{}).Where("id = ?", hostId).
 		UpdateColumn("following_count", gorm.Expr("following_count + ?", 1)).Error
@@ -68,24 +121,11 @@ func (*FollowingDao) IncFollowingCnt(hostId int64) error {
 	return nil
 }
 
-func (*FollowingDao) FollowAction(hostId int64, guestId int64) error {
-	errTran := db.Transaction(func(tx *gorm.DB) error {
-		err := followingDao.CreateFollowing(hostId, guestId)
-		if err != nil {
-			return err
-		}
-		err = followingDao.IncFollowingCnt(hostId)
-		if err != nil {
-			return err
-		}
-		err = followingDao.IncFollowerCnt(guestId)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-	if errTran != nil {
-		return errTran
+func (*FollowingDao) DecFollowingCnt(hostId int64) error {
+	err := db.Model(&User{}).Where("id = ?", hostId).
+		UpdateColumn("following_count", gorm.Expr("following_count - ?", 1)).Error
+	if err != nil {
+		return err
 	}
 	return nil
 }
