@@ -1,0 +1,13 @@
+database:
+  driver: "mysql"
+  dbname: "douyin"
+  username: "root"
+  password: "toor"
+  host: "127.0.0.1"
+  port: "3306"
+  timeout : "10s"
+  logmode: true
+
+server:
+  port: 8080
+  mode: debug
