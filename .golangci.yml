@@ -1,0 +1,190 @@
+linters-settings:
+  dupl:
+    threshold: 500
+  gocognit:
+    min-complexity: 60
+  gocritic:
+    disabled-checks:
+      - appendAssign # has bugs
+      - singleCaseSwitch
+      - commentFormatting
+      - assignOp
+      - ifElseChain
+      - sloppyLen
+      - elseif
+      - wrapperFunc # simple the TODO suggest to open
+  gocyclo:
+    min-complexity: 30
+  gosec:
+    excludes:
+      - G106 # Audit the use of ssh.InsecureIgnoreHostKey
+      - G204 # Audit use of command execution
+      - G306 # Poor file permissions used when writing to a new file
+      - G402 # Look for bad TLS connection settings
+      - G601 # Implicit memory aliasing of items from a range statement
+      - G101 # Look for hard coded credentials
+      - G108 # Profiling endpoint automatically exposed on /debug/pprof
+      - G112 # Potential slowloris attack.
+      - G114 # Use of net/http serve function that has no support for setting timeouts
+      - G305 # File traversal when extracting zip/tar archive
+      - G401 # Detect the usage of DES, RC4, MD5 or SHA1
+      - G404 # Insecure random number source (rand)
+      - G501 # Import blocklist: crypto/md5
+      - G502 # Import blocklist: crypto/des
+      - G503 # Import blocklist: crypto/rc4
+      - G504 # Import blocklist: net/http/cgi
+      - G505 # Import blocklist: crypto/sha1
+  staticcheck:
+    checks: ["all"]
+linters:
+  # Disable all linters.
+  # Default: false
+  disable-all: true
+  # Enable specific linter
+  # https://golangci-lint.run/usage/linters/#enabled-by-default
+  enable:
+    - asasalint # check for pass []any as any in variadic func(...any). bugs.
+    # - asciicheck # check that your code does not contain non-ASCII identifiers, we don't need it.
+    - bidichk # Checks for dangerous unicode character sequences. bugs.
+    - bodyclose
+    # - containedctx # detects struct contained context.Context field. We don't need this style check.
+    # - contextcheck # check the function whether use a non-inherited context. bugs.
+    # - cyclop # checks function and package cyclomatic complexity. We choose 'gocyclo' which is more popular used.
+    # - deadcode  # The owner seems to have abandoned the linter. Replaced by unused.
+    # - decorder # check declaration order and count of types, constants, variables and functions. We don't need this style check.
+    - depguard
+    # - dogsled # Checks assignments with too many blank identifiers (e.g. x, , , _, := f()). style. Seems no useful for me.
+    - dupl
+    - durationcheck
+    - errcheck
+    - errchkjson # Checks types passed to the json encoding functions. Reports unsupported types and optionally reports occasions, where the check for the returned error can be omitted. bugs. since 1.44.0
+    # - errname # Checks that sentinel errors are prefixed with the Err and error types are suffixed with the Error. We don't need this error style check.
+    # - errorlint # errorlint is a linter for that can be used to find code that will cause problems with the error wrapping scheme introduced in Go 1.13. We use go version > 1.13, so don't need it.
+    - execinquery # execinquery is a linter about query string checker in Query function which reads your Go src files and warning it finds. sql. since 1.46.0
+    # - exhaustive # check exhaustiveness of enum switch statements. bugs. not so good to use.
+    # - exhaustivestruct # The owner seems to have abandoned the linter. Replaced by exhaustruct.
+    # - exhaustruct # Checks if all structure fields are initialized. style, test. 1.46.0
+    - exportloopref
+    # - forbidigo # forbid use of particular identifiers. We don't need this style check.
+    # - forcetypeassert # finds forced type assertions. We don't need this style check.
+    # - funlen # Tool for detection of long functions. We choose 'gocyclo' to check such complexity issue.
+    - gci # Gci controls golang package import order and makes it always deterministic. We don't need this import style check.
+    # - gochecknoglobals # check that no global variables exist. we don't need. we allow global variables exist.
+    # - gochecknoinits # Checks that no init functions are present in Go code. We allow init functions, don't need this style check.
+    # - gocognit # Computes and checks the cognitive complexity of functions
+    - goconst
+    - gocritic
+    - gocyclo
+    # - godot # Check if comments end in a period. It's comment/style check, we don't need.
+    # - godox # Tool for detection of FIXME, TODO and other comment keywords. It's comment/style check, we don't need.
+    # - goerr113 # Golang linter to check the errors handling expressions. It's an error style check, we don't need.
+    # - gofmt # Gofmt checks whether code was gofmt-ed. By default this tool runs with -s option to check for code simplification. It will format(auto change) the code.
+    # - gofumpt # Gofumpt checks whether code was gofumpt-ed.
+    # - goheader # Checks is file header matches to pattern. We don't need this style check.
+    - goimports # In addition to fixing imports, goimports also formats your code in the same style as gofmt. It will format(auto change) the code.
+    # - golint  # The repository of the linter has been archived by the owner. Replaced by revive.
+    # - gomnd # An analyzer to detect magic numbers. TODO try to use it. What is a magic number? A magic number is a numeric literal that is not defined as a constant, but which may change, and therefore can be hard to update. It's considered a bad programming practice to use numbers directly in any source code without an explanation. It makes programs harder to read, understand, and maintain.
+    # - gomoddirectives # Manage the use of 'replace', 'retract', and 'excludes' directives in go.mod. We don't need this.
+    - gomodguard
+    # - goprintffuncname # Checks that printf-like functions are named with f at the end. We don't need this style check.
+    - gosec
+    # - gosimple # style. TODO use it to make code simple to read.
+    - govet
+    # - grouper # An analyzer to analyze expression groups. We don't need this style check.
+    # - ifshort # The repository of the linter has been deprecated by the owner.
+    # - importas # Enforces consistent import aliases. We don't need this style check.
+    - ineffassign
+    # - interfacebloat # A linter that checks the number of methods inside an interface. We don't need this style check.
+    # - interfacer # The repository of the linter has been archived by the owner.
+    # - ireturn # Accept Interfaces, Return Concrete Types. We don't need this return style check.
+    # - lll # Reports long lines. We don't need this return style check.
+    # - logrlint # Check logr arguments. bugs. 1.49.0
+    # - maintidx # maintidx measures the maintainability index of each function. We don't need this complexity check.
+    - makezero
+    # - maligned # The repository of the linter has been archived by the owner. Replaced by govet 'fieldalignment'.
+    - misspell
+    # - nakedret # Finds naked returns in functions greater than a specified function length. We don't need this return style check.
+    # - nestif # Reports deeply nested if statements. 'gocyclo' cover this, and can do more code complexity check.
+    # - nilerr # Finds the code that returns nil even if it checks that the error is not nil. Linter has bug, not so good to use.
+    # - nilnil # Checks that there is no simultaneous return of nil error and an invalid value. style. TODO open it to improve our error return.
+    # - nlreturn # nlreturn checks for a new line before return and branch statements to increase code clarity. We don't need this style check.
+    # - noctx # noctx finds sending http request without context.Context. performance, bugs. TODO to use it to controle sending http request.
+    # - nolintlint # Reports ill-formed or insufficient nolint directives. We don't need this style check.
+    # - nonamedreturns # Reports all named returns. We don't need this style check.
+    # - nosnakecase # The repository of the linter has been deprecated by the owner. Replaced by revive(var-naming).
+    # - nosprintfhostport # Checks for misuse of Sprintf to construct a host with port in a URL. We don't need this style check.
+    # - paralleltest # paralleltest detects missing usage of t.Parallel() method in your Go test. Linter has bugs, is not good to use.
+    # - prealloc # Finds slice declarations that could potentially be pre-allocated. performance. don't recommend using this linter before doing performance profiling.
+    # - predeclared # find code that shadows one of Go's predeclared identifiers. We don't need this style check.
+    - promlinter # Check Prometheus metrics naming via promlint. style.
+    # - reassign # Checks that package variables are not reassigned. bugs. 1.49.0
+    # - revive # It's a individual go linter, has its own config. It duplicates with gocritic, gocritic is more easy and good to use.
+    - rowserrcheck
+    # - scopelint # The repository of the linter has been deprecated by the owner. Replaced by exportloopref.
+    - sqlclosecheck
+    - staticcheck
+    # - structcheck # The owner seems to have abandoned the linter. Replaced by unused.
+    # - stylecheck # Stylecheck is a replacement for golint. We don't need this style check.
+    # - tagliatelle # Checks the struct tags. We don't need this style check.
+    # - tenv # tenv is analyzer that detects using os.Setenv instead of t.Setenv since Go1.17. We don't need this style check.
+    # - testpackage # linter that makes you use a separate _test package. We allow non _test package.
+    - thelper # thelper detects golang test helpers without t.Helper() call and checks the consistency of test helpers.
+    - tparallel
+    # typecheck is like the front-end of a Go compiler, parses and type-checks Go code.
+    # can't deal with import like 'import . "github.com/smartystreets/goconvey/convey"', can't deal with class inherit.
+    # can ignore this
+    # - typecheck
+    # - unconvert # Remove unnecessary type conversions. TODO to use it.
+    - unparam
+    - unused
+    # - usestdlibvars # A linter that detect the possibility to use variables/constants from the Go standard library. style. 1.48.0
+    # - varcheck # The owner seems to have abandoned the linter. Replaced by unused.
+    # - varnamelen # checks that the length of a variable's name matches its scope. We don't need this style check.
+    # - wastedassign # wastedassign finds wasted assignment statements # TODO use it to simplify codes.
+    # - whitespace # Tool for detection of leading and trailing whitespace. It will auto fix code, we don't need this style check.
+    # - wrapcheck # Checks that errors returned from external packages are wrapped. We don't need this error style check.
+    # - wsl # Whitespace Linter - Forces you to use empty lines! It's a style check, we don't need.
+
+issues:
+  # Excluding configuration per-path, per-linter, per-text and per-source
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - bodyclose
+        - dupl
+        - errcheck
+        - errchkjson
+        - goconst
+        - gomnd
+        - govet
+        - ineffassign
+        - unused
+    - text: "always receives"
+      linters:
+        - unparam
+    - text: "func `"
+      linters:
+        - unused
+    - text: "field `"
+      linters:
+        - unused
+    - text: "missing method Check" # typecheck bug
+      linters:
+        - typecheck
+    - text: "badCall: suspicious Join on 1 argument"
+      linters:
+        - gocritic
+    - text: "can benefit from type switch with assignment"
+      linters:
+        - gocritic
+    - text: "result .* is always nil"
+      linters:
+        - unparam
+run:
+  skip-dirs:
+    - test/testdata_etc
+    - internal/cache
+    - internal/renameio
+    - internal/robustio
+    - kobe
+  timeout: 30m
