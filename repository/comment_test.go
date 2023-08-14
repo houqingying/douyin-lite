@@ -22,9 +22,7 @@ func init() {
 func TestCommentDao_CreateComment(t *testing.T) {
 
 	type args struct {
-		videoId string
-		userId  string
-		comment string
+		Comment Comment
 	}
 	tests := []struct {
 		name    string
@@ -34,16 +32,18 @@ func TestCommentDao_CreateComment(t *testing.T) {
 		{
 			name: "create comment",
 			args: args{
-				videoId: "1",
-				userId:  "1",
-				comment: "test",
+				Comment: Comment{
+					VideoId: 1,
+					UserId:  1,
+					Comment: "test",
+				},
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			co := &CommentDao{}
-			if err := co.CreateComment(tt.args.videoId, tt.args.userId, tt.args.comment); (err != nil) != tt.wantErr {
+			if err := co.CreateComment(&tt.args.Comment); (err != nil) != tt.wantErr {
 				t.Errorf("CreateComment() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -78,7 +78,7 @@ func TestCommentDao_DeleteComment(t *testing.T) {
 
 func TestCommentDao_DeleteCommentByVideoId(t *testing.T) {
 	type args struct {
-		videoId string
+		videoId int
 	}
 	tests := []struct {
 		name    string
@@ -88,7 +88,7 @@ func TestCommentDao_DeleteCommentByVideoId(t *testing.T) {
 		{
 			name: "delete comment by video id",
 			args: args{
-				videoId: "0",
+				videoId: 0,
 			},
 		},
 	}
@@ -136,7 +136,7 @@ func TestCommentDao_QueryCommentById(t *testing.T) {
 
 func TestCommentDao_QueryCommentsByUserId(t *testing.T) {
 	type args struct {
-		userId string
+		userId int
 	}
 	tests := []struct {
 		name    string
@@ -147,7 +147,7 @@ func TestCommentDao_QueryCommentsByUserId(t *testing.T) {
 		{
 			name: "query comments by user id",
 			args: args{
-				userId: "1",
+				userId: 1,
 			},
 		},
 	}
@@ -168,7 +168,7 @@ func TestCommentDao_QueryCommentsByUserId(t *testing.T) {
 
 func TestCommentDao_QueryCommentsByVideoId(t *testing.T) {
 	type args struct {
-		videoId string
+		videoId int
 	}
 	tests := []struct {
 		name    string
@@ -179,7 +179,7 @@ func TestCommentDao_QueryCommentsByVideoId(t *testing.T) {
 		{
 			name: "query comments by video id",
 			args: args{
-				videoId: "1",
+				videoId: 1,
 			},
 		},
 	}
@@ -228,7 +228,7 @@ func TestCommentDao_UpdateComment(t *testing.T) {
 
 func TestCommentDao_DeleteCommentByUserId(t *testing.T) {
 	type args struct {
-		userId string
+		userId int
 	}
 	tests := []struct {
 		name    string
@@ -238,7 +238,7 @@ func TestCommentDao_DeleteCommentByUserId(t *testing.T) {
 		{
 			name: "delete comment by user id",
 			args: args{
-				userId: "0",
+				userId: 0,
 			},
 		},
 	}
