@@ -29,17 +29,17 @@ type ActionResponse struct {
 // @Router /douyin/comment/action/ [post]
 func Action(c *gin.Context) {
 	klog.Info("comment action")
-	id, _ := c.Get("user_id")
-	userid, _ := id.(string)
-	userId, err := strconv.ParseInt(userid, 10, 64)
-	if err != nil {
-		klog.Errorf("strconv.ParseInt error: %s", err)
-		c.JSON(http.StatusOK, ActionResponse{
-			StatusCode: -1,
-			StatusMsg:  "comment userId json invalid",
-		})
-		return
-	}
+	//id, _ := c.Get("user_id")
+	//userid, _ := id.(string)
+	//userId, err := strconv.ParseInt(userid, 10, 64)
+	//if err != nil {
+	//	klog.Errorf("strconv.ParseInt error: %s", err)
+	//	c.JSON(http.StatusOK, ActionResponse{
+	//		StatusCode: -1,
+	//		StatusMsg:  "comment userId json invalid",
+	//	})
+	//	return
+	//}
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	if err != nil {
 		klog.Errorf("strconv.ParseInt error: %s", err)
@@ -65,7 +65,7 @@ func Action(c *gin.Context) {
 		content := c.Query("comment_text")
 
 		var sendComment repository.Comment
-		sendComment.UserId = int(userId)
+		//sendComment.UserId = int(userId)
 		sendComment.VideoId = int(videoId)
 		sendComment.Comment = content
 		//发表评论

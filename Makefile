@@ -45,7 +45,9 @@ lint: install-golint ## Run go lint against code.
 test:
 	go test -v -short -coverprofile cover.out
 
-
+.PHONY: run
+run:
+	go run main.go
 
 # Add this line at the end of the Makefile
 %: ;
