@@ -1,6 +1,6 @@
 package config
 
-type DatabaseConfiguration struct {
+type Database struct {
 	Driver   string
 	Dbname   string
 	Username string
@@ -8,4 +8,5 @@ type DatabaseConfiguration struct {
 	Host     string
 	Port     string
 	LogMode  bool
+	Timeout  string
 }

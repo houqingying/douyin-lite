@@ -3,7 +3,6 @@ package config
 import (
 	"os"
 
-	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	"k8s.io/klog"
 )
@@ -17,34 +16,20 @@ const (
 var Config *Configuration
 
 type Configuration struct {
-	Server   ServerConfiguration
-	Database DatabaseConfiguration
+	Database Database
 }
 
-// Setup initialize configuration
-func Setup() error {
-	var configuration *Configuration
-
-	viper.SetConfigName(FileName)
-	viper.SetConfigType(FileType)
-	viper.AddConfigPath(FilePath)
-
-	if err := viper.ReadInConfig(); err != nil {
-		klog.Errorf("Error reading config file, %s", err)
-		return err
+func Init(configName string) *viper.Viper {
+	v := viper.New()
+	v.SetConfigType(FileType)
+	v.SetConfigName(configName)
+	v.AddConfigPath("./conf")
+	v.AddConfigPath("../conf")
+	v.AddConfigPath("../../conf")
+	if err := v.ReadInConfig(); err != nil {
+		klog.Fatalf("errno is %+v", err)
 	}
-
-	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		klog.Infof("Config file changed: %s\n", e.Name)
-		Config = GetConfig(viper.GetViper())
-	})
-	viper.AllSettings()
-	Config = GetConfig(viper.GetViper())
-
-	Config = configuration
-
-	return nil
+	return v
 }
 
 // GetConfig helps you to get configuration data
