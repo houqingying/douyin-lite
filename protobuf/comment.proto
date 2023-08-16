@@ -1,0 +1,43 @@
+syntax = "proto3";
+option go_package = "github.com/houqingying/douyin-lite/protobuf/grpc_gen/comment;comment";
+package comment;
+
+import "user.proto";
+
+// comment action
+message CommentActionRequest {
+  string token = 1;
+  int64 video_id = 2;
+  int32 action_type = 3;
+  string comment_text = 4;
+  int64 comment_id = 5;
+}
+
+message CommentActionResponse {
+  int32 status_code = 1;
+  string status_msg = 2;
+  Comment comment = 3;
+}
+// comment
+message Comment {
+  int64 id = 1;
+  user.User user = 2;
+  string content = 3;
+  string create_date = 4;
+}
+
+// comment list
+message CommentListRequest {
+  string token = 1;
+  int64 video_id = 2;
+}
+message CommentListResponse {
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated Comment comment_list = 3;
+}
+
+service CommentService {
+  rpc CommentAction(CommentActionRequest) returns(CommentActionResponse);
+  rpc CommentList(CommentListRequest) returns(CommentListResponse);
+}

@@ -1,0 +1,73 @@
+syntax = "proto3";
+option go_package = "github.com/houqingying/douyin-lite/protobuf/grpc_gen/following;following";
+package following;
+
+import "user.proto";
+
+message FollowingActionRequest {
+    int64 user_id = 1;
+//  string token = 1;
+  int64 to_user_id = 2;
+  int32 action_type = 3;
+}
+
+message FollowingActionResponse {
+  int32 status_code = 1;
+  string status_msg = 2;
+}
+
+// following list
+message FollowingListRequest {
+  int64 user_id = 1;
+  string token = 2;
+}
+message FollowingListResponse {
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated user.User user_list = 3;
+}
+
+//  ==============================粉丝列表=======================================
+message FollowerListRequest {
+  int64 user_id = 1;
+  string token = 2;
+}
+message FollowerListResponse {
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated user.User user_list = 3;
+}
+
+// friend list
+message FriendListRequest{
+  int64 user_id = 1;
+  string token = 2;
+}
+message FriendListResponse{
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated FriendUser user_list = 3;
+}
+
+message FriendUser {
+  string message = 1;
+  int64 msgType = 2;
+  int64 id = 3;
+  string name = 4;
+  int64 follow_count = 5;
+  int64 follower_count = 6;
+  bool is_follow = 7;
+  string avatar = 8;
+  string background_image = 9;
+  string signature = 10;
+  int64 total_favorited = 11;
+  int64 work_count = 12;
+  int64 favorite_count = 13;
+}
+
+service FollowingService {
+  rpc FollowingAction(FollowingActionRequest)returns(FollowingActionResponse);
+  rpc FollowingList(FollowingListRequest)returns(FollowingListResponse);
+  rpc FollowerList(FollowerListRequest)returns(FollowerListResponse);
+  rpc FriendList(FriendListRequest)returns(FriendListResponse);
+}
