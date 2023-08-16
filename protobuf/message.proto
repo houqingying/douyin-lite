@@ -1,0 +1,39 @@
+syntax = "proto3";
+option go_package = "github.com/houqingying/douyin-lite/protobuf/grpc_gen/message;message";
+package message;
+
+// message
+message Message{
+  int64 id = 1;
+  int64 to_user_id = 2;
+  int64 from_user_id = 3;
+  string content = 4;
+  int64 create_time = 5;
+}
+message MessageChatRequest{
+  string token = 1;
+  int64 to_user_id = 2;
+  int64 pre_msg_time = 3;
+}
+message MessageChatResponse{
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated Message message_list = 3;
+}
+
+// action
+message MessageActionRequest{
+  string token = 1;
+  int64 to_user_id = 2;
+  int32 action_type = 3;
+  string content = 4;
+}
+message MessageActionResponse{
+  int32 status_code = 1;
+  string status_msg = 2;
+}
+
+service MessageService{
+  rpc MessageChat (MessageChatRequest) returns (MessageChatResponse);
+  rpc MessageAction (MessageActionRequest) returns (MessageActionResponse);
+}

@@ -1,0 +1,32 @@
+syntax = "proto3";
+option go_package = "github.com/houqingying/douyin-lite/protobuf/grpc_gen/favorite;favorite";
+package favorite;
+
+import "video.proto";
+// favorite action
+message FavoriteActionRequest {
+  int64 user_id = 1;
+  string token = 2;
+  int64 video_id = 3;
+  int32 action_type = 4; // 1: favorite, 2: cancel favorite
+}
+message FavoriteActionResponse {
+  int32 status_code = 1; // 0: success, other: failed
+  string status_msg = 2;
+}
+
+// favorite list
+message FavoriteListRequest {
+  int64 user_id = 1;
+  string token = 2;
+}
+message FavoriteListResponse {
+  int32 status_code = 1;
+  string status_msg = 2;
+  repeated video.Video video_list = 3;
+}
+
+service FavoriteService {
+  rpc FavoriteAction (FavoriteActionRequest) returns (FavoriteActionResponse);
+  rpc FavoriteList (FavoriteListRequest) returns (FavoriteListResponse);
+}
