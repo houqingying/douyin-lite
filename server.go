@@ -51,6 +51,28 @@ func main() {
 		c.JSON(http.StatusOK, registerResp)
 	})
 
+	r.POST("/douyin/user/login/", func(c *gin.Context) {
+		userName := c.Query("username")
+		userPassword := c.Query("password")
+		loginResp, err := handler.LoginUserHandler(userName, userPassword)
+		if err != nil {
+			c.JSON(http.StatusOK, loginResp)
+			return
+		}
+		c.JSON(http.StatusOK, loginResp)
+	})
+
+	r.GET("/douyin/user/", func(c *gin.Context) {
+		userIdStr := c.Query("user_id")
+		//userToken := c.Query("token")
+		userInfoResp, err := handler.QueryUserInfoHandler(userIdStr)
+		if err != nil {
+			c.JSON(http.StatusOK, userInfoResp)
+			return
+		}
+		c.JSON(http.StatusOK, userInfoResp)
+	})
+
 	err := r.Run()
 	if err != nil {
 		return

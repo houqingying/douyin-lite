@@ -1,12 +1,13 @@
-package service
+package follow_service
 
 import (
 	"douyin-lite/repository"
+	"douyin-lite/service/user_service"
 	"errors"
 )
 
 type FollowerListInfo struct {
-	UserInfoList []*UserInfo `json:"user_list"`
+	UserInfoList []*user_service.UserInfo `json:"user_list"`
 }
 
 func QueryFollowerListInfo(hostId uint) (*FollowerListInfo, error) {
@@ -16,7 +17,7 @@ func QueryFollowerListInfo(hostId uint) (*FollowerListInfo, error) {
 type QueryFollowerInfoFlow struct {
 	hostId           uint
 	followerListInfo *FollowerListInfo
-	userinfoList     []*UserInfo
+	userinfoList     []*user_service.UserInfo
 }
 
 func NewQueryFollowerListInfoFlow(hostId uint) *QueryFollowerInfoFlow {
@@ -53,9 +54,9 @@ func (f *QueryFollowerInfoFlow) prepareFollowerInfo() error {
 	if err != nil {
 		return errors.New("DB Find Follower Error")
 	}
-	var userInfoList = make([]*UserInfo, len(userList))
+	var userInfoList = make([]*user_service.UserInfo, len(userList))
 	for i := 0; i < len(userList); i++ {
-		userInfoList[i] = &UserInfo{}
+		userInfoList[i] = &user_service.UserInfo{}
 		userInfoList[i].ID = userList[i].ID
 		userInfoList[i].Name = userList[i].Name
 		userInfoList[i].FollowingCount = userList[i].FollowingCount

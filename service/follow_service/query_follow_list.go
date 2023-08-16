@@ -1,26 +1,13 @@
-package service
+package follow_service
 
 import (
 	"douyin-lite/repository"
+	"douyin-lite/service/user_service"
 	"errors"
 )
 
-type UserInfo struct {
-	ID              uint   `json:"id"`
-	Name            string `json:"name"`
-	Avatar          string `json:"avatar"`
-	BackgroundImage string `json:"background_image"`
-	Signature       string `json:"signature"`
-	FollowingCount  uint   `json:"follow_count"`
-	FollowerCount   uint   `json:"follower_count"`
-	IsFollow        bool   `json:"is_follow"`
-	TotalFavorited  uint   `json:"total_favorited"`
-	WorkCount       uint   `json:"work_count"`
-	FavoriteCount   uint   `json:"favorite_count"`
-}
-
 type FollowListInfo struct {
-	UserInfoList []*UserInfo `json:"user_list"`
+	UserInfoList []*user_service.UserInfo `json:"user_list"`
 }
 
 func QueryFollowListInfo(hostId uint) (*FollowListInfo, error) {
@@ -31,7 +18,7 @@ type QueryFollowInfoFlow struct {
 	hostId         uint
 	followListInfo *FollowListInfo
 
-	userinfoList []*UserInfo
+	userinfoList []*user_service.UserInfo
 }
 
 func NewQueryFollowListInfoFlow(hostId uint) *QueryFollowInfoFlow {
@@ -68,9 +55,9 @@ func (f *QueryFollowInfoFlow) prepareFollowInfo() error {
 	if err != nil {
 		return errors.New("DB Find Following Error")
 	}
-	var userInfoList = make([]*UserInfo, len(userList))
+	var userInfoList = make([]*user_service.UserInfo, len(userList))
 	for i := 0; i < len(userList); i++ {
-		userInfoList[i] = &UserInfo{}
+		userInfoList[i] = &user_service.UserInfo{}
 		userInfoList[i].ID = userList[i].ID
 		userInfoList[i].Name = userList[i].Name
 		userInfoList[i].FollowingCount = userList[i].FollowingCount

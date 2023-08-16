@@ -35,3 +35,21 @@ func TestUserDao_QueryIsUserExist(t *testing.T) {
 	}
 	fmt.Println("Exist")
 }
+
+func TestUserDao_QueryIsUserLogin(t *testing.T) {
+	Init()
+	qUser, err := userDao.QueryLoginUser("mao122", "123")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(qUser)
+}
+
+func TestUserDao_QueryUserById(t *testing.T) {
+	Init()
+	qUser, err := userDao.QueryUserById(21)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(qUser)
+}

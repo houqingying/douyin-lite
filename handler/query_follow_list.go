@@ -1,14 +1,14 @@
 package handler
 
 import (
-	"douyin-lite/service"
+	"douyin-lite/service/follow_service"
 	"strconv"
 )
 
 type FollowListResp struct {
 	Code string `json:"status_code"`
 	Msg  string `json:"status_msg"`
-	*service.FollowListInfo
+	*follow_service.FollowListInfo
 }
 
 func QueryFollowListHandler(hostIdStr string) (*FollowListResp, error) {
@@ -19,7 +19,7 @@ func QueryFollowListHandler(hostIdStr string) (*FollowListResp, error) {
 			Msg:  err.Error(),
 		}, err
 	}
-	followListData, err := service.QueryFollowListInfo(uint(hostId))
+	followListData, err := follow_service.QueryFollowListInfo(uint(hostId))
 	if err != nil {
 		return &FollowListResp{
 			Code: "-1",

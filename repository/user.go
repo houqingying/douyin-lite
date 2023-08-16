@@ -64,7 +64,31 @@ func (*UserDao) QueryIsUserExist(name string) (bool, error) {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return false, err
 		}
-		return true, err
+		return false, errors.New("数据库异常")
 	}
 	return true, nil
+}
+
+func (*UserDao) QueryLoginUser(name string, password string) (*User, error) {
+	qUser := User{}
+	err := db.Where("name = ? and password = ?", name, password).First(&qUser).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("账号或者密码不对")
+		}
+		return nil, errors.New("数据库异常")
+	}
+	return &qUser, nil
+}
+
+func (*UserDao) QueryUserById(userId uint) (*User, error) {
+	qUser := User{}
+	err := db.Where("id = ?", userId).First(&qUser).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("该用户不存在")
+		}
+		return nil, errors.New("数据库异常")
+	}
+	return &qUser, nil
 }

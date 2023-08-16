@@ -1,4 +1,4 @@
-package service
+package follow_service
 
 import (
 	"douyin-lite/repository"
