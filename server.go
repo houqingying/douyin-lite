@@ -18,7 +18,7 @@ func main() {
 			"message": "hello",
 		})
 	})
-	r.GET("/douyin/relation/follow/list/query", func(c *gin.Context) {
+	r.GET("/douyin/relation/follow/list/query/", func(c *gin.Context) {
 		userIdStr := c.Query("user_id")
 		//tokenStr := c.Param("token")
 		followListResp, err := handler.QueryFollowListHandler(userIdStr)
@@ -29,7 +29,7 @@ func main() {
 		c.JSON(http.StatusOK, followListResp)
 	})
 
-	r.GET("/douyin/relation/follower/list", func(c *gin.Context) {
+	r.GET("/douyin/relation/follower/list/", func(c *gin.Context) {
 		userIdStr := c.Query("user_id")
 		//tokenStr := c.Param("token")
 		followListResp, err := handler.QueryFollowerListHandler(userIdStr)
@@ -40,7 +40,7 @@ func main() {
 		c.JSON(http.StatusOK, followListResp)
 	})
 
-	r.POST("/douyin/user/register", func(c *gin.Context) {
+	r.POST("/douyin/user/register/", func(c *gin.Context) {
 		userName := c.Query("username")
 		userPassword := c.Query("password")
 		registerResp, err := handler.RegisterUserHandler(userName, userPassword)
