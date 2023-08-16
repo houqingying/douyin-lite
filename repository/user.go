@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"gorm.io/gorm"
 	"sync"
 )
@@ -8,6 +9,7 @@ import (
 type User struct {
 	gorm.Model
 	Name            string `json:"name"`
+	Password        string `json:"password"`
 	Avatar          string `json:"avatar"`
 	BackgroundImage string `json:"background_image"`
 	Signature       string `json:"signature"`
@@ -42,4 +44,27 @@ func (*UserDao) CreateUser(name string, followingCnt uint, followerCnt uint) err
 		return err
 	}
 	return nil
+}
+
+func (*UserDao) CreateRegisterUser(name string, password string) (*User, error) {
+	newUser := User{
+		Name:     name,
+		Password: password,
+	}
+	err := db.Create(&newUser).Error
+	if err != nil {
+		return nil, err
+	}
+	return &newUser, nil
+}
+
+func (*UserDao) QueryIsUserExist(name string) (bool, error) {
+	err := db.Where("name = ?", name).First(&User{}).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, err
+		}
+		return true, err
+	}
+	return true, nil
 }

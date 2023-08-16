@@ -40,6 +40,17 @@ func main() {
 		c.JSON(http.StatusOK, followListResp)
 	})
 
+	r.POST("/douyin/user/register", func(c *gin.Context) {
+		userName := c.Query("username")
+		userPassword := c.Query("password")
+		registerResp, err := handler.RegisterUserHandler(userName, userPassword)
+		if err != nil {
+			c.JSON(http.StatusOK, registerResp)
+			return
+		}
+		c.JSON(http.StatusOK, registerResp)
+	})
+
 	err := r.Run()
 	if err != nil {
 		return
