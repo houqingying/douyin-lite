@@ -5,6 +5,7 @@ import (
 	"douyin-lite/handler/follow"
 	"douyin-lite/handler/message"
 	"douyin-lite/handler/user"
+	"douyin-lite/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -44,29 +45,11 @@ func Init() *gin.Engine {
 		c.JSON(http.StatusOK, followListResp)
 	})
 
-	baseGroup.POST("/user/register/", func(c *gin.Context) {
-		userName := c.Query("username")
-		userPassword := c.Query("password")
-		registerResp, err := user.RegisterUserHandler(userName, userPassword)
-		if err != nil {
-			c.JSON(http.StatusOK, registerResp)
-			return
-		}
-		c.JSON(http.StatusOK, registerResp)
-	})
+	baseGroup.POST("/user/register/", middleware.SHAMiddleWare(), user.RegisterUserHandler)
 
-	baseGroup.POST("/user/login/", func(c *gin.Context) {
-		userName := c.Query("username")
-		userPassword := c.Query("password")
-		loginResp, err := user.LoginUserHandler(userName, userPassword)
-		if err != nil {
-			c.JSON(http.StatusOK, loginResp)
-			return
-		}
-		c.JSON(http.StatusOK, loginResp)
-	})
+	baseGroup.POST("/user/login/", middleware.SHAMiddleWare(), user.LoginUserHandler)
 
-	baseGroup.GET("/user/", func(c *gin.Context) {
+	baseGroup.GET("/user/", middleware.JWTMiddleWare(), func(c *gin.Context) {
 		userIdStr := c.Query("user_id")
 		//userToken := c.Query("token")
 		userInfoResp, err := user.QueryUserInfoHandler(userIdStr)
