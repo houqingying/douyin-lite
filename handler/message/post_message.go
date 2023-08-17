@@ -2,9 +2,10 @@ package message
 
 import (
 	"douyin-lite/service/message_service"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type SendMessageResp struct {

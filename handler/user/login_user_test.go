@@ -1,7 +1,6 @@
-package test
+package user
 
 import (
-	"douyin-lite/handler/user"
 	"douyin-lite/repository"
 	"fmt"
 	"testing"
@@ -9,7 +8,7 @@ import (
 
 func TestLoginUserHandler(t *testing.T) {
 	repository.Init()
-	loginResp, err := user.LoginUserHandler("mao122", "123")
+	loginResp, err := LoginUserHandler("mao122", "123")
 	if err != nil {
 		panic(err)
 	}
