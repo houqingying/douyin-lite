@@ -22,6 +22,6 @@ func Init() error {
 	if err != nil {
 		panic(err)
 	}
-	err = db.AutoMigrate(&Following{}, &User{}, &Message{})
+	err = db.AutoMigrate(&Following{}, &User{}, &Message{}, &Comment{})
 	return err
 }

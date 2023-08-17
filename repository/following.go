@@ -2,8 +2,9 @@ package repository
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"sync"
+
+	"gorm.io/gorm"
 )
 
 type Following struct {

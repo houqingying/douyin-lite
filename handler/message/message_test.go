@@ -1,10 +1,10 @@
-package test
+package message
 
 import (
-	"douyin-lite/handler/message"
 	"douyin-lite/repository"
-	"github.com/gin-gonic/gin"
 	"testing"
+
+	"github.com/gin-gonic/gin"
 )
 
 func TestMessageHandler(t *testing.T) {
@@ -14,8 +14,8 @@ func TestMessageHandler(t *testing.T) {
 	}
 
 	r := gin.Default()
-	r.POST("/douyin/message/action/", message.SendMessageHandler)
-	r.GET("/douyin/message/chat/", message.QueryMessageHandler)
+	r.POST("/douyin/message/action/", SendMessageHandler)
+	r.GET("/douyin/message/chat/", QueryMessageHandler)
 
 	err = r.Run()
 	if err != nil {

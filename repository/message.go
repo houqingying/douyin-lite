@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"gorm.io/gorm"
 	"sync"
+
+	"gorm.io/gorm"
 )
 
 // Message 用户消息对象
