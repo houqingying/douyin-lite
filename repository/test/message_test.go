@@ -8,7 +8,10 @@ import (
 )
 
 func Test_Message_Init(t *testing.T) {
-	repository.Init()
+	err := repository.Init()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func TestMessageDao_Singleton(t *testing.T) {
@@ -21,17 +24,23 @@ func TestMessageDao_Singleton(t *testing.T) {
 }
 
 func TestMessageDao_CreateMessage(t *testing.T) {
-	repository.Init()
-	err := repository.GetMessageDaoInstance().CreateMessage(1, 2, "hello")
+	err := repository.Init()
+	if err != nil {
+		panic(err)
+	}
+	err = repository.GetMessageDaoInstance().CreateMessage(1, 2, "hello")
 	if err != nil {
 		panic(err)
 	}
 }
 
 func TestMessageDao_QueryMessage(t *testing.T) {
-	repository.Init()
+	err := repository.Init()
+	if err != nil {
+		panic(err)
+	}
 	var messageList []*repository.Message
-	messageList, err := repository.GetMessageDaoInstance().QueryMessage(1, 2)
+	messageList, err = repository.GetMessageDaoInstance().QueryMessage(1, 2)
 	if err != nil {
 		panic(err)
 	}

@@ -8,9 +8,17 @@ import (
 )
 
 func TestMessageHandler(t *testing.T) {
-	repository.Init()
+	err := repository.Init()
+	if err != nil {
+		panic(err)
+	}
+
 	r := gin.Default()
 	r.POST("/douyin/message/action/", message.SendMessageHandler)
 	r.GET("/douyin/message/chat/", message.QueryMessageHandler)
-	r.Run()
+
+	err = r.Run()
+	if err != nil {
+		panic(err)
+	}
 }

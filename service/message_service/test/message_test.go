@@ -8,15 +8,21 @@ import (
 )
 
 func TestSendMessage(t *testing.T) {
-	repository.Init()
-	err := message_service.SendMessage(1, 1, "你好")
+	err := repository.Init()
+	if err != nil {
+		panic(err)
+	}
+	err = message_service.SendMessage(1, 1, "你好")
 	if err != nil {
 		panic(err)
 	}
 }
 
 func TestQueryMessage(t *testing.T) {
-	repository.Init()
+	err := repository.Init()
+	if err != nil {
+		panic(err)
+	}
 	messageInfoList, err := message_service.QueryMessage(1, 2)
 	if err != nil {
 		panic(err)
