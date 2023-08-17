@@ -1,15 +1,14 @@
-package test
+package user_service
 
 import (
 	"douyin-lite/repository"
-	"douyin-lite/service/user_service"
 	"fmt"
 	"testing"
 )
 
 func TestNewQueryUserInfoFlow(t *testing.T) {
 	repository.Init()
-	userInfo, err := user_service.QueryUserInfo(21)
+	userInfo, err := QueryUserInfo(21)
 	if err != nil {
 		panic(err)
 	}
