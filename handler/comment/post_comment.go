@@ -1,7 +1,6 @@
 package comment
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -22,18 +21,9 @@ type ActionResponse struct {
 // Action comment action
 // @Router /douyin/comment/action/ [post]
 func Action(c *gin.Context) {
-	klog.Info("comment action")
-	//id, _ := c.Get("user_id")
-	//userid, _ := id.(string)
-	//userId, err := strconv.ParseInt(userid, 10, 64)
-	//if err != nil {
-	//	klog.Errorf("strconv.ParseInt error: %s", err)
-	//	c.JSON(http.StatusOK, ActionResponse{
-	//		StatusCode: -1,
-	//		StatusMsg:  "comment userId json invalid",
-	//	})
-	//	return
-	//}
+	id, _ := c.Get("user_id")
+	userId, _ := id.(int64)
+
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	if err != nil {
 		klog.Errorf("strconv.ParseInt error: %s", err)
@@ -44,63 +34,80 @@ func Action(c *gin.Context) {
 		return
 	}
 	actionType, err := strconv.ParseInt(c.Query("action_type"), 10, 32)
-	service := new(comment_service.CommentService)
-	//错误处理
-	if err != nil || actionType < 1 || actionType > 2 {
+
+	if err != nil {
 		c.JSON(http.StatusOK, ActionResponse{
 			StatusCode: -1,
 			StatusMsg:  "comment actionType json invalid",
 		})
-		log.Println("CommentController-Comment_Action: return actionType json invalid") //评论类型数据无效
+		klog.Infof("CommentController Action: comment actionType json invalid")
+	}
+
+	service := new(comment_service.CommentService)
+	if actionType < 1 || actionType > 2 {
+		c.JSON(http.StatusOK, ActionResponse{
+			StatusCode: -1,
+			StatusMsg:  "comment actionType json invalid",
+		})
+		klog.Info("CommentController Action: actionType json invalid")
 		return
 	}
 
+	// 1 : send comment
 	if actionType == 1 {
 		content := c.Query("comment_text")
 
 		var sendComment repository.Comment
-		//sendComment.UserId = int(userId)
+		sendComment.UserId = uint(userId)
 		sendComment.VideoId = uint(videoId)
 		sendComment.Content = content
-		//发表评论
+
+		// do send comment
 		commentInfo, err := service.CreateComment(sendComment)
-		//发表评论失败
+		// send comment failed
 		if err != nil {
 			c.JSON(http.StatusOK, ActionResponse{
 				StatusCode: -1,
 				StatusMsg:  "send comment failed",
 			})
-			log.Printf("CommentController-Comment_Action: return send comment failed, %v", err) //发表失败
+			klog.Infof("CommentController Action: return send comment failed, %v", err) //发表失败
 			return
 		}
 
-		//发表评论成功:
-		//返回结果
+		// send comment success
 		c.JSON(http.StatusOK, ActionResponse{
 			StatusCode: 0,
 			StatusMsg:  "send comment success",
 			Comment:    commentInfo,
 		})
-		klog.Info("CommentController-Comment_Action: return Send success") //发表评论成功，返回正确信息
+		klog.Info("CommentController Action: return Send success")
 		return
-	} else {
+	} else { // 2 : delete comment
 		commentId, err := strconv.ParseInt(c.Query("comment_id"), 10, 64)
 		if err != nil {
 			c.JSON(http.StatusOK, ActionResponse{
 				StatusCode: -1,
 				StatusMsg:  "comment commentId json invalid",
 			})
-			log.Println("CommentController-Comment_Action: return commentId json invalid") //评论id数据无效
+			klog.Infof("CommentController Action: return commentId json invalid")
 			return
 		}
+		// do delete comment
 		err = service.DeleteComment(commentId)
+		// delete comment failed
 		if err != nil {
+			c.JSON(http.StatusOK, ActionResponse{
+				StatusCode: -1,
+				StatusMsg:  "delete comment failed",
+			})
+			klog.Infof("CommentController Action: return delete failed, %v", err)
 			return
 		}
+		// delete comment success
 		c.JSON(http.StatusOK, ActionResponse{
 			StatusCode: 0,
 			StatusMsg:  "delete comment success",
 		})
-		klog.Info("CommentController-Comment_Action: return delete success") //删除评论成功，返回正确信息
+		klog.Info("CommentController Action: return delete success")
 	}
 }

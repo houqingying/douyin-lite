@@ -62,7 +62,7 @@ func Init() *gin.Engine {
 
 	baseGroup.POST("/message/action/", message.SendMessageHandler)
 	baseGroup.GET("/message/chat/", message.QueryMessageHandler)
-	baseGroup.POST("/comment/action/", comment.Action)
+	baseGroup.POST("/comment/action/", middleware.JWTMiddleWare(), comment.Action)
 	baseGroup.GET("/comment/list/", comment.List)
 	return r
 }
