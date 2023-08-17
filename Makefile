@@ -49,5 +49,9 @@ test:
 run:
 	go run main.go
 
+.PHONY: build
+build:
+	go build -o bin/ ./...
+
 # Add this line at the end of the Makefile
 %: ;

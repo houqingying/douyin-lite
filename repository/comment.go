@@ -8,9 +8,9 @@ import (
 
 type Comment struct {
 	gorm.Model
-	VideoId int    `json:"video_id"`
-	UserId  int    `json:"user_id"`
-	Comment string `json:"comment"`
+	VideoId uint   `gorm:"column:video_id;not null" json:"video_id"`
+	UserId  uint   `gorm:"column:user_id;not null" json:"user_id"`
+	Content string `gorm:"column:content;not null" json:"content"`
 }
 
 type CommentDao struct {

@@ -5,9 +5,10 @@ import (
 	"net/http"
 	"strconv"
 
+	"douyin-lite/repository"
+	"douyin-lite/service/comment_service"
+
 	"github.com/gin-gonic/gin"
-	"github.com/houqingying/douyin-lite/repository"
-	"github.com/houqingying/douyin-lite/service/comment_service"
 	"k8s.io/klog"
 )
 
@@ -50,7 +51,7 @@ func Action(c *gin.Context) {
 		return
 	}
 	actionType, err := strconv.ParseInt(c.Query("action_type"), 10, 32)
-	service := new(comment_service.CommentServiceImpl)
+	service := new(comment_service.CommentService)
 	//错误处理
 	if err != nil || actionType < 1 || actionType > 2 {
 		c.JSON(http.StatusOK, ActionResponse{
@@ -66,8 +67,8 @@ func Action(c *gin.Context) {
 
 		var sendComment repository.Comment
 		//sendComment.UserId = int(userId)
-		sendComment.VideoId = int(videoId)
-		sendComment.Comment = content
+		sendComment.VideoId = uint(videoId)
+		sendComment.Content = content
 		//发表评论
 		commentInfo, err := service.CreateComment(sendComment)
 		//发表评论失败
@@ -76,7 +77,7 @@ func Action(c *gin.Context) {
 				StatusCode: -1,
 				StatusMsg:  "send comment failed",
 			})
-			log.Println("CommentController-Comment_Action: return send comment failed") //发表失败
+			log.Printf("CommentController-Comment_Action: return send comment failed, %v", err) //发表失败
 			return
 		}
 
@@ -126,7 +127,7 @@ func List(c *gin.Context) {
 		})
 		return
 	}
-	service := new(comment_service.CommentServiceImpl)
+	service := new(comment_service.CommentService)
 	commentList, err := service.GetList(int64(int(videoId)))
 	if err != nil {
 		c.JSON(http.StatusOK, ListResponse{
