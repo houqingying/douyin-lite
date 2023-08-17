@@ -11,8 +11,8 @@ var db *gorm.DB
 func Init() error {
 	var err error
 	username := "root"           //账号
-	password := "@LearnSQLWell0" //密码
-	host := "39.105.199.147"     //数据库地址，可以是Ip或者域名
+	password := "" //密码
+	host := ""     //数据库地址，可以是Ip或者域名
 	port := 3306                 //数据库端口
 	Dbname := "douyin"           //数据库名
 	timeout := "10s"             //连接超时，10秒
