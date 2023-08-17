@@ -1,15 +1,14 @@
-package test
+package follow_service
 
 import (
 	"douyin-lite/repository"
-	"douyin-lite/service/follow_service"
 	"fmt"
 	"testing"
 )
 
 func TestQueryFollowListInfo(t *testing.T) {
 	repository.Init()
-	followListInfo, err := follow_service.QueryFollowListInfo(2)
+	followListInfo, err := QueryFollowListInfo(2)
 	if err != nil {
 		panic(err)
 	}
