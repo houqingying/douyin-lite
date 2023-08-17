@@ -1,13 +1,14 @@
 package user_service
 
 import (
+	"douyin-lite/middleware"
 	"douyin-lite/repository"
 	"errors"
 )
 
 type RegisterInfo struct {
-	UserId uint   `json:"user_id"`
-	Token  string `json:"token""`
+	UserId int64  `json:"user_id"`
+	Token  string `json:"token"`
 }
 
 func RegisterUser(userName string, userPassword string) (*RegisterInfo, error) {
@@ -17,7 +18,7 @@ func RegisterUser(userName string, userPassword string) (*RegisterInfo, error) {
 type RegisterUserFlow struct {
 	userName     string
 	password     string
-	userId       uint
+	userId       int64
 	token        string
 	registerInfo *RegisterInfo
 }
@@ -47,16 +48,13 @@ func (f *RegisterUserFlow) Do() (*RegisterInfo, error) {
 
 func (f *RegisterUserFlow) checkParam() error {
 	if f.userName == "" || len(f.userName) <= 0 {
-		return errors.New("用户名不合法")
+		return errors.New("用户名不能为空")
 	}
 	if len(f.userName) > 20 {
-		return errors.New("用户名不合法")
+		return errors.New("用户名太长，请不要超过二十位字符")
 	}
 	if f.password == "" || len(f.password) <= 0 {
-		return errors.New("密码不合法")
-	}
-	if len(f.password) > 20 {
-		return errors.New("密码不合法")
+		return errors.New("密码不能为空")
 	}
 	return nil
 }
@@ -64,14 +62,18 @@ func (f *RegisterUserFlow) checkParam() error {
 func (f *RegisterUserFlow) updateRegisterInfo() error {
 	isExist, _ := repository.NewUserDaoInstance().QueryIsUserExist(f.userName)
 	if isExist {
-		return errors.New("用户已经存在, 不需要再注册")
+		return errors.New("当前用户名已存在")
 	}
 	regInfo, err := repository.NewUserDaoInstance().CreateRegisterUser(f.userName, f.password)
 	if err != nil {
 		return err
 	}
 	f.userId = regInfo.ID
-	f.token = "whatToken"
+	token, err := middleware.ReleaseToken(regInfo.ID)
+	if err != nil {
+		return err
+	}
+	f.token = token
 	return nil
 }
 
