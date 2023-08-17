@@ -1,12 +1,14 @@
-package repository
+package test
 
 import (
+	"douyin-lite/repository"
 	"fmt"
 	"testing"
 )
 
 func TestUserDao_CreateUser(t *testing.T) {
-	Init()
+	repository.Init()
+	userDao := repository.NewUserDaoInstance()
 	userDao.CreateUser("wdp", 0, 0)
 	userDao.CreateUser("lwh", 0, 0)
 	userDao.CreateUser("cwp", 0, 0)
@@ -17,13 +19,15 @@ func TestUserDao_CreateUser(t *testing.T) {
 }
 
 func TestUserDao_CreateRegisterUser(t *testing.T) {
-	Init()
+	repository.Init()
+	userDao := repository.NewUserDaoInstance()
 	userDao.CreateRegisterUser("wdp", "123")
 	userDao.CreateRegisterUser("lwh", "456")
 }
 
 func TestUserDao_QueryIsUserExist(t *testing.T) {
-	Init()
+	repository.Init()
+	userDao := repository.NewUserDaoInstance()
 	isExist, err := userDao.QueryIsUserExist("wangdongdong")
 	if err != nil {
 		if isExist == false {
@@ -37,7 +41,8 @@ func TestUserDao_QueryIsUserExist(t *testing.T) {
 }
 
 func TestUserDao_QueryIsUserLogin(t *testing.T) {
-	Init()
+	repository.Init()
+	userDao := repository.NewUserDaoInstance()
 	qUser, err := userDao.QueryLoginUser("mao122", "123")
 	if err != nil {
 		panic(err)
@@ -46,7 +51,8 @@ func TestUserDao_QueryIsUserLogin(t *testing.T) {
 }
 
 func TestUserDao_QueryUserById(t *testing.T) {
-	Init()
+	repository.Init()
+	userDao := repository.NewUserDaoInstance()
 	qUser, err := userDao.QueryUserById(21)
 	if err != nil {
 		panic(err)

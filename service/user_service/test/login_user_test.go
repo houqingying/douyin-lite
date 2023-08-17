@@ -1,14 +1,15 @@
-package user_service
+package test
 
 import (
 	"douyin-lite/repository"
+	"douyin-lite/service/user_service"
 	"fmt"
 	"testing"
 )
 
 func TestLoginUser(t *testing.T) {
 	repository.Init()
-	loginInfo, err := LoginUser("feyman", "ywuiqjqiq")
+	loginInfo, err := user_service.LoginUser("feyman", "ywuiqjqiq")
 	if err != nil {
 		panic(err)
 	}

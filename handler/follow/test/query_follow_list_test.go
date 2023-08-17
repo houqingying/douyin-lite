@@ -1,6 +1,7 @@
-package handler
+package test
 
 import (
+	"douyin-lite/handler/follow"
 	"douyin-lite/repository"
 	"fmt"
 	"testing"
@@ -8,7 +9,7 @@ import (
 
 func TestQueryFollowListHandler(t *testing.T) {
 	repository.Init()
-	followListResp, err := QueryFollowListHandler("2")
+	followListResp, err := follow.QueryFollowListHandler("2")
 	if err != nil {
 		panic(err)
 	}

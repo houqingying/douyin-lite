@@ -1,6 +1,7 @@
-package handler
+package test
 
 import (
+	"douyin-lite/handler/user"
 	"douyin-lite/repository"
 	"fmt"
 	"testing"
@@ -8,7 +9,7 @@ import (
 
 func TestQueryUserInfoHandler(t *testing.T) {
 	repository.Init()
-	userInfoResp, err := QueryUserInfoHandler("21")
+	userInfoResp, err := user.QueryUserInfoHandler("21")
 	if err != nil {
 		panic(err)
 	}

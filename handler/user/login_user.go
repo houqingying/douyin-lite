@@ -1,4 +1,4 @@
-package handler
+package user
 
 import (
 	"douyin-lite/service/user_service"

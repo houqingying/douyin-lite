@@ -1,4 +1,4 @@
-package handler
+package follow
 
 import (
 	"douyin-lite/service/follow_service"
