@@ -7,7 +7,7 @@ import (
 
 type RegisterInfo struct {
 	UserId uint   `json:"user_id"`
-	Token  string `json:"token""`
+	Token  string `json:"token"`
 }
 
 func RegisterUser(userName string, userPassword string) (*RegisterInfo, error) {

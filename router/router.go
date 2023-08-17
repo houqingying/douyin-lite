@@ -1,11 +1,13 @@
 package router
 
 import (
+	"douyin-lite/handler/comment"
 	"douyin-lite/handler/follow"
 	"douyin-lite/handler/message"
 	"douyin-lite/handler/user"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Init() *gin.Engine {
@@ -77,6 +79,7 @@ func Init() *gin.Engine {
 
 	baseGroup.POST("/message/action/", message.SendMessageHandler)
 	baseGroup.GET("/message/chat/", message.QueryMessageHandler)
-
+	baseGroup.POST("/comment/action/", comment.Action)
+	baseGroup.GET("/comment/list/", comment.List)
 	return r
 }

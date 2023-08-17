@@ -1,14 +1,13 @@
-package test
+package repository
 
 import (
-	"douyin-lite/repository"
 	"fmt"
 	"testing"
 )
 
 func TestFollowingDao_QueryFollowerListByHostId(t *testing.T) {
-	repository.Init()
-	userList, err := repository.NewFollowingDaoInstance().QueryFollowerListByHostId(1)
+	Init()
+	userList, err := NewFollowingDaoInstance().QueryFollowerListByHostId(1)
 	if err != nil {
 		panic(err)
 	}
@@ -18,16 +17,16 @@ func TestFollowingDao_QueryFollowerListByHostId(t *testing.T) {
 }
 
 func TestFollowingDao_IncFollowerCnt(t *testing.T) {
-	repository.Init()
-	err := repository.NewFollowingDaoInstance().IncFollowerCnt(4)
+	Init()
+	err := NewFollowingDaoInstance().IncFollowerCnt(4)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func TestFollowingDao_DecFollowerCnt(t *testing.T) {
-	repository.Init()
-	err := repository.NewFollowingDaoInstance().DecFollowerCnt(1)
+	Init()
+	err := NewFollowingDaoInstance().DecFollowerCnt(1)
 	if err != nil {
 		panic(err)
 	}
