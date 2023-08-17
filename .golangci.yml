@@ -68,7 +68,7 @@ linters:
     # - forbidigo # forbid use of particular identifiers. We don't need this style check.
     # - forcetypeassert # finds forced type assertions. We don't need this style check.
     # - funlen # Tool for detection of long functions. We choose 'gocyclo' to check such complexity issue.
-    - gci # Gci controls golang package import order and makes it always deterministic. We don't need this import style check.
+#    - gci # Gci controls golang package import order and makes it always deterministic. We don't need this import style check.
     # - gochecknoglobals # check that no global variables exist. we don't need. we allow global variables exist.
     # - gochecknoinits # Checks that no init functions are present in Go code. We allow init functions, don't need this style check.
     # - gocognit # Computes and checks the cognitive complexity of functions
@@ -81,7 +81,7 @@ linters:
     # - gofmt # Gofmt checks whether code was gofmt-ed. By default this tool runs with -s option to check for code simplification. It will format(auto change) the code.
     # - gofumpt # Gofumpt checks whether code was gofumpt-ed.
     # - goheader # Checks is file header matches to pattern. We don't need this style check.
-    - goimports # In addition to fixing imports, goimports also formats your code in the same style as gofmt. It will format(auto change) the code.
+#    - goimports # In addition to fixing imports, goimports also formats your code in the same style as gofmt. It will format(auto change) the code.
     # - golint  # The repository of the linter has been archived by the owner. Replaced by revive.
     # - gomnd # An analyzer to detect magic numbers. TODO try to use it. What is a magic number? A magic number is a numeric literal that is not defined as a constant, but which may change, and therefore can be hard to update. It's considered a bad programming practice to use numbers directly in any source code without an explanation. It makes programs harder to read, understand, and maintain.
     # - gomoddirectives # Manage the use of 'replace', 'retract', and 'excludes' directives in go.mod. We don't need this.

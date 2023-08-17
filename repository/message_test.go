@@ -1,14 +1,13 @@
-package test
+package repository
 
 import (
-	"douyin-lite/repository"
 	"fmt"
 	"testing"
 	"time"
 )
 
 func Test_Message_Init(t *testing.T) {
-	err := repository.Init()
+	err := Init()
 	if err != nil {
 		panic(err)
 	}
@@ -17,30 +16,30 @@ func Test_Message_Init(t *testing.T) {
 func TestMessageDao_Singleton(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		go func() {
-			_ = repository.GetMessageDaoInstance()
+			_ = GetMessageDaoInstance()
 		}()
 	}
 	time.Sleep(time.Second)
 }
 
 func TestMessageDao_CreateMessage(t *testing.T) {
-	err := repository.Init()
+	err := Init()
 	if err != nil {
 		panic(err)
 	}
-	err = repository.GetMessageDaoInstance().CreateMessage(1, 2, "hello")
+	err = GetMessageDaoInstance().CreateMessage(1, 2, "hello")
 	if err != nil {
 		panic(err)
 	}
 }
 
 func TestMessageDao_QueryMessage(t *testing.T) {
-	err := repository.Init()
+	err := Init()
 	if err != nil {
 		panic(err)
 	}
-	var messageList []*repository.Message
-	messageList, err = repository.GetMessageDaoInstance().QueryMessage(1, 2)
+	var messageList []*Message
+	messageList, err = GetMessageDaoInstance().QueryMessage(1, 2)
 	if err != nil {
 		panic(err)
 	}
