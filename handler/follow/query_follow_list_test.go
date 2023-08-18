@@ -8,7 +8,7 @@ import (
 
 func TestQueryFollowListHandler(t *testing.T) {
 	repository.Init()
-	followListResp, err := QueryFollowListHandler("2")
+	followListResp, err := QueryFollowList("2")
 	if err != nil {
 		panic(err)
 	}

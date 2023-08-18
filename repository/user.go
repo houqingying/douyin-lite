@@ -67,11 +67,22 @@ func (*UserDao) CreateRegisterUser(name string, password string) (*User, error) 
 	return &newUser, nil
 }
 
-func (*UserDao) QueryIsUserExist(name string) (bool, error) {
+func (*UserDao) QueryIsUserExistByName(name string) (bool, error) {
 	err := db.Where("name = ?", name).First(&User{}).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return false, err
+		}
+		return false, errors.New("数据库异常")
+	}
+	return true, nil
+}
+
+func (*UserDao) QueryIsUserExistById(userId uint) (bool, error) {
+	err := db.Where("id = ?", userId).First(&User{}).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
 		}
 		return false, errors.New("数据库异常")
 	}

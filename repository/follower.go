@@ -38,3 +38,22 @@ func (*FollowingDao) DecFollowerCnt(guestId uint) error {
 	}
 	return nil
 }
+
+func (*FollowingDao) QueryFriendById(hostId uint) ([]*User, error) {
+	var FriendList []*Following
+	err := db.Raw("SELECT * FROM following WHERE host_id = ? AND guest_id IN (SELECT host_id FROM following f WHERE f.guest_id = following.host_id)", hostId).Scan(&FriendList).Error
+	if err != nil {
+		return nil, err
+	}
+	var UserList []*User
+	var tempUser *User
+	for _, follow := range FriendList {
+		tempUser = nil
+		err := db.Where("id = ?", follow.GuestId).Find(&tempUser).Error
+		if err != nil {
+			return nil, err
+		}
+		UserList = append(UserList, tempUser)
+	}
+	return UserList, nil
+}
