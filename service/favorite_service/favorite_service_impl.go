@@ -1,6 +1,7 @@
 package favorite_service
 
 import (
+	"douyin-lite/repository"
 	"fmt"
 	"log"
 	"sync"
@@ -26,7 +27,7 @@ func NewLikeServImpInstance() *LikeServiceImpl {
 
 // 对接口方法实现
 func (*LikeServiceImpl) FavoriteAction(userId int64, videoId int64, actionType int32) error {
-	islike, err := dao.IsVideoLikedByUser(userId, videoId)
+	islike, err := repository.IsVideoLikedByUser(userId, videoId)
 	log.Print("islike:", islike)
 	log.Println("actionType:", actionType)
 	// 获取点赞和取消点赞的消息队列
