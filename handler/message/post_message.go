@@ -1,6 +1,7 @@
 package message
 
 import (
+	"douyin-lite/middleware"
 	"douyin-lite/service/message_service"
 	"net/http"
 	"strconv"
@@ -13,22 +14,17 @@ type SendMessageResp struct {
 	Msg  string `json:"status_msg"`
 }
 
-// ValidToken 验证请求携带token的合法性，如果合法，返回用户ID；如果非法，设置error
-func ValidToken(token string) (uint, error) {
-	// TODO: 负责登录功能的同学在某个文件中提供验证token合法性的方法，注意用户id的类型是int64
-	return 1, nil
-}
-
 func SendMessageHandler(c *gin.Context) {
 	token := c.Query("token")
-	fromUserId, err := ValidToken(token)
 
+	claims, valid := middleware.ParseToken(token)
 	// token验证失败
-	if err != nil {
+	if !valid {
 		sendMessageResp := SendMessageResp{403, "用户token无效，拒绝用户请求"}
 		c.JSON(http.StatusOK, sendMessageResp)
 		return
 	}
+	fromUserId := claims.UserId
 
 	// 读出其他request参数并检查合法性
 	toUserIdStr := c.Query("to_user_id")
@@ -53,7 +49,7 @@ func SendMessageHandler(c *gin.Context) {
 	}
 
 	// 调用Service层，完成发送服务
-	err = message_service.SendMessage(fromUserId, uint(toUserId), content)
+	err = message_service.SendMessage(uint(fromUserId), uint(toUserId), content)
 	if err != nil {
 		c.JSON(http.StatusOK, SendMessageResp{500, err.Error()})
 		return

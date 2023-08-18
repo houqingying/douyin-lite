@@ -1,6 +1,7 @@
 package message
 
 import (
+	"douyin-lite/middleware"
 	"douyin-lite/service/message_service"
 	"net/http"
 	"strconv"
@@ -16,14 +17,15 @@ type QueryMessageResp struct {
 
 func QueryMessageHandler(c *gin.Context) {
 	token := c.Query("token")
-	fromUserId, err := ValidToken(token)
 
+	claims, valid := middleware.ParseToken(token)
 	// token验证失败
-	if err != nil {
-		sendMessageResp := QueryMessageResp{403, "用户token无效，拒绝用户请求", nil}
+	if !valid {
+		sendMessageResp := SendMessageResp{403, "用户token无效，拒绝用户请求"}
 		c.JSON(http.StatusOK, sendMessageResp)
 		return
 	}
+	fromUserId := claims.UserId
 
 	// 读出其他request参数并检查合法性
 	toUserIdStr := c.Query("to_user_id")
@@ -36,7 +38,7 @@ func QueryMessageHandler(c *gin.Context) {
 	}
 
 	// 调用Service层，完成查找
-	messageInfoList, err := message_service.QueryMessage(fromUserId, uint(toUserId))
+	messageInfoList, err := message_service.QueryMessage(uint(fromUserId), uint(toUserId))
 	if err != nil {
 		c.JSON(http.StatusOK, QueryMessageResp{500, err.Error(), nil})
 		return
