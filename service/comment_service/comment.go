@@ -42,27 +42,47 @@ const (
 	DateFormat = "2006-01-02 15:04:05"
 )
 
-var CommentDao = repository.NewCommentDaoInstance()
+var (
+	CommentDao = repository.NewCommentDaoInstance()
+	UserDao    = repository.NewUserDaoInstance()
+)
 
 type CommentService struct {
 }
 
 func (c *CommentService) CreateComment(comment repository.Comment) (CommentInfo, error) {
-	klog.Info("comment service create comment")
+
+	// 1. Valid videoId and userId
+	// TODO valid videoId
+	user, err := UserDao.QueryUserById(comment.UserId)
+	if err != nil {
+		klog.Errorf("query user error: %s", err)
+		return CommentInfo{}, err
+	}
+
 	commentInfo := &repository.Comment{
 		VideoId: comment.VideoId,
 		UserId:  comment.UserId,
 		Content: comment.Content,
 	}
-	err := CommentDao.CreateComment(commentInfo)
+	err = CommentDao.CreateComment(commentInfo)
 	if err != nil {
 		klog.Errorf("create comment error: %s", err)
 		return CommentInfo{}, err
 	}
+	userinfo := User{
+		Id:            int64(user.ID),
+		Name:          user.Name,
+		FollowCount:   user.FollowingCount,
+		FollowerCount: user.FollowerCount,
+		// TODO: add is follow
+		IsFollow:       false,
+		TotalFavorited: user.TotalFavorited,
+		FavoriteCount:  user.FavoriteCount,
+	}
 	return CommentInfo{
-		Id: int64(commentInfo.ID),
-		// TODO: add user info
-		UserInfo:   User{},
+		Id:         int64(commentInfo.ID),
+		UserInfo:   userinfo,
 		Content:    commentInfo.Content,
 		CreateDate: commentInfo.CreatedAt.Format(DateFormat),
 	}, nil
@@ -88,10 +108,25 @@ func (c *CommentService) GetList(videoId int64) ([]CommentInfo, error) {
 	}
 	var commentInfos []CommentInfo
 	for _, comment := range comments {
+		// get user info
+		user, err := UserDao.QueryUserById(comment.UserId)
+		if err != nil {
+			klog.Errorf("query user error: %s", err)
+			return nil, err
+		}
+		userinfo := User{
+			Id:            int64(user.ID),
+			Name:          user.Name,
+			FollowCount:   user.FollowingCount,
+			FollowerCount: user.FollowerCount,
+			// TODO: add is follow
+			IsFollow:       false,
+			TotalFavorited: user.TotalFavorited,
+			FavoriteCount:  user.FavoriteCount,
+		}
 		commentInfos = append(commentInfos, CommentInfo{
-			Id: int64(comment.ID),
-			// TODO: add user info
-			UserInfo:   User{},
+			Id:         int64(comment.ID),
+			UserInfo:   userinfo,
 			Content:    comment.Content,
 			CreateDate: comment.CreatedAt.Format(DateFormat),
 		})

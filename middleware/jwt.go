@@ -8,6 +8,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"k8s.io/klog"
 )
 
 var jwtKey = []byte("douyin-lite-key")
@@ -86,6 +87,7 @@ func JWTMiddleWare() gin.HandlerFunc {
 			c.Abort() //阻止执行
 			return
 		}
+		klog.Info("tokenStruck.UserId: ", tokenStruck.UserId)
 		c.Set("user_id", tokenStruck.UserId)
 		c.Next()
 	}

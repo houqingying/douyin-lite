@@ -2,7 +2,6 @@ package comment
 
 import (
 	"douyin-lite/service/comment_service"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -39,7 +38,7 @@ func List(c *gin.Context) {
 			StatusCode: -1,
 			StatusMsg:  "comment list failed",
 		})
-		log.Println("CommentController-Comment_List: return comment list failed") //获取评论列表失败
+		klog.Info("CommentController List: return comment list failed")
 		return
 	}
 	c.JSON(http.StatusOK, ListResponse{
@@ -47,5 +46,5 @@ func List(c *gin.Context) {
 		StatusMsg:   "comment list success",
 		CommentList: commentList,
 	})
-	klog.Info("CommentController-Comment_List: return comment list success")
+	klog.Info("CommentController List: return comment list success")
 }

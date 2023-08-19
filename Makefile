@@ -43,7 +43,7 @@ lint: install-golint ## Run go lint against code.
 
 .PHONY: test
 test:
-	go test -v -short -coverprofile cover.out
+	go test -v -short -coverprofile cover.out ./...
 
 .PHONY: run
 run:
