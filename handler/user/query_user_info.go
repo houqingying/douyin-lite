@@ -1,8 +1,12 @@
 package user
 
 import (
-	"douyin-lite/service/user_service"
+	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+
+	"douyin-lite/service/user_service"
 )
 
 type QueryUserInfoResp struct {
@@ -11,7 +15,18 @@ type QueryUserInfoResp struct {
 	User *user_service.UserInfo `json:"user"`
 }
 
-func QueryUserInfoHandler(userIdStr string) (*QueryUserInfoResp, error) {
+func UserInfoHandler(c *gin.Context) {
+	userIdStr := c.Query("user_id")
+	//userToken := c.Query("token")
+	userInfoResp, err := QueryUserInfo(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusOK, userInfoResp)
+		return
+	}
+	c.JSON(http.StatusOK, userInfoResp)
+}
+
+func QueryUserInfo(userIdStr string) (*QueryUserInfoResp, error) {
 	userId, err := strconv.ParseInt(userIdStr, 10, 64)
 	if err != nil {
 		return &QueryUserInfoResp{

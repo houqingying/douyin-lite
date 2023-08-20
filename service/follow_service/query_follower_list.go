@@ -1,9 +1,10 @@
 package follow_service
 
 import (
+	"errors"
+
 	"douyin-lite/repository"
 	"douyin-lite/service/user_service"
-	"errors"
 )
 
 type FollowerListInfo struct {

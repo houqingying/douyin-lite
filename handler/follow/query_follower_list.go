@@ -1,8 +1,12 @@
 package follow
 
 import (
-	"douyin-lite/service/follow_service"
+	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+
+	"douyin-lite/service/follow_service"
 )
 
 type FollowerListResp struct {
@@ -11,7 +15,18 @@ type FollowerListResp struct {
 	*follow_service.FollowerListInfo
 }
 
-func QueryFollowerListHandler(hostIdStr string) (*FollowerListResp, error) {
+func QueryFollowerListHandler(c *gin.Context) {
+	userIdStr := c.Query("user_id")
+	//tokenStr := c.Param("token")
+	followListResp, err := QueryFollowerList(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusOK, followListResp)
+		return
+	}
+	c.JSON(http.StatusOK, followListResp)
+}
+
+func QueryFollowerList(hostIdStr string) (*FollowerListResp, error) {
 	hostId, err := strconv.ParseInt(hostIdStr, 10, 64)
 	if err != nil {
 		return &FollowerListResp{

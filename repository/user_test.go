@@ -27,7 +27,7 @@ func TestUserDao_CreateRegisterUser(t *testing.T) {
 func TestUserDao_QueryIsUserExist(t *testing.T) {
 	Init()
 	userDao := NewUserDaoInstance()
-	isExist, err := userDao.QueryIsUserExist("wangdongdong")
+	isExist, err := userDao.QueryIsUserExistByName("wangdongdong")
 	if err != nil {
 		if isExist == false {
 			fmt.Println("Not Exist")

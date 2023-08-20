@@ -2,13 +2,13 @@ package router
 
 import (
 	"douyin-lite/handler/comment"
-	"douyin-lite/handler/follow"
 	"douyin-lite/handler/message"
-	"douyin-lite/handler/user"
 	"douyin-lite/middleware"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	"douyin-lite/handler/follow"
+	"douyin-lite/handler/user"
 )
 
 func Init() *gin.Engine {
@@ -20,49 +20,36 @@ func Init() *gin.Engine {
 		})
 	})
 
-	//r.Static("static", config.Global.StaticSourcePath)
-	baseGroup := r.Group("/douyin")
-
-	baseGroup.GET("/relation/follow/list/query/", func(c *gin.Context) {
-		userIdStr := c.Query("user_id")
-		//tokenStr := c.Param("token")
-		followListResp, err := follow.QueryFollowListHandler(userIdStr)
-		if err != nil {
-			c.JSON(http.StatusOK, followListResp)
-			return
+	douyinGroup := r.Group("/douyin")
+	{
+		// user路由组
+		userGroup := douyinGroup.Group("/user")
+		{
+			userGroup.GET("/", middleware.JWTMiddleWare(), user.UserInfoHandler)
+			userGroup.POST("/login/", middleware.SHAMiddleWare(), user.LoginUserHandler)
+			userGroup.POST("/register/", middleware.SHAMiddleWare(), user.RegisterUserHandler)
 		}
-		c.JSON(http.StatusOK, followListResp)
-	})
-
-	baseGroup.GET("/relation/follower/list/", func(c *gin.Context) {
-		userIdStr := c.Query("user_id")
-		//tokenStr := c.Param("token")
-		followListResp, err := follow.QueryFollowerListHandler(userIdStr)
-		if err != nil {
-			c.JSON(http.StatusOK, followListResp)
-			return
+		// relation路由组
+		relationGroup := douyinGroup.Group("relation")
+		{
+			relationGroup.POST("/action/", middleware.JWTMiddleWare(), follow.RelationActionHandler)
+			relationGroup.GET("/follow/list/", follow.QueryFollowListHandler)
+			relationGroup.GET("/follower/list/", follow.QueryFollowerListHandler)
+			relationGroup.GET("/friend/list/", middleware.JWTMiddleWare(), follow.QueryFriendListHandler)
 		}
-		c.JSON(http.StatusOK, followListResp)
-	})
-
-	baseGroup.POST("/user/register/", middleware.SHAMiddleWare(), user.RegisterUserHandler)
-
-	baseGroup.POST("/user/login/", middleware.SHAMiddleWare(), user.LoginUserHandler)
-
-	baseGroup.GET("/user/", middleware.JWTMiddleWare(), func(c *gin.Context) {
-		userIdStr := c.Query("user_id")
-		//userToken := c.Query("token")
-		userInfoResp, err := user.QueryUserInfoHandler(userIdStr)
-		if err != nil {
-			c.JSON(http.StatusOK, userInfoResp)
-			return
+		// message 路由组
+		messageGroup := douyinGroup.Group("/message")
+		{
+			messageGroup.POST("/action/", middleware.JWTMiddleWare(), message.SendMessageHandler)
+			messageGroup.GET("/chat/", middleware.JWTMiddleWare(), message.QueryMessageHandler)
 		}
-		c.JSON(http.StatusOK, userInfoResp)
-	})
+		// comment路由组
+		commentGroup := douyinGroup.Group("/comment")
+		{
+			commentGroup.POST("/action/", middleware.JWTMiddleWare(), comment.Action)
+			commentGroup.GET("/list/", comment.List)
+		}
+	}
 
-	baseGroup.POST("/message/action/", message.SendMessageHandler)
-	baseGroup.GET("/message/chat/", message.QueryMessageHandler)
-	baseGroup.POST("/comment/action/", middleware.JWTMiddleWare(), comment.Action)
-	baseGroup.GET("/comment/list/", comment.List)
 	return r
 }

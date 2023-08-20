@@ -1,8 +1,9 @@
 package user_service
 
 import (
-	"douyin-lite/repository"
 	"errors"
+
+	"douyin-lite/repository"
 )
 
 type UserInfo struct {
