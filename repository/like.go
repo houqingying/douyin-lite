@@ -1,33 +1,85 @@
 package repository
 
 import (
-	"errors"
-	"gorm.io/gorm"
-	"log"
+	"douyin-lite/service/favorite_service"
+	"github.com/jinzhu/gorm"
 )
 
-// 定义likestructure
-type Like struct {
-	gorm.Model
-	// Id    int64
-	user_id  int64
-	video_id int64
-	status   int8 // 1-点赞，0-未点赞
-	// CreatedAt time.Time
-	// UpdatedAt time.Time
+// 查询当前用户点赞视频
+func Query_Favorite_List(userId uint) ([]favorite_service.Video, error) {
+	//查询当前用户点赞视频
+	var favoriteList []favorite_service.Favorite
+	videoList := make([]favorite_service.Video, 0)
+	if err := db.Table("favorites").Where("user_id=? AND state=?", userId, 1).Find(&favoriteList).Error; err != nil { //找不到记录
+		return videoList, nil
+	}
+	for _, m := range favoriteList {
+
+		var video = favorite_service.Video{}
+		if err := db.Table("videos").Where("id=?", m.VideoId).Find(&video).Error; err != nil {
+			return nil, err
+		}
+		videoList = append(videoList, video)
+	}
+	return videoList, nil
 }
 
-// IsVideoLikedByUser 获取视频点赞信息, 当前用户是否点赞
-func IsVideoLikedByUser(userId int64, videoId int64) (int8, error) {
-	var status int8
-	result := db.Model(Like{}).Select("status").Where("user_id= ? and video_id= ?", userId, videoId).First(&status)
-	c := result.RowsAffected
-	if c == 0 {
-		return -1, errors.New("current user haven not liked current video")
+func Query_Check_Favorite(userId uint, videoId uint) (bool, error) {
+	var total int64
+	if err := db.Table("favorites").Where("user_id = ? AND video_id = ? AND state = 1", userId, videoId).Count(&total).Error; gorm.IsRecordNotFoundError(err) { //没有该条记录
+		return false, err
 	}
-	if result.Error != nil {
-		//如果查询数据库失败，返回获取likeInfo信息失败
-		log.Println(result.Error)
+	if total == 0 {
+		return false, nil
 	}
-	return status, nil
+	return true, nil
+}
+
+func AddFavoriteCount(HostId uint) error {
+	if err := db.Model(User{}).
+		Where("id=?", HostId).
+		Update("favorite_count", gorm.Expr("favorite_count+?", 1)).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func AddTotalFavorited(HostId uint) error {
+	if err := db.Model(User{}).
+		Where("id=?", HostId).
+		Update("total_favorited", gorm.Expr("total_favorited+?", 1)).Error; err != nil {
+		return err
+	}
+	return nil
+}
+func GetVideoAuthor(videoId uint) (uint, error) {
+	var video favorite_service.Video
+	if err := db.Table("videos").Where("id = ?", videoId).Find(&video).Error; err != nil {
+		return video.ID, err
+	}
+	return video.AuthorId, nil
+}
+
+func ReduceFavoriteCount(HostId uint) error {
+	if err := db.Model(User{}).
+		Where("id=?", HostId).
+		Update("favorite_count", gorm.Expr("favorite_count-?", 1)).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func ReduceTotalFavorited(HostId uint) error {
+	if err := db.Model(User{}).
+		Where("id=?", HostId).
+		Update("total_favorited", gorm.Expr("total_favorited-?", 1)).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func IsFavoriteExist(userId uint, videoId uint) favorite_service.Favorite {
+	var favoriteExist = favorite_service.Favorite{} //找不到时会返回错误
+	//如果没有记录-Create，如果有了记录-修改State
+	return favoriteExist
 }
