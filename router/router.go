@@ -32,21 +32,21 @@ func Init() *gin.Engine {
 		// relation路由组
 		relationGroup := douyinGroup.Group("relation")
 		{
-			relationGroup.POST("/action/", middleware.SHAMiddleWare(), follow.RelationActionHandler)
+			relationGroup.POST("/action/", middleware.JWTMiddleWare(), follow.RelationActionHandler)
 			relationGroup.GET("/follow/list/", follow.QueryFollowListHandler)
 			relationGroup.GET("/follower/list/", follow.QueryFollowerListHandler)
-			relationGroup.GET("/friend/list/", middleware.SHAMiddleWare(), follow.QueryFriendListHandler)
+			relationGroup.GET("/friend/list/", middleware.JWTMiddleWare(), follow.QueryFriendListHandler)
 		}
 		// message 路由组
 		messageGroup := douyinGroup.Group("/message")
 		{
-			messageGroup.POST("/action/", message.SendMessageHandler)
-			messageGroup.GET("/chat/", message.QueryMessageHandler)
+			messageGroup.POST("/action/", middleware.JWTMiddleWare(), message.SendMessageHandler)
+			messageGroup.GET("/chat/", middleware.JWTMiddleWare(), message.QueryMessageHandler)
 		}
 		// comment路由组
 		commentGroup := douyinGroup.Group("/comment")
 		{
-			commentGroup.POST("/action/", comment.Action)
+			commentGroup.POST("/action/", middleware.JWTMiddleWare(), comment.Action)
 			commentGroup.GET("/list/", comment.List)
 		}
 	}

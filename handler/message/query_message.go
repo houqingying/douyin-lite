@@ -1,10 +1,11 @@
 package message
 
 import (
-	"douyin-lite/middleware"
 	"douyin-lite/service/message_service"
 	"net/http"
 	"strconv"
+
+	"k8s.io/klog"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,16 +17,15 @@ type QueryMessageResp struct {
 }
 
 func QueryMessageHandler(c *gin.Context) {
-	token := c.Query("token")
-
-	claims, valid := middleware.ParseToken(token)
-	// token验证失败
-	if !valid {
-		sendMessageResp := SendMessageResp{403, "用户token无效，拒绝用户请求"}
-		c.JSON(http.StatusOK, sendMessageResp)
+	fromUserId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	if err != nil {
+		klog.Errorf("user_id strconv.ParseInt error: %v", err)
+		c.JSON(http.StatusOK, QueryMessageResp{
+			Code: 403,
+			Msg:  "user_id is invalid",
+		})
 		return
 	}
-	fromUserId := claims.UserId
 
 	// 读出其他request参数并检查合法性
 	toUserIdStr := c.Query("to_user_id")

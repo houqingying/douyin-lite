@@ -16,8 +16,8 @@ var (
 	ErrIvdFolUsr = errors.New("user not exist")
 )
 
-func FollowAction(HostId, GuestId, actionType uint) error {
-	return NewPostFollowActionFlow(HostId, GuestId, actionType).Do()
+func FollowAction(hostID, guestId, actionType uint) error {
+	return NewPostFollowActionFlow(hostID, guestId, actionType).Do()
 }
 
 type PostFollowActionFlow struct {
