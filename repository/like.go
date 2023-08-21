@@ -78,8 +78,26 @@ func ReduceTotalFavorited(HostId uint) error {
 	return nil
 }
 
-func IsFavoriteExist(userId uint, videoId uint) favorite_service.Favorite {
+func IsFavoriteExist(userId uint, videoId uint) (bool, favorite_service.Favorite) {
 	var favoriteExist = favorite_service.Favorite{} //找不到时会返回错误
-	//如果没有记录-Create，如果有了记录-修改State
-	return favoriteExist
+	result := db.Table("favorites").Where("user_id = ? AND video_id = ?", userId, videoId).First(&favoriteExist)
+	if result != nil {
+		return false, favoriteExist
+	}
+	return true, favoriteExist
+}
+
+func CreatFavoriteAction(favoriteAction *favorite_service.Favorite) error {
+	if err := db.Table("favorites").Create(&favoriteAction).Error; err != nil { //创建记录
+		return err
+	}
+	return nil
+}
+
+func UpdateFavoriteCount(favoriteAction favorite_service.Favorite, count int8) {
+	db.Table("videos").Where("id = ?", favoriteAction.VideoId).Update("favorite_count", gorm.Expr("favorite_count + {}", count))
+}
+
+func UpdateFavoriteState(favoriteAction favorite_service.Favorite, state int8) {
+	db.Table("favorites").Where("video_id = ?", favoriteAction.VideoId).Update("state", state)
 }

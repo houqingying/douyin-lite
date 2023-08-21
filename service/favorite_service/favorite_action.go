@@ -44,12 +44,10 @@ func Favorite_Action(userId uint, videoId uint, actionType uint) (err error) {
 		}
 		//找不到时会返回错误
 		//如果没有记录-Create，如果有了记录-修改State
-		result := repository.IsFavoriteExist(userId, videoId)
-		if result != nil { //不存在
-			if err := repository.Db.Table("favorites").Create(&favoriteAction).Error; err != nil { //创建记录
-				return err
-			}
-			repository.Db.Table("videos").Where("id = ?", videoId).Update("favorite_count", gorm.Expr("favorite_count + 1"))
+		result, favoriteExist := repository.IsFavoriteExist(userId, videoId)
+		if !result { //不存在
+			repository.CreatFavoriteAction(&favoriteAction)
+			repository.UpdateFavoriteCount(favoriteAction, 1)
 			//userId的favorite_count增加
 			if err := repository.AddFavoriteCount(userId); err != nil {
 				return err
@@ -62,10 +60,10 @@ func Favorite_Action(userId uint, videoId uint, actionType uint) (err error) {
 			if err := repository.AddTotalFavorited(GuestId); err != nil {
 				return err
 			}
-		} else { //存在
-			if result.State == 0 { //state为0-video的favorite_count加1
-				repository.Db.Table("videos").Where("id = ?", videoId).Update("favorite_count", gorm.Expr("favorite_count + 1"))
-				repository.Db.Table("favorites").Where("video_id = ?", videoId).Update("state", 1)
+		} else {                          //存在
+			if favoriteExist.State == 0 { //state为0-video的favorite_count加1
+				repository.UpdateFavoriteCount(favoriteAction, 1)
+				repository.UpdateFavoriteState(favoriteAction, 1)
 				//userId的favorite_count增加
 				if err := repository.AddFavoriteCount(userId); err != nil {
 					return err
@@ -89,8 +87,9 @@ func Favorite_Action(userId uint, videoId uint, actionType uint) (err error) {
 			VideoId: videoId,
 			State:   0, //0-未点赞
 		}
-		if err := repository.Db.Table("favorites").Where("user_id = ? AND video_id = ?", userId, videoId).First(&favoriteCancel).Error; err != nil { //找不到这条记录，取消点赞失败，创建记录
-			repository.Db.Table("favorites").Create(&favoriteActionCancel)
+		result, _ := repository.IsFavoriteExist(userId, videoId)
+		if !result { //找不到这条记录，取消点赞失败，创建记录
+			repository.CreatFavoriteAction(&favoriteActionCancel)
 			//userId的favorite_count增加
 			if err := repository.ReduceFavoriteCount(userId); err != nil {
 				return err
@@ -107,9 +106,9 @@ func Favorite_Action(userId uint, videoId uint, actionType uint) (err error) {
 		}
 		//存在
 		if favoriteCancel.State == 1 { //state为1-video的favorite_count减1
-			repository.Db.Table("videos").Where("id = ?", videoId).Update("favorite_count", gorm.Expr("favorite_count - 1"))
+			repository.UpdateFavoriteCount(favoriteActionCancel, -1)
 			//更新State
-			repository.Db.Table("favorites").Where("video_id = ?", videoId).Update("state", 0)
+			repository.UpdateFavoriteState(favoriteActionCancel, 0)
 			if err := repository.ReduceFavoriteCount(userId); err != nil {
 				return err
 			}
