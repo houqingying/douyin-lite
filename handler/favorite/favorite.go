@@ -13,10 +13,10 @@ type Response struct {
 }
 
 type FavoriteAuthor struct { //从user中获取,getUser函数
-	Id            uint   `json:"id"`
+	Id            int64  `json:"id"`
 	Name          string `json:"name"`
-	FollowCount   uint   `json:"follow_count"`
-	FollowerCount uint   `json:"follower_count"`
+	FollowCount   int64  `json:"follow_count"`
+	FollowerCount int64  `json:"follower_count"`
 	IsFollow      bool   `json:"is_follow"` //从following或follower中获取
 }
 

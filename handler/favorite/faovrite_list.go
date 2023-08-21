@@ -1,10 +1,15 @@
 package favorite
 
 import (
+	"douyin-lite/repository"
 	"douyin-lite/service/favorite_service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+)
+
+var (
+	UserDao = repository.NewUserDaoInstance()
 )
 
 // FavoriteList 获取列表方法
@@ -27,8 +32,8 @@ func FavoriteList(c *gin.Context) {
 	videoListNew := make([]FavoriteVideo, 0)
 	for _, m := range videoList {
 		var author = FavoriteAuthor{}
-		var getAuthor = favorite_service.User{}
-		getAuthor, err := service.GetUser(m.AuthorId)
+		// var getUser = repository.User{}
+		user, err := UserDao.QueryUserById(m.AuthorId)
 		if err != nil {
 			c.JSON(http.StatusOK, Response{
 				StatusCode: 403,
@@ -38,14 +43,14 @@ func FavoriteList(c *gin.Context) {
 			return
 		}
 		//isfollowing
-		isfollowing := service.IsFollowing(userIdHost, m.AuthorId)
+		isfollowing, err := repository.NewFollowingDaoInstance().QueryisFollow(userIdHost, m.AuthorId)
 		//isfavorite
 		isfavorite := favorite_service.Check_Favorite(userIdHost, m.ID)
 		//作者信息
-		author.Id = getAuthor.ID
-		author.Name = getAuthor.Name
-		author.FollowCount = getAuthor.FollowCount
-		author.FollowerCount = getAuthor.FollowerCount
+		author.Id = user.ID
+		author.Name = user.Name
+		author.FollowCount = user.FollowingCount
+		author.FollowerCount = user.FollowerCount
 		author.IsFollow = isfollowing
 		//组装
 		var video = FavoriteVideo{}
