@@ -3,6 +3,7 @@ package router
 import (
 	"douyin-lite/handler/comment"
 	"douyin-lite/handler/message"
+	"douyin-lite/handler/video"
 	"douyin-lite/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -49,6 +50,8 @@ func Init() *gin.Engine {
 			commentGroup.POST("/action/", middleware.JWTMiddleWare(), comment.Action)
 			commentGroup.GET("/list/", comment.List)
 		}
+		douyinGroup.GET("/feed/", video.Feed)
+
 	}
 
 	return r
