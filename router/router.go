@@ -50,6 +50,12 @@ func Init() *gin.Engine {
 			commentGroup.POST("/action/", middleware.JWTMiddleWare(), comment.Action)
 			commentGroup.GET("/list/", comment.List)
 		}
+		// favorite路由组
+		favoriteGroup := douyinGroup.Group("/favorite")
+		{
+			favoriteGroup.POST("/action/", middleware.JWTMiddleWare(), comment.Action)
+			favoriteGroup.GET("/list/", comment.List)
+		}
 		douyinGroup.GET("/feed/", video.Feed)
 
 	}
