@@ -179,8 +179,7 @@ func (x *FavoriteListResponse) fastReadField2(buf []byte, _type int8) (offset in
 }
 
 func (x *FavoriteListResponse) fastReadField3(buf []byte, _type int8) (offset int, err error) {
-	var v video
-	video.Video
+	var v video.Video
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err

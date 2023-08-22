@@ -1,12 +1,12 @@
 syntax = "proto3";
-option go_package = "github.com/houqingying/douyin-lite/kitex/kitex_gen/following;following";
+option go_package = "github.com/houqingying/douyin-lite/kitex/kitex_gen/relation;relation";
 package following;
 
 import "user.proto";
 
 message FollowingActionRequest {
-    int64 user_id = 1;
-//  string token = 1;
+  int64 user_id = 1;
+  //  string token = 1;
   int64 to_user_id = 2;
   int32 action_type = 3;
 }
