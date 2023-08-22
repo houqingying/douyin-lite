@@ -1,10 +1,9 @@
 package middleware
 
 import (
+	"douyin-lite/internal/entity"
 	"net/http"
 	"time"
-
-	models2 "douyin-lite/repository"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -64,14 +63,14 @@ func JWTMiddleWare() gin.HandlerFunc {
 		}
 		//用户不存在
 		if tokenStr == "" {
-			c.JSON(http.StatusOK, models2.CommonResponse{StatusCode: 401, StatusMsg: "用户不存在"})
+			c.JSON(http.StatusOK, entity.CommonResponse{StatusCode: 401, StatusMsg: "用户不存在"})
 			c.Abort() //阻止执行
 			return
 		}
 		//验证token
 		tokenStruck, ok := ParseToken(tokenStr)
 		if !ok {
-			c.JSON(http.StatusOK, models2.CommonResponse{
+			c.JSON(http.StatusOK, entity.CommonResponse{
 				StatusCode: 403,
 				StatusMsg:  "token不正确",
 			})
@@ -80,7 +79,7 @@ func JWTMiddleWare() gin.HandlerFunc {
 		}
 		//token超时
 		if time.Now().Unix() > tokenStruck.ExpiresAt {
-			c.JSON(http.StatusOK, models2.CommonResponse{
+			c.JSON(http.StatusOK, entity.CommonResponse{
 				StatusCode: 402,
 				StatusMsg:  "token过期",
 			})
