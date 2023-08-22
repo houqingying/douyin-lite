@@ -3,9 +3,8 @@ module douyin-lite
 go 1.20
 
 require (
-
-	github.com/bwmarrin/snowflake v0.3.0
 	github.com/astaxie/beego v1.12.3
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.9.1
 	github.com/jinzhu/gorm v1.9.16

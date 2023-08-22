@@ -62,7 +62,7 @@ func (*UserDao) CreateUser(name string, followingCnt int64, followerCnt int64) e
 		FollowerCount:  followerCnt,
 		ID:             snowflake.GenerateID(),
 	}
-	err := storage.DB.Create(&newUser).Error
+	err = storage.DB.Create(&newUser).Error
 	if err != nil {
 		return err
 	}
@@ -81,7 +81,7 @@ func (*UserDao) CreateRegisterUser(name string, password string) (*User, error) 
 		ID:       snowflake.GenerateID(),
 	}
 
-	err := storage.DB.Create(&newUser).Error
+	err = storage.DB.Create(&newUser).Error
 	if err != nil {
 		return nil, err
 	}
