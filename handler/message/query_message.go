@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"k8s.io/klog"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,13 +17,13 @@ type QueryMessageResp struct {
 }
 
 func QueryMessageHandler(c *gin.Context) {
-	token := c.Query("token")
-	fromUserId, err := ValidToken(token)
-
-	// token验证失败
+	fromUserId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
-		sendMessageResp := QueryMessageResp{403, "用户token无效，拒绝用户请求", nil}
-		c.JSON(http.StatusOK, sendMessageResp)
+		klog.Errorf("user_id strconv.ParseInt error: %v", err)
+		c.JSON(http.StatusOK, QueryMessageResp{
+			Code: 403,
+			Msg:  "user_id is invalid",
+		})
 		return
 	}
 
@@ -36,7 +38,7 @@ func QueryMessageHandler(c *gin.Context) {
 	}
 
 	// 调用Service层，完成查找
-	messageInfoList, err := message_service.QueryMessage(fromUserId, uint(toUserId))
+	messageInfoList, err := message_service.QueryMessage(uint(fromUserId), uint(toUserId))
 	if err != nil {
 		c.JSON(http.StatusOK, QueryMessageResp{500, err.Error(), nil})
 		return

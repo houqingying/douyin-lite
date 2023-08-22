@@ -60,7 +60,7 @@ func (f *RegisterUserFlow) checkParam() error {
 }
 
 func (f *RegisterUserFlow) updateRegisterInfo() error {
-	isExist, _ := repository.NewUserDaoInstance().QueryIsUserExist(f.userName)
+	isExist, _ := repository.NewUserDaoInstance().QueryIsUserExistByName(f.userName)
 	if isExist {
 		return errors.New("当前用户名已存在")
 	}

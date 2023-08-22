@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"k8s.io/klog"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,20 +15,14 @@ type SendMessageResp struct {
 	Msg  string `json:"status_msg"`
 }
 
-// ValidToken 验证请求携带token的合法性，如果合法，返回用户ID；如果非法，设置error
-func ValidToken(token string) (uint, error) {
-	// TODO: 负责登录功能的同学在某个文件中提供验证token合法性的方法，注意用户id的类型是int64
-	return 1, nil
-}
-
 func SendMessageHandler(c *gin.Context) {
-	token := c.Query("token")
-	fromUserId, err := ValidToken(token)
-
-	// token验证失败
+	fromUserId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
-		sendMessageResp := SendMessageResp{403, "用户token无效，拒绝用户请求"}
-		c.JSON(http.StatusOK, sendMessageResp)
+		klog.Errorf("user_id strconv.ParseInt error: %v", err)
+		c.JSON(http.StatusOK, SendMessageResp{
+			Code: 403,
+			Msg:  "user_id is invalid",
+		})
 		return
 	}
 
@@ -53,7 +49,7 @@ func SendMessageHandler(c *gin.Context) {
 	}
 
 	// 调用Service层，完成发送服务
-	err = message_service.SendMessage(fromUserId, uint(toUserId), content)
+	err = message_service.SendMessage(uint(fromUserId), uint(toUserId), content)
 	if err != nil {
 		c.JSON(http.StatusOK, SendMessageResp{500, err.Error()})
 		return

@@ -1,15 +1,14 @@
-package test
+package user_service
 
 import (
 	"douyin-lite/repository"
-	"douyin-lite/service/user_service"
 	"fmt"
 	"testing"
 )
 
 func TestNewRegisterUserFlow(t *testing.T) {
 	repository.Init()
-	registerInfo, err := user_service.RegisterUser("maoj", "12334")
+	registerInfo, err := RegisterUser("maoj", "12334")
 	if err != nil {
 		panic(err)
 	}

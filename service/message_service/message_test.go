@@ -1,8 +1,7 @@
-package test
+package message_service
 
 import (
 	"douyin-lite/repository"
-	"douyin-lite/service/message_service"
 	"fmt"
 	"testing"
 )
@@ -12,7 +11,7 @@ func TestSendMessage(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	err = message_service.SendMessage(1, 1, "你好")
+	err = SendMessage(1, 1, "你好")
 	if err != nil {
 		panic(err)
 	}
@@ -23,7 +22,7 @@ func TestQueryMessage(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	messageInfoList, err := message_service.QueryMessage(1, 2)
+	messageInfoList, err := QueryMessage(1, 2)
 	if err != nil {
 		panic(err)
 	}
