@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "github.com/houqingying/douyin-lite/kitex/kitex_gen/favorite;favorite";
+option go_package = "favorite";
 package favorite;
 
 import "video.proto";

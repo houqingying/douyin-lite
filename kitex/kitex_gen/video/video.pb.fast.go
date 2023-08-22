@@ -79,8 +79,7 @@ func (x *Video) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 }
 
 func (x *Video) fastReadField2(buf []byte, _type int8) (offset int, err error) {
-	var v user
-	user.User
+	var v user.User
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
 		return offset, err
