@@ -2,7 +2,9 @@ package entity
 
 import (
 	"douyin-lite/pkg/storage"
+	"errors"
 	"github.com/jinzhu/gorm"
+	"log"
 	"sync"
 )
 
@@ -130,4 +132,18 @@ func (*FavoriteDao) UpdateFavoriteCount(VideoId uint, count int8) {
 
 func (*FavoriteDao) UpdateFavoriteState(VideoId uint, state int8) {
 	storage.DB.Table("favorites").Where("video_id = ?", VideoId).Update("state", state)
+}
+
+// UpdateFavorite 根据userId，videoId,actionType点赞或者取消赞
+func UpdateFavorite(userId uint, videoId uint, state uint) error {
+	//更新当前用户观看视频的点赞状态“cancel”，返回错误结果
+	err := storage.DB.Model(&Favorite{}).Where(map[string]interface{}{"user_id": userId, "video_id": videoId}).
+		Update("State", state).Error
+	//如果出现错误，返回更新数据库失败
+	if err != nil {
+		log.Println(err.Error())
+		return errors.New("update data fail")
+	}
+	//更新操作成功
+	return nil
 }
