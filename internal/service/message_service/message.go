@@ -65,3 +65,24 @@ func QueryMessage(fromUserId uint, toUserId uint) ([]*MessageInfo, error) {
 	}
 	return messageInfoList, nil
 }
+
+// QueryLastMessage
+// @description 查询某两个用户最新一条消息，转换为目标格式输出
+// @param	fromUserId		uint			发送方用户Id
+// @param	toUserId		uint			接收方用户Id
+// @return	messageInfo	*MessageInfo		需要将Id转换为int64类型，并转换时间格式
+// @return	err				error			当执行出现错误时返回error，否则返回nil
+func QueryLastMessage(fromUserId uint, toUserId uint) (*MessageInfo, error) {
+	message, err := messageDao.QueryLastMessage(fromUserId, toUserId)
+	if err != nil {
+		return nil, err
+	}
+	messageInfo := MessageInfo{
+		ID:         int64(message.ID),
+		FromUserID: int64(message.FromUserId),
+		ToUserID:   int64(message.ToUserId),
+		CreateTime: message.CreatedAt.Format("2006-01-02 15:04:05"),
+		Content:    message.Content,
+	}
+	return &messageInfo, nil
+}
