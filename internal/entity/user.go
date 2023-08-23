@@ -5,7 +5,14 @@ import (
 	"errors"
 	"sync"
 
+	"douyin-lite/pkg/snowflake"
+
 	"gorm.io/gorm"
+)
+
+const (
+	startTime = "2006-01-02"
+	machineID = 1
 )
 
 type User struct {
@@ -44,12 +51,18 @@ func (user *User) BeforeCreate(tx *gorm.DB) error {
 }
 
 func (*UserDao) CreateUser(name string, followingCnt int64, followerCnt int64) error {
+	err := snowflake.InitSnowflakeNode(startTime, machineID)
+	if err != nil {
+		return err
+	}
+
 	newUser := User{
 		Name:           name,
 		FollowingCount: followingCnt,
 		FollowerCount:  followerCnt,
+		ID:             snowflake.GenerateID(),
 	}
-	err := storage.DB.Create(&newUser).Error
+	err = storage.DB.Create(&newUser).Error
 	if err != nil {
 		return err
 	}
@@ -57,11 +70,18 @@ func (*UserDao) CreateUser(name string, followingCnt int64, followerCnt int64) e
 }
 
 func (*UserDao) CreateRegisterUser(name string, password string) (*User, error) {
+	err := snowflake.InitSnowflakeNode(startTime, machineID)
+	if err != nil {
+		return nil, err
+	}
+
 	newUser := User{
 		Name:     name,
 		Password: password,
+		ID:       snowflake.GenerateID(),
 	}
-	err := storage.DB.Create(&newUser).Error
+
+	err = storage.DB.Create(&newUser).Error
 	if err != nil {
 		return nil, err
 	}
