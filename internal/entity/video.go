@@ -41,3 +41,7 @@ func (*VideoDao) QueryVideoListByLimitAndTime(limit int, latestTime time.Time, v
 		Select([]string{"id", "author_id", "play_url", "cover_url", "favorite_count", "comment_count", "title", "created_at"}).
 		Find(videoList).Error
 }
+
+func (v *Video) SaveVideo() error {
+	return storage.DB.Create(&v).Error
+}
