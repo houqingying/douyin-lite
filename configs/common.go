@@ -46,3 +46,25 @@ type MessagePushEvent struct {
 	FromUserId int64  `json:"user_id,omitempty"`
 	MsgContent string `json:"msg_content,omitempty"`
 }
+
+// 自定义状态码常量
+const (
+	StatusSuccess             = 0
+	StatusBadRequest          = 400
+	StatusUnauthorized        = 401
+	StatusForbidden           = 403
+	StatusNotFound            = 404
+	StatusInternalServerError = 500
+)
+
+// 定义数据库操作异常常量
+const (
+	ErrDatabaseConnectionFailed  = "数据库连接失败"
+	ErrRecordNotFound            = "记录不存在"
+	ErrDuplicateRecord           = "记录重复"
+	ErrDatabaseQueryFailed       = "数据库查询失败"
+	ErrDatabaseInsertFailed      = "数据库插入失败"
+	ErrDatabaseUpdateFailed      = "数据库更新失败"
+	ErrDatabaseDeleteFailed      = "数据库删除失败"
+	ErrDatabaseTransactionFailed = "数据库事务失败"
+)

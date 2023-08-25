@@ -1,4 +1,4 @@
-package fastdfs
+package fastDFS
 
 const (
 	ApiStatusSuccess  = "ok"
@@ -22,19 +22,11 @@ const (
 )
 
 const (
-	GroupName     = "tiktok"
-	ServerAddress = "http://192.168.20.56:8085"
-	ShowAddress   = ""
-)
-
-const (
-	Account         = "root"
-	Password        = "d06d6575eb571f01e15ff3e077098ae1"
-	Name            = "root"
-	CredentialsSalt = "f40bc3eccfa4e9985e5298be1254001"
-)
-
-const (
-	Scene = "video"
-	Path  = "video"
+	FileKey     = "file"   // FileKey 表示文件键的名称
+	SceneKey    = "scene"  // SceneKey 表示场景键的名称
+	PathKey     = "path"   // PathKey 表示路径键的名称
+	OutputKey   = "output" // OutputKey 表示输出键的名称
+	SceneValue  = "video"  // SceneValue 表示场景值为视频
+	PathValue   = "video"  // PathValue 表示路径值为视频
+	OutputValue = "json"   // OutputValue 表示输出值为 JSON 格式
 )
