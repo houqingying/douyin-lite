@@ -95,7 +95,7 @@ func (*UserDao) QueryIsUserExistByName(name string) (bool, error) {
 	return true, nil
 }
 
-func (*UserDao) QueryIsUserExistById(userId uint) (bool, error) {
+func (*UserDao) QueryIsUserExistById(userId int64) (bool, error) {
 	err := storage.DB.Where("id = ?", userId).First(&User{}).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

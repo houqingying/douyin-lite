@@ -48,7 +48,7 @@ func RelationActionHandler(c *gin.Context) {
 	//	return
 	//}
 
-	err = follow_service2.FollowAction(uint(hostId), uint(guestId), uint(actionType))
+	err = follow_service2.FollowAction(hostId, guestId, actionType)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, RelationActionResp{
 			StatusCode: 1,

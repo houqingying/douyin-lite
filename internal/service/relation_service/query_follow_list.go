@@ -70,6 +70,10 @@ func (f *QueryFollowInfoFlow) prepareFollowInfo() error {
 		if err != nil {
 			return err
 		}
+		isFollow, err := entity.NewFollowingDaoInstance().QueryisFollow(f.hostId, id)
+		if err != nil {
+			return err
+		}
 		userInfoList[i] = &user_service.UserInfo{
 			ID:              user.ID,
 			Name:            user.Name,
@@ -78,7 +82,7 @@ func (f *QueryFollowInfoFlow) prepareFollowInfo() error {
 			Signature:       user.Signature,
 			FollowingCount:  *followCnt,
 			FollowerCount:   *followerCnt,
-			IsFollow:        true,
+			IsFollow:        isFollow,
 			TotalFavorited:  user.TotalFavorited,
 			WorkCount:       user.WorkCount,
 			FavoriteCount:   user.FavoriteCount,

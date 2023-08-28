@@ -3,6 +3,7 @@ package entity
 import (
 	"douyin-lite/pkg/storage"
 	"errors"
+	"fmt"
 	"sync"
 
 	"gorm.io/gorm"
@@ -10,8 +11,8 @@ import (
 
 type Following struct {
 	gorm.Model
-	HostId  uint `gorm:"uniqueIndex:host_guest"`
-	GuestId uint `gorm:"uniqueIndex:host_guest"`
+	HostId  int64 `gorm:"uniqueIndex:host_guest"`
+	GuestId int64 `gorm:"uniqueIndex:host_guest"`
 }
 
 func (Following) TableName() string {
@@ -31,7 +32,7 @@ func NewFollowingDaoInstance() *FollowingDao {
 	return followingDao
 }
 
-func (*FollowingDao) FollowAction(hostId uint, guestId uint) error {
+func (*FollowingDao) FollowAction(hostId int64, guestId int64) error {
 	errTran := storage.DB.Transaction(func(tx *gorm.DB) error {
 		err := followingDao.CreateFollowing(hostId, guestId)
 		if err != nil {
@@ -54,7 +55,7 @@ func (*FollowingDao) FollowAction(hostId uint, guestId uint) error {
 	return nil
 }
 
-func (*FollowingDao) UnfollowAction(hostId uint, guestId uint) error {
+func (*FollowingDao) UnfollowAction(hostId int64, guestId int64) error {
 	errTran := storage.DB.Transaction(func(tx *gorm.DB) error {
 		err := followingDao.DeleteFollowing(hostId, guestId)
 		if err != nil {
@@ -77,7 +78,7 @@ func (*FollowingDao) UnfollowAction(hostId uint, guestId uint) error {
 	return nil
 }
 
-func (*FollowingDao) QueryFollowingListByHostId(hostId uint) ([]*User, error) {
+func (*FollowingDao) QueryFollowingListByHostId(hostId int64) ([]*User, error) {
 	var FollowingList []*Following
 	err := storage.DB.Where("host_id = ?", hostId).Find(&FollowingList).Error
 	if err != nil {
@@ -114,7 +115,7 @@ func (*FollowingDao) QueryFollowerIdList(hostId int64) ([]int64, error) {
 	return idList, nil
 }
 
-func (*FollowingDao) CreateFollowing(hostId uint, guestId uint) error {
+func (*FollowingDao) CreateFollowing(hostId int64, guestId int64) error {
 	newFollowing := Following{
 		HostId:  hostId,
 		GuestId: guestId,
@@ -126,7 +127,7 @@ func (*FollowingDao) CreateFollowing(hostId uint, guestId uint) error {
 	return nil
 }
 
-func (*FollowingDao) DeleteFollowing(hostId uint, guestId uint) error {
+func (*FollowingDao) DeleteFollowing(hostId int64, guestId int64) error {
 	err := storage.DB.Where("host_id = ? AND guest_id = ?", hostId, guestId).
 		Delete(&Following{}).Error
 	if err != nil {
@@ -135,12 +136,13 @@ func (*FollowingDao) DeleteFollowing(hostId uint, guestId uint) error {
 	return nil
 }
 
-func (*FollowingDao) QueryisFollow(hostId uint, guestId uint) (bool, error) {
+func (*FollowingDao) QueryisFollow(hostId int64, guestId int64) (bool, error) {
 	followItem := &Following{}
 	err := storage.DB.Where("host_id = ? AND guest_id = ?", hostId, guestId).First(&followItem).Error
+	fmt.Println(err)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return false, err
+			return false, nil
 		}
 		return true, err
 	}
