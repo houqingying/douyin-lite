@@ -53,7 +53,7 @@ func QueryFollowerCnt(id int64) (*int64, error) {
 }
 
 func IncFollowingCnt(ctx context.Context, hostId int64) error {
-	key := fmt.Sprintf("following_count:%d", hostId)
+	key := fmt.Sprintf("follow_count:%d", hostId)
 	res, err := storage.RdbUserCount.Incr(ctx, key).Result()
 	if err != nil {
 		return err
@@ -63,7 +63,7 @@ func IncFollowingCnt(ctx context.Context, hostId int64) error {
 }
 
 func DecFollowingCnt(ctx context.Context, hostId int64) error {
-	key := fmt.Sprintf("following_count:%d", hostId)
+	key := fmt.Sprintf("follow_count:%d", hostId)
 	res, err := storage.RdbUserCount.Decr(ctx, key).Result()
 	if err != nil {
 		return err

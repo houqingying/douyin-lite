@@ -36,15 +36,17 @@ func RelationActionHandler(c *gin.Context) {
 		})
 		return
 	}
-	hostId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
-	if err != nil {
-		klog.Errorf("to_user_id strconv.ParseInt error: %v", err)
-		c.JSON(http.StatusOK, RelationActionResp{
-			StatusCode: -1,
-			StatusMsg:  "user_id is invalid",
-		})
-		return
-	}
+
+	hostId := c.GetInt64("user_id")
+	//hostId, err := strconv.ParseInt(c.Get("user_id"), 10, 64)
+	//if err != nil {
+	//	klog.Errorf("to_user_id strconv.ParseInt error: %v", err)
+	//	c.JSON(http.StatusOK, RelationActionResp{
+	//		StatusCode: -1,
+	//		StatusMsg:  "user_id is invalid",
+	//	})
+	//	return
+	//}
 
 	err = follow_service2.FollowAction(uint(hostId), uint(guestId), uint(actionType))
 	if err != nil {
