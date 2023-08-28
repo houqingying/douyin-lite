@@ -1,4 +1,4 @@
-package follow_service
+package relation_service
 
 import (
 	"douyin-lite/internal/entity"

@@ -1,4 +1,4 @@
-package follow_service
+package relation_service
 
 import (
 	"douyin-lite/internal/entity"
@@ -59,8 +59,8 @@ func (f *QueryFollowerInfoFlow) prepareFollowerInfo() error {
 		userInfoList[i] = &user_service.UserInfo{}
 		userInfoList[i].ID = userList[i].ID
 		userInfoList[i].Name = userList[i].Name
-		userInfoList[i].FollowingCount = userList[i].FollowingCount
-		userInfoList[i].FollowerCount = userList[i].FollowerCount
+		//userInfoList[i].FollowingCount = userList[i].FollowingCount
+		//userInfoList[i].FollowerCount = userList[i].FollowerCount
 		userInfoList[i].IsFollow = true
 		userInfoList[i].Avatar = userList[i].Avatar
 		userInfoList[i].BackgroundImage = userList[i].BackgroundImage
