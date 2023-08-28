@@ -2,7 +2,6 @@ package relation_service
 
 import (
 	"douyin-lite/internal/entity"
-	"douyin-lite/internal/repository"
 	"douyin-lite/internal/service/user_service"
 	"errors"
 )
@@ -56,38 +55,7 @@ func (f *QueryFollowInfoFlow) prepareFollowInfo() error {
 	if err != nil {
 		return err
 	}
-	var userInfoList = make([]*user_service.UserInfo, len(idList))
-	for i, id := range idList {
-		user, err := entity.NewUserDaoInstance().QueryUserById(id)
-		if err != nil {
-			return err
-		}
-		followCnt, err := repository.QueryFollowCnt(id)
-		if err != nil {
-			return err
-		}
-		followerCnt, err := repository.QueryFollowerCnt(id)
-		if err != nil {
-			return err
-		}
-		isFollow, err := entity.NewFollowingDaoInstance().QueryisFollow(f.hostId, id)
-		if err != nil {
-			return err
-		}
-		userInfoList[i] = &user_service.UserInfo{
-			ID:              user.ID,
-			Name:            user.Name,
-			Avatar:          user.Avatar,
-			BackgroundImage: user.BackgroundImage,
-			Signature:       user.Signature,
-			FollowingCount:  *followCnt,
-			FollowerCount:   *followerCnt,
-			IsFollow:        isFollow,
-			TotalFavorited:  user.TotalFavorited,
-			WorkCount:       user.WorkCount,
-			FavoriteCount:   user.FavoriteCount,
-		}
-	}
+	userInfoList, err := user_service.QueryUserList(f.hostId, &idList)
 	if err != nil {
 		return errors.New("DB Find Following Error")
 	}

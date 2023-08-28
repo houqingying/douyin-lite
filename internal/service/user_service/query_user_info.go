@@ -82,3 +82,39 @@ func (f *QueryUserInfoFlow) prepareUserInfo() error {
 	f.userInfo = &newUserInfo
 	return nil
 }
+
+func QueryUserList(hostId int64, idList *[]int64) ([]*UserInfo, error) {
+	var userInfoList = make([]*UserInfo, len(*idList))
+	for i, id := range *idList {
+		user, err := entity.NewUserDaoInstance().QueryUserById(id)
+		if err != nil {
+			return nil, err
+		}
+		followCnt, err := repository.QueryFollowCnt(id)
+		if err != nil {
+			return nil, err
+		}
+		followerCnt, err := repository.QueryFollowerCnt(id)
+		if err != nil {
+			return nil, err
+		}
+		isFollow, err := entity.NewFollowingDaoInstance().QueryisFollow(hostId, id)
+		if err != nil {
+			return nil, err
+		}
+		userInfoList[i] = &UserInfo{
+			ID:              user.ID,
+			Name:            user.Name,
+			Avatar:          user.Avatar,
+			BackgroundImage: user.BackgroundImage,
+			Signature:       user.Signature,
+			FollowingCount:  *followCnt,
+			FollowerCount:   *followerCnt,
+			IsFollow:        isFollow,
+			TotalFavorited:  user.TotalFavorited,
+			WorkCount:       user.WorkCount,
+			FavoriteCount:   user.FavoriteCount,
+		}
+	}
+	return userInfoList, nil
+}
