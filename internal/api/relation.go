@@ -1,7 +1,7 @@
 package api
 
 import (
-	follow_service2 "douyin-lite/internal/service/follow_service"
+	follow_service2 "douyin-lite/internal/service/relation_service"
 	"net/http"
 	"strconv"
 
@@ -85,7 +85,7 @@ func QueryFollowList(hostIdStr string) (*FollowListResp, error) {
 			Msg:  err.Error(),
 		}, err
 	}
-	followListData, err := follow_service2.QueryFollowListInfo(uint(hostId))
+	followListData, err := follow_service2.QueryFollowListInfo(int64(uint(hostId)))
 	if err != nil {
 		return &FollowListResp{
 			Code: "-1",
@@ -124,7 +124,7 @@ func QueryFollowerList(hostIdStr string) (*FollowerListResp, error) {
 			Msg:  err.Error(),
 		}, err
 	}
-	followListData, err := follow_service2.QueryFollowerListInfo(uint(hostId))
+	followListData, err := follow_service2.QueryFollowerListInfo(int64(uint(hostId)))
 	if err != nil {
 		return &FollowerListResp{
 			Code: "-1",

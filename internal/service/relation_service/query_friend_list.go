@@ -86,7 +86,6 @@ func (f *QueryFriendListInfoFlow) prepareFriendInfo() error {
 		} else {
 			msgType = 0
 		}
-
 		friendInfoList[i] = &FriendUserInfo{
 			ID:              friend.ID,
 			Name:            friend.Name,

@@ -19,16 +19,16 @@ type UserInfo struct {
 	FavoriteCount   int64  `json:"favorite_count"`
 }
 
-func QueryUserInfo(userId uint) (*UserInfo, error) {
+func QueryUserInfo(userId int64) (*UserInfo, error) {
 	return NewQueryUserInfoFlow(userId).Do()
 }
 
 type QueryUserInfoFlow struct {
-	userId   uint
+	userId   int64
 	userInfo *UserInfo
 }
 
-func NewQueryUserInfoFlow(userId uint) *QueryUserInfoFlow {
+func NewQueryUserInfoFlow(userId int64) *QueryUserInfoFlow {
 	return &QueryUserInfoFlow{
 		userId: userId,
 	}
@@ -61,8 +61,6 @@ func (f *QueryUserInfoFlow) prepareUserInfo() error {
 	newUserInfo := UserInfo{}
 	newUserInfo.ID = qUser.ID
 	newUserInfo.Name = qUser.Name
-	newUserInfo.FollowingCount = qUser.FollowingCount
-	newUserInfo.FollowerCount = qUser.FollowerCount
 	newUserInfo.IsFollow = true
 	newUserInfo.Avatar = qUser.Avatar
 	newUserInfo.BackgroundImage = qUser.BackgroundImage

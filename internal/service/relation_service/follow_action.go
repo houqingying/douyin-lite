@@ -1,7 +1,9 @@
 package relation_service
 
 import (
+	"context"
 	"douyin-lite/internal/entity"
+	"douyin-lite/internal/repository"
 	"errors"
 	"fmt"
 )
@@ -65,13 +67,14 @@ func (p *PostFollowActionFlow) action() error {
 	if err != nil {
 		return err
 	}
-
 	switch p.actionType {
 	case FOLLOW:
 		if exist {
 			return fmt.Errorf("relation already exist")
 		}
 		err = entity.NewFollowingDaoInstance().FollowAction(p.userId, p.userToId)
+		repository.IncFollowingCnt(context.Background(), int64(p.userId))
+		repository.IncFollowerCnt(context.Background(), int64(p.userToId))
 		if err != nil {
 			return err
 		}
@@ -80,6 +83,8 @@ func (p *PostFollowActionFlow) action() error {
 			return fmt.Errorf("relation not exist")
 		}
 		err = entity.NewFollowingDaoInstance().UnfollowAction(p.userId, p.userToId)
+		repository.DecFollowingCnt(context.Background(), int64(p.userId))
+		repository.DecFollowerCnt(context.Background(), int64(p.userToId))
 		if err != nil {
 			return err
 		}

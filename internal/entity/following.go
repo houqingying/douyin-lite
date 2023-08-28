@@ -37,14 +37,15 @@ func (*FollowingDao) FollowAction(hostId uint, guestId uint) error {
 		if err != nil {
 			return err
 		}
-		err = followingDao.IncFollowingCnt(hostId)
-		if err != nil {
-			return err
-		}
-		err = followingDao.IncFollowerCnt(guestId)
-		if err != nil {
-			return err
-		}
+		//TODO
+		//err = followingDao.IncFollowingCnt(hostId)
+		//if err != nil {
+		//	return err
+		//}
+		//err = followingDao.IncFollowerCnt(guestId)
+		//if err != nil {
+		//	return err
+		//}
 		return nil
 	})
 	if errTran != nil {
@@ -59,14 +60,15 @@ func (*FollowingDao) UnfollowAction(hostId uint, guestId uint) error {
 		if err != nil {
 			return err
 		}
-		err = followingDao.DecFollowingCnt(hostId)
-		if err != nil {
-			return err
-		}
-		err = followingDao.DecFollowerCnt(guestId)
-		if err != nil {
-			return err
-		}
+		//TODO
+		//err = followingDao.DecFollowingCnt(hostId)
+		//if err != nil {
+		//	return err
+		//}
+		//err = followingDao.DecFollowerCnt(guestId)
+		//if err != nil {
+		//	return err
+		//}
 		return nil
 	})
 	if errTran != nil {
@@ -94,6 +96,24 @@ func (*FollowingDao) QueryFollowingListByHostId(hostId uint) ([]*User, error) {
 	return UserList, nil
 }
 
+func (*FollowingDao) QueryFollowingIdList(hostId int64) ([]int64, error) {
+	var idList []int64
+	err := storage.DB.Model(&Following{}).Select("guest_id").Where("host_id = ?", hostId).Find(&idList).Error
+	if err != nil {
+		return nil, err
+	}
+	return idList, nil
+}
+
+func (*FollowingDao) QueryFollowerIdList(hostId int64) ([]int64, error) {
+	var idList []int64
+	err := storage.DB.Model(&Following{}).Select("host_id").Where("guest_id = ?", hostId).Find(&idList).Error
+	if err != nil {
+		return nil, err
+	}
+	return idList, nil
+}
+
 func (*FollowingDao) CreateFollowing(hostId uint, guestId uint) error {
 	newFollowing := Following{
 		HostId:  hostId,
@@ -109,24 +129,6 @@ func (*FollowingDao) CreateFollowing(hostId uint, guestId uint) error {
 func (*FollowingDao) DeleteFollowing(hostId uint, guestId uint) error {
 	err := storage.DB.Where("host_id = ? AND guest_id = ?", hostId, guestId).
 		Delete(&Following{}).Error
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (*FollowingDao) IncFollowingCnt(hostId uint) error {
-	err := storage.DB.Model(&User{}).Where("id = ?", hostId).
-		UpdateColumn("following_count", gorm.Expr("following_count + ?", 1)).Error
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (*FollowingDao) DecFollowingCnt(hostId uint) error {
-	err := storage.DB.Model(&User{}).Where("id = ?", hostId).
-		UpdateColumn("following_count", gorm.Expr("following_count - ?", 1)).Error
 	if err != nil {
 		return err
 	}

@@ -23,8 +23,6 @@ type User struct {
 	Avatar          string `json:"avatar" gorm:"comment:用户头像"`
 	BackgroundImage string `json:"background_image" gorm:"comment:用户背景主图"`
 	Signature       string `json:"signature" gorm:"comment:用户签名"`
-	FollowingCount  int64  `json:"follow_count" gorm:"comment: 关注总数"`
-	FollowerCount   int64  `json:"follower_count" gorm:"comment:粉丝总数"`
 	TotalFavorited  int64  `json:"total_favorited" gorm:"comment:获赞总数"`
 	WorkCount       int64  `json:"work_count" gorm:"comment:作品总数"`
 	FavoriteCount   int64  `json:"favorite_count" gorm:"comment:点赞总数"`
@@ -50,17 +48,15 @@ func (user *User) BeforeCreate(tx *gorm.DB) error {
 	return nil
 }
 
-func (*UserDao) CreateUser(name string, followingCnt int64, followerCnt int64) error {
+func (*UserDao) CreateUser(name string) error {
 	err := snowflake.InitSnowflakeNode(startTime, machineID)
 	if err != nil {
 		return err
 	}
-
+	id := snowflake.GenerateID()
 	newUser := User{
-		Name:           name,
-		FollowingCount: followingCnt,
-		FollowerCount:  followerCnt,
-		ID:             snowflake.GenerateID(),
+		Name: name,
+		ID:   id,
 	}
 	err = storage.DB.Create(&newUser).Error
 	if err != nil {
@@ -122,7 +118,7 @@ func (*UserDao) QueryLoginUser(name string, password string) (*User, error) {
 	return &qUser, nil
 }
 
-func (*UserDao) QueryUserById(userId uint) (*User, error) {
+func (*UserDao) QueryUserById(userId int64) (*User, error) {
 	qUser := User{}
 	err := storage.DB.Where("id = ?", userId).First(&qUser).Error
 	if err != nil {

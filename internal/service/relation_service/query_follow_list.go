@@ -1,10 +1,9 @@
 package relation_service
 
 import (
-	"context"
 	"douyin-lite/internal/entity"
+	"douyin-lite/internal/repository"
 	"douyin-lite/internal/service/user_service"
-	"douyin-lite/middleware"
 	"errors"
 )
 
@@ -63,26 +62,14 @@ func (f *QueryFollowInfoFlow) prepareFollowInfo() error {
 		if err != nil {
 			return err
 		}
-		// 查FollowingCnt和FollowerCnt
-		followCnt, err := middleware.QueryFollowingCnt(context.Background(), id)
+		followCnt, err := repository.QueryFollowCnt(id)
 		if err != nil {
-			followCnt, err = entity.NewCountDaoInstance().QueryFollowingCount(id)
-			if err != nil {
-				return err
-			}
-			//回写redis
-			middleware.AddFollowingCnt(context.Background(), id, *followCnt)
+			return err
 		}
-		followerCnt, err := middleware.QueryFollowerCnt(context.Background(), id)
+		followerCnt, err := repository.QueryFollowerCnt(id)
 		if err != nil {
-			followerCnt, err = entity.NewCountDaoInstance().QueryFollowerCount(id)
-			if err != nil {
-				return err
-			}
-			//回写redis
-			middleware.AddFollowerCnt(context.Background(), id, *followerCnt)
+			return err
 		}
-
 		userInfoList[i] = &user_service.UserInfo{
 			ID:              user.ID,
 			Name:            user.Name,

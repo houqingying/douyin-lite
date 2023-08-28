@@ -34,7 +34,7 @@ func QueryUserInfo(userIdStr string) (*QueryUserInfoResp, error) {
 			User: nil,
 		}, err
 	}
-	userInfo, err := user_service2.QueryUserInfo(uint(userId))
+	userInfo, err := user_service2.QueryUserInfo(int64(uint(userId)))
 	if err != nil {
 		return &QueryUserInfoResp{
 			Code: "-1",
