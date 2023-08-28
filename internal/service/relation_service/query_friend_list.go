@@ -2,6 +2,7 @@ package relation_service
 
 import (
 	"douyin-lite/internal/entity"
+	"douyin-lite/internal/repository"
 	"douyin-lite/internal/service/message_service"
 	"errors"
 )
@@ -86,14 +87,22 @@ func (f *QueryFriendListInfoFlow) prepareFriendInfo() error {
 		} else {
 			msgType = 0
 		}
+		followCnt, err := repository.QueryFollowCnt(friend.ID)
+		if err != nil {
+			return err
+		}
+		followerCnt, err := repository.QueryFollowerCnt(friend.ID)
+		if err != nil {
+			return err
+		}
 		friendInfoList[i] = &FriendUserInfo{
 			ID:              friend.ID,
 			Name:            friend.Name,
 			Avatar:          friend.Avatar,
 			BackgroundImage: friend.BackgroundImage,
 			Signature:       friend.Signature,
-			FollowCount:     friend.FollowingCount,
-			FollowerCount:   friend.FollowerCount,
+			FollowCount:     *followCnt,
+			FollowerCount:   *followerCnt,
 			IsFollow:        true,
 			TotalFavorited:  friend.TotalFavorited,
 			WorkCount:       friend.WorkCount,
