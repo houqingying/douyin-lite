@@ -45,7 +45,7 @@ func (f *QueryFollowInfoFlow) Do() (*FollowListInfo, error) {
 }
 
 func (f *QueryFollowInfoFlow) checkParam() error {
-	if f.hostId <= 0 {
+	if f.hostId < 0 {
 		return errors.New("host id should be larger than 0")
 	}
 	return nil

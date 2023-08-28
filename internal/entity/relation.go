@@ -77,25 +77,6 @@ func (*FollowingDao) UnfollowAction(hostId int64, guestId int64) error {
 	return nil
 }
 
-func (*FollowingDao) QueryFollowingListByHostId(hostId int64) ([]*User, error) {
-	var FollowingList []*Following
-	err := storage.DB.Where("host_id = ?", hostId).Find(&FollowingList).Error
-	if err != nil {
-		return nil, err
-	}
-	var UserList []*User
-	var tempUser *User
-	for _, follow := range FollowingList {
-		tempUser = nil
-		err := storage.DB.Where("id = ?", follow.GuestId).Find(&tempUser).Error
-		if err != nil {
-			return nil, err
-		}
-		UserList = append(UserList, tempUser)
-	}
-	return UserList, nil
-}
-
 func (*FollowingDao) QueryFollowingIdList(hostId int64) ([]int64, error) {
 	var idList []int64
 	err := storage.DB.Model(&Following{}).Select("guest_id").Where("host_id = ?", hostId).Find(&idList).Error
@@ -157,4 +138,23 @@ func (*FollowingDao) QueryisFollow(hostId int64, guestId int64) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func (*FollowingDao) QueryFriendById(hostId uint) ([]*User, error) {
+	var FriendList []*Following
+	err := storage.DB.Raw("SELECT * FROM following WHERE host_id = ? AND guest_id IN (SELECT host_id FROM following f WHERE f.guest_id = following.host_id)", hostId).Scan(&FriendList).Error
+	if err != nil {
+		return nil, err
+	}
+	var UserList []*User
+	var tempUser *User
+	for _, follow := range FriendList {
+		tempUser = nil
+		err := storage.DB.Where("id = ?", follow.GuestId).Find(&tempUser).Error
+		if err != nil {
+			return nil, err
+		}
+		UserList = append(UserList, tempUser)
+	}
+	return UserList, nil
 }

@@ -48,7 +48,7 @@ func (f *QueryUserInfoFlow) Do() (*UserInfo, error) {
 }
 
 func (f *QueryUserInfoFlow) checkParam() error {
-	if f.userId <= 0 {
+	if f.userId < 0 {
 		return errors.New("user id should be larger than 0")
 	}
 	return nil
