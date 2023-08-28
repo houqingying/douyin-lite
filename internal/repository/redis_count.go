@@ -54,41 +54,37 @@ func QueryFollowerCnt(id int64) (*int64, error) {
 
 func IncFollowingCnt(ctx context.Context, hostId int64) error {
 	key := fmt.Sprintf("follow_count:%d", hostId)
-	res, err := storage.RdbUserCount.Incr(ctx, key).Result()
+	_, err := storage.RdbUserCount.Incr(ctx, key).Result()
 	if err != nil {
 		return err
 	}
-	fmt.Printf("增加后的值为%d\n", res)
 	return nil
 }
 
 func DecFollowingCnt(ctx context.Context, hostId int64) error {
 	key := fmt.Sprintf("follow_count:%d", hostId)
-	res, err := storage.RdbUserCount.Decr(ctx, key).Result()
+	_, err := storage.RdbUserCount.Decr(ctx, key).Result()
 	if err != nil {
 		return err
 	}
-	fmt.Printf("增加后的值为%d\n", res)
 	return nil
 }
 
 func IncFollowerCnt(ctx context.Context, hostId int64) error {
 	key := fmt.Sprintf("follower_count:%d", hostId)
-	res, err := storage.RdbUserCount.Incr(ctx, key).Result()
+	_, err := storage.RdbUserCount.Incr(ctx, key).Result()
 	if err != nil {
 		return err
 	}
-	fmt.Printf("增加后的值为%d\n", res)
 	return nil
 }
 
 func DecFollowerCnt(ctx context.Context, hostId int64) error {
 	key := fmt.Sprintf("follower_count:%d", hostId)
-	res, err := storage.RdbUserCount.Decr(ctx, key).Result()
+	_, err := storage.RdbUserCount.Decr(ctx, key).Result()
 	if err != nil {
 		return err
 	}
-	fmt.Printf("增加后的值为%d\n", res)
 	return nil
 }
 
