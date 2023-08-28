@@ -2,6 +2,7 @@ package user_service
 
 import (
 	"douyin-lite/internal/entity"
+	"douyin-lite/internal/repository"
 	"errors"
 )
 
@@ -58,6 +59,14 @@ func (f *QueryUserInfoFlow) prepareUserInfo() error {
 	if err != nil {
 		return err
 	}
+	followCnt, err := repository.QueryFollowCnt(f.userId)
+	if err != nil {
+		return err
+	}
+	followerCnt, err := repository.QueryFollowerCnt(f.userId)
+	if err != nil {
+		return err
+	}
 	newUserInfo := UserInfo{}
 	newUserInfo.ID = qUser.ID
 	newUserInfo.Name = qUser.Name
@@ -68,6 +77,8 @@ func (f *QueryUserInfoFlow) prepareUserInfo() error {
 	newUserInfo.TotalFavorited = qUser.TotalFavorited
 	newUserInfo.WorkCount = qUser.WorkCount
 	newUserInfo.FavoriteCount = qUser.FavoriteCount
+	newUserInfo.FollowingCount = *followCnt
+	newUserInfo.FollowerCount = *followerCnt
 	f.userInfo = &newUserInfo
 	return nil
 }

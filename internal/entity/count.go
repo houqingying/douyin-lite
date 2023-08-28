@@ -48,6 +48,18 @@ func (*CountDao) QueryFollowerCount(id int64) (*int64, error) {
 	return &followerCount, nil
 }
 
+func (f *CountDao) InitUserCount(id int64) error {
+	err := f.SaveFollowingCount(id, 0)
+	if err != nil {
+		return err
+	}
+	err = f.SaveFollowerCount(id, 0)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (*CountDao) SaveFollowingCount(id int64, val int64) error {
 	countKey := "follow_count"
 	err := storage.DB.First(&Count{
