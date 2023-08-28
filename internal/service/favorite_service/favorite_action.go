@@ -13,7 +13,10 @@ func Favorite_Action(userId uint, videoId uint, actionType uint) (err error) {
 		//如果没有记录-Create，如果有了记录-修改State
 		result, favoriteExist := favoriteAction.IsFavoriteExist(userId, videoId)
 		if !result { //不存在
-			favoriteAction.CreateFavorite(userId, videoId)
+			err := favoriteAction.CreateFavorite(userId, videoId)
+			if err != nil {
+				return err
+			}
 			favoriteAction.UpdateFavoriteCount(videoId, 1)
 			//userId的favorite_count增加
 			if err := favoriteAction.AddFavoriteCount(userId); err != nil {

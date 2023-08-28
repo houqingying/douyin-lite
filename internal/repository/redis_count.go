@@ -50,7 +50,10 @@ func QueryFollowerCnt(id int64) (*int64, error) {
 			return nil, err
 		}
 		//回写redis
-		addFollowerCnt(context.Background(), id, *followerCnt)
+		err := addFollowerCnt(context.Background(), id, *followerCnt)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return followerCnt, nil
 }
