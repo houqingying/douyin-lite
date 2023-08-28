@@ -60,16 +60,16 @@ func (*FavoriteDao) Query_Check_Favorite(userId uint, videoId uint) (bool, error
 	return true, nil
 }
 
-func (*FavoriteDao) AddFavoriteCount(HostId uint) error {
-	if err := storage.DB.Model(&User{}).Where("id=?", HostId).
+func (*FavoriteDao) AddFavoriteCount(hostId uint) error {
+	if err := storage.DB.Model(&User{}).Where("id=?", hostId).
 		Update("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (*FavoriteDao) AddTotalFavorited(HostId uint) error {
-	if err := storage.DB.Model(&User{}).Where("id=?", HostId).
+func (*FavoriteDao) AddTotalFavorited(hostId uint) error {
+	if err := storage.DB.Model(&User{}).Where("id=?", hostId).
 		Update("total_favorited", gorm.Expr("total_favorited + ?", 1)).Error; err != nil {
 		return err
 	}
@@ -83,9 +83,9 @@ func (*FavoriteDao) GetVideoAuthor(videoId uint) (uint, error) {
 	return video.AuthorId, nil
 }
 
-func (*FavoriteDao) ReduceFavoriteCount(HostId uint) error {
+func (*FavoriteDao) ReduceFavoriteCount(hostId uint) error {
 	if err := storage.DB.Model(&User{}).
-		Where("id=?", HostId).
+		Where("id=?", hostId).
 		Update("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error; err != nil {
 		return err
 	}
@@ -123,11 +123,11 @@ func (*FavoriteDao) CreateFavorite(userId uint, videoId uint) error {
 	return nil
 }
 
-func (*FavoriteDao) UpdateFavoriteCount(VideoId uint, count int8) {
-	storage.DB.Table("videos").Where("id = ?", VideoId).
+func (*FavoriteDao) UpdateFavoriteCount(videoId uint, count int8) {
+	storage.DB.Table("videos").Where("id = ?", videoId).
 		Update("favorite_count", gorm.Expr("favorite_count + ?", count))
 }
 
-func (*FavoriteDao) UpdateFavoriteState(VideoId uint, state int8) {
-	storage.DB.Table("favorites").Where("video_id = ?", VideoId).Update("state", state)
+func (*FavoriteDao) UpdateFavoriteState(videoId uint, state int8) {
+	storage.DB.Table("favorites").Where("video_id = ?", videoId).Update("state", state)
 }

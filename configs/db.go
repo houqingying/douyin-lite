@@ -47,6 +47,7 @@ func DbInit() error {
 		&entity.Message{},
 		&entity.Comment{},
 		&entity.Video{},
+		&entity.Count{},
 	)
 	return err
 }

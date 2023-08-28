@@ -26,7 +26,7 @@ var messageDao = entity.GetMessageDaoInstance()
 // @return	err			error	当执行出现错误时返回error，否则返回nil
 func SendMessage(fromUserId uint, toUserId uint, content string) error {
 	// 验证toUserId的合法性
-	_, err := userDao.QueryUserById(toUserId)
+	_, err := userDao.QueryUserById(int64(toUserId))
 	if err != nil {
 		return errors.New("消息接收方id不存在")
 	}

@@ -5,5 +5,8 @@ func Init() error {
 	if err := DbInit(); err != nil {
 		return err
 	}
+	if err := RedisInit(); err != nil {
+		return err
+	}
 	return nil
 }

@@ -53,7 +53,7 @@ func (c *CommentService) CreateComment(comment entity.Comment) (CommentInfo, err
 
 	// 1. Valid videoId and userId
 	// TODO valid videoId
-	user, err := UserDao.QueryUserById(comment.UserId)
+	user, err := UserDao.QueryUserById(int64(comment.UserId))
 	if err != nil {
 		klog.Errorf("query user error: %s", err)
 		return CommentInfo{}, err
@@ -70,10 +70,11 @@ func (c *CommentService) CreateComment(comment entity.Comment) (CommentInfo, err
 		return CommentInfo{}, err
 	}
 	userinfo := User{
-		Id:            int64(user.ID),
-		Name:          user.Name,
-		FollowCount:   user.FollowingCount,
-		FollowerCount: user.FollowerCount,
+		Id:   int64(user.ID),
+		Name: user.Name,
+		//TODO
+		//FollowCount:   user.FollowingCount,
+		//FollowerCount: user.FollowerCount,
 		// TODO: add is follow
 		IsFollow:       false,
 		TotalFavorited: user.TotalFavorited,
@@ -108,16 +109,17 @@ func (c *CommentService) GetList(videoId int64) ([]CommentInfo, error) {
 	var commentInfos []CommentInfo
 	for _, comment := range comments {
 		// get user info
-		user, err := UserDao.QueryUserById(comment.UserId)
+		user, err := UserDao.QueryUserById(int64(comment.UserId))
 		if err != nil {
 			klog.Errorf("query user error: %s", err)
 			return nil, err
 		}
 		userinfo := User{
-			Id:            int64(user.ID),
-			Name:          user.Name,
-			FollowCount:   user.FollowingCount,
-			FollowerCount: user.FollowerCount,
+			Id:   int64(user.ID),
+			Name: user.Name,
+			//TODO
+			//FollowCount:   user.FollowingCount,
+			//FollowerCount: user.FollowerCount,
 			// TODO: add is follow
 			IsFollow:       false,
 			TotalFavorited: user.TotalFavorited,
