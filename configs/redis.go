@@ -18,7 +18,12 @@ func RedisInit() error {
 		return err
 	}
 	ticker := time.NewTicker(time.Second * 5)
-	go StartTimer(ticker)
+	go func() {
+		err := StartTimer(ticker)
+		if err != nil {
+			panic("定时任务启动失败")
+		}
+	}()
 	_, err = storage.RdbUserCount.Ping(context.Background()).Result()
 	if err != nil {
 		return err
@@ -26,17 +31,26 @@ func RedisInit() error {
 	return nil
 }
 
-func StartTimer(ticker *time.Ticker) {
+func StartTimer(ticker *time.Ticker) error {
 	var wg sync.WaitGroup
 	for {
 		select {
 		case <-ticker.C:
+			var err error
 			fmt.Println("定时任务")
 			wg.Add(2)
-			go repository.SaveFollowCntToDB(&wg)
-			go repository.SaveFollowerCntToDB(&wg)
+			go func() {
+				err = repository.SaveFollowCntToDB(&wg)
+			}()
+			go func() {
+				err = repository.SaveFollowerCntToDB(&wg)
+			}()
 			wg.Wait()
+			if err != nil {
+				return err
+			}
 			fmt.Println("刷新完成")
+			return nil
 		}
 	}
 }

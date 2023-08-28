@@ -73,8 +73,14 @@ func (p *PostFollowActionFlow) action() error {
 			return fmt.Errorf("relation already exist")
 		}
 		err = entity.NewFollowingDaoInstance().FollowAction(p.userId, p.userToId)
-		repository.IncFollowingCnt(context.Background(), int64(p.userId))
-		repository.IncFollowerCnt(context.Background(), int64(p.userToId))
+		if err != nil {
+			return err
+		}
+		err = repository.IncFollowingCnt(context.Background(), int64(p.userId))
+		if err != nil {
+			return err
+		}
+		err = repository.IncFollowerCnt(context.Background(), int64(p.userToId))
 		if err != nil {
 			return err
 		}
@@ -83,8 +89,14 @@ func (p *PostFollowActionFlow) action() error {
 			return fmt.Errorf("relation not exist")
 		}
 		err = entity.NewFollowingDaoInstance().UnfollowAction(p.userId, p.userToId)
-		repository.DecFollowingCnt(context.Background(), int64(p.userId))
-		repository.DecFollowerCnt(context.Background(), int64(p.userToId))
+		if err != nil {
+			return err
+		}
+		err = repository.DecFollowingCnt(context.Background(), int64(p.userId))
+		if err != nil {
+			return err
+		}
+		err = repository.DecFollowerCnt(context.Background(), int64(p.userToId))
 		if err != nil {
 			return err
 		}

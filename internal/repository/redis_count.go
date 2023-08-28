@@ -32,7 +32,10 @@ func QueryFollowCnt(id int64) (*int64, error) {
 			return nil, err
 		}
 		//回写redis
-		addFollowingCnt(context.Background(), id, *followCnt)
+		err := addFollowingCnt(context.Background(), id, *followCnt)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return followCnt, nil
 }
