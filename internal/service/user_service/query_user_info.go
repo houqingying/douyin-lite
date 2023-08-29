@@ -1,8 +1,6 @@
 package user_service
 
 import (
-	"douyin-lite/internal/entity"
-	"douyin-lite/internal/repository"
 	"errors"
 )
 
@@ -55,66 +53,10 @@ func (f *QueryUserInfoFlow) checkParam() error {
 }
 
 func (f *QueryUserInfoFlow) prepareUserInfo() error {
-	qUser, err := entity.NewUserDaoInstance().QueryUserById(f.userId)
+	userInfo, err := QueryAUserInfo2(f.userId)
 	if err != nil {
 		return err
 	}
-	followCnt, err := repository.QueryFollowCnt(f.userId)
-	if err != nil {
-		return err
-	}
-	followerCnt, err := repository.QueryFollowerCnt(f.userId)
-	if err != nil {
-		return err
-	}
-	newUserInfo := UserInfo{}
-	newUserInfo.ID = qUser.ID
-	newUserInfo.Name = qUser.Name
-	newUserInfo.IsFollow = true
-	newUserInfo.Avatar = qUser.Avatar
-	newUserInfo.BackgroundImage = qUser.BackgroundImage
-	newUserInfo.Signature = qUser.Signature
-	newUserInfo.TotalFavorited = qUser.TotalFavorited
-	newUserInfo.WorkCount = qUser.WorkCount
-	newUserInfo.FavoriteCount = qUser.FavoriteCount
-	newUserInfo.FollowingCount = *followCnt
-	newUserInfo.FollowerCount = *followerCnt
-	f.userInfo = &newUserInfo
+	f.userInfo = userInfo
 	return nil
-}
-
-func QueryUserList(hostId int64, idList *[]int64) ([]*UserInfo, error) {
-	var userInfoList = make([]*UserInfo, len(*idList))
-	for i, id := range *idList {
-		user, err := entity.NewUserDaoInstance().QueryUserById(id)
-		if err != nil {
-			return nil, err
-		}
-		followCnt, err := repository.QueryFollowCnt(id)
-		if err != nil {
-			return nil, err
-		}
-		followerCnt, err := repository.QueryFollowerCnt(id)
-		if err != nil {
-			return nil, err
-		}
-		isFollow, err := entity.NewFollowingDaoInstance().QueryisFollow(hostId, id)
-		if err != nil {
-			return nil, err
-		}
-		userInfoList[i] = &UserInfo{
-			ID:              user.ID,
-			Name:            user.Name,
-			Avatar:          user.Avatar,
-			BackgroundImage: user.BackgroundImage,
-			Signature:       user.Signature,
-			FollowingCount:  *followCnt,
-			FollowerCount:   *followerCnt,
-			IsFollow:        isFollow,
-			TotalFavorited:  user.TotalFavorited,
-			WorkCount:       user.WorkCount,
-			FavoriteCount:   user.FavoriteCount,
-		}
-	}
-	return userInfoList, nil
 }

@@ -9,7 +9,7 @@ import (
 const (
 	USERNAME       = "douyin"                                                                         //账号
 	PASSWORD       = "douyin@2023"                                                                    //密码
-	HOST           = "39.105.199.147"                                                                 //数据库地址，可以是Ip或者域名
+	HOST           = "douyin@2023"                                                                    //数据库地址，可以是Ip或者域名
 	PORT           = "3306"                                                                           //数据库端口
 	DBNAME         = "douyin"                                                                         //数据库名
 	PARAMETERS     = "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true&timeout=10s" //连接超时，10秒
