@@ -41,7 +41,7 @@ func Favorite(c *gin.Context) {
 		return
 	}
 
-	err = favorite_service2.Favorite_Action(uint(user_Id), uint(video_id), uint(actionType))
+	err = favorite_service2.Favorite_Action(user_Id, video_id, actionType)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, FavoriteActionResp{
 			StatusCode: 1,
@@ -79,7 +79,7 @@ func QueryFavoriteList(hostIdStr string) (*FavoriteListResp, error) {
 			Msg:  "找不到用户",
 		}, err
 	}
-	favoriteListData, err := favorite_service2.QueryFavoriteListInfo(uint(hostId))
+	favoriteListData, err := favorite_service2.QueryFavoriteListInfo(hostId)
 	if err != nil {
 		return &FavoriteListResp{
 			Code: "-1",
