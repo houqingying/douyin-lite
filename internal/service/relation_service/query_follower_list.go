@@ -7,7 +7,7 @@ import (
 )
 
 type FollowerListInfo struct {
-	UserInfoList []*user_service.UserInfo `json:"user_list"`
+	UserInfoList []*entity.UserInfo `json:"user_list"`
 }
 
 func QueryFollowerListInfo(hostId int64) (*FollowerListInfo, error) {
@@ -17,7 +17,7 @@ func QueryFollowerListInfo(hostId int64) (*FollowerListInfo, error) {
 type QueryFollowerInfoFlow struct {
 	hostId           int64
 	followerListInfo *FollowerListInfo
-	userinfoList     []*user_service.UserInfo
+	userinfoList     []*entity.UserInfo
 }
 
 func NewQueryFollowerListInfoFlow(hostId int64) *QueryFollowerInfoFlow {

@@ -11,12 +11,13 @@ import (
 type Video struct {
 	gorm.Model
 	AuthorId      int64
+	ID            int64 `json:"id" gorm:"id,omitempty"`
 	PlayUrl       string
 	CoverUrl      string
 	FavoriteCount int64
 	CommentCount  int64
 	Title         string
-	Author        User `json:"author,omitempty" gorm:"-"`
+	Author        UserInfo `json:"author,omitempty" gorm:"-"`
 }
 type VideoDao struct {
 }
@@ -37,7 +38,7 @@ func (*VideoDao) QueryVideoListByLimitAndTime(limit int, latestTime time.Time, v
 		return errors.New("QueryVideoListByLimit videoList 空指针")
 	}
 	return storage.DB.Model(&Video{}).Where("created_at<?", latestTime).
-		Order("created_at ASC").Limit(limit).
+		Order("created_at DESC").Limit(limit).
 		Select([]string{"id", "author_id", "play_url", "cover_url", "favorite_count", "comment_count", "title", "created_at"}).
 		Find(videoList).Error
 }
