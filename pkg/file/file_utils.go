@@ -1,4 +1,4 @@
-package fastdfs
+package file
 
 import (
 	"fmt"

@@ -24,4 +24,6 @@ vendor/
 **/debug
 **/_output
 
-tmp/
+
+/tmp/
+
