@@ -9,6 +9,9 @@ import (
 	"sync"
 )
 
+// ScanNum 每次定时任务Scan从redis删除写入到mysql的数量
+const ScanNum = 500
+
 //type RdbUserCountDao struct {
 //}
 //
@@ -94,9 +97,11 @@ func DecFollowerCnt(ctx context.Context, hostId int64) error {
 	return nil
 }
 
-func SaveFollowCntToDB(wg *sync.WaitGroup) error {
+func SaveFollowCntToDB(wg *sync.WaitGroup, cursor *uint64) error {
 	defer wg.Done()
-	keys, err := storage.RdbUserCount.Keys(context.Background(), "follow_count:*").Result()
+	// 得到redis所有键
+	keys, res, err := storage.RdbUserCount.Scan(context.Background(), *cursor, "follow_count:*", ScanNum).Result()
+	*cursor = res
 	if err != nil {
 		return err
 	}
@@ -114,7 +119,13 @@ func SaveFollowCntToDB(wg *sync.WaitGroup) error {
 		if err != nil {
 			return err
 		}
+		// 将follow_count写入到mysql
 		err = entity.NewCountDaoInstance().SaveFollowingCount(id, followCnt)
+		if err != nil {
+			return err
+		}
+		// 之后删除键
+		err = storage.RdbUserCount.Del(context.Background(), key).Err()
 		if err != nil {
 			return err
 		}
@@ -122,9 +133,15 @@ func SaveFollowCntToDB(wg *sync.WaitGroup) error {
 	return nil
 }
 
-func SaveFollowerCntToDB(wg *sync.WaitGroup) error {
+//func SaveExpiredToDB(key string) error {
+//	storage.RdbUserCount.
+//}
+
+func SaveFollowerCntToDB(wg *sync.WaitGroup, cursor *uint64) error {
 	defer wg.Done()
-	keys, err := storage.RdbUserCount.Keys(context.Background(), "follower_count:*").Result()
+	// 得到redis所有键
+	keys, res, err := storage.RdbUserCount.Scan(context.Background(), *cursor, "follower_count:*", ScanNum).Result()
+	*cursor = res
 	if err != nil {
 		return err
 	}
@@ -142,7 +159,13 @@ func SaveFollowerCntToDB(wg *sync.WaitGroup) error {
 		if err != nil {
 			return err
 		}
+		// 将follower_count写入到mysql
 		err = entity.NewCountDaoInstance().SaveFollowerCount(id, followerCnt)
+		if err != nil {
+			return err
+		}
+		// 之后删除键
+		err = storage.RdbUserCount.Del(context.Background(), key).Err()
 		if err != nil {
 			return err
 		}
