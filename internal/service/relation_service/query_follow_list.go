@@ -55,7 +55,7 @@ func (f *QueryFollowInfoFlow) prepareFollowInfo() error {
 	if err != nil {
 		return err
 	}
-	userInfoList, err := user_service.QueryUserList(f.hostId, &idList)
+	userInfoList, err := user_service.QueryUserInfoList(f.hostId, &idList)
 	if err != nil {
 		return errors.New("DB Find Following Error")
 	}
