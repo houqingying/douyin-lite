@@ -165,7 +165,7 @@ func QueryFriendList(hostIdStr string) (*FriendList, error) {
 			StatusMsg:  err.Error(),
 		}, err
 	}
-	friendListData, err := follow_service2.QueryFriendListInfo(uint(hostId))
+	friendListData, err := follow_service2.QueryFriendListInfo(hostId)
 	if err != nil {
 		return &FriendList{
 			StatusCode: -1,

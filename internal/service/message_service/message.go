@@ -72,7 +72,7 @@ func QueryMessage(fromUserId uint, toUserId uint) ([]*MessageInfo, error) {
 // @param	toUserId		uint			接收方用户Id
 // @return	messageInfo	*MessageInfo		需要将Id转换为int64类型，并转换时间格式
 // @return	err				error			当执行出现错误时返回error，否则返回nil
-func QueryLastMessage(fromUserId uint, toUserId uint) (*MessageInfo, error) {
+func QueryLastMessage(fromUserId int64, toUserId int64) (*MessageInfo, error) {
 	message, err := messageDao.QueryLastMessage(fromUserId, toUserId)
 	if err != nil {
 		return nil, err

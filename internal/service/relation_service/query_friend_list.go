@@ -2,8 +2,8 @@ package relation_service
 
 import (
 	"douyin-lite/internal/entity"
-	"douyin-lite/internal/repository"
 	"douyin-lite/internal/service/message_service"
+	"douyin-lite/internal/service/user_service"
 	"errors"
 )
 
@@ -12,33 +12,33 @@ type FriendListInfo struct {
 }
 
 type FriendUserInfo struct {
-	ID              int64  `json:"id,omitempty"`               // 用户id
-	Name            string `json:"name,omitempty"`             // 用户名称
-	FollowCount     int64  `json:"follow_count,omitempty"`     // 关注总数
-	FollowerCount   int64  `json:"follower_count,omitempty"`   // 粉丝总数
-	IsFollow        bool   `json:"is_follow,omitempty"`        // true-已关注，false-未关注
-	Avatar          string `json:"avatar,omitempty"`           //用户头像
-	BackgroundImage string `json:"background_image,omitempty"` //用户个人页顶部大图
-	Signature       string `json:"signature,omitempty"`        //个人简介
-	TotalFavorited  int64  `json:"total_favorited,omitempty"`  //获赞数量
-	WorkCount       int64  `json:"work_count,omitempty"`       //作品数量
-	FavoriteCount   int64  `json:"favorite_count,omitempty"`   //点赞数量
-	Message         string `json:"message,omitempty"`          // 和该好友的最新聊天消息
-	MsgType         int64  `json:"msgType,omitempty"`          // message消息的类型，0 => 当前请求用户接收的消息， 1 => 当前请求用户发送的消息
+	ID              int64  `json:"id"`
+	Name            string `json:"name"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	FollowingCount  int64  `json:"follow_count"`
+	FollowerCount   int64  `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	TotalFavorited  int64  `json:"total_favorited"`
+	WorkCount       int64  `json:"work_count"`
+	FavoriteCount   int64  `json:"favorite_count"`
+	Message         string `json:"message,omitempty"` // 和该好友的最新聊天消息
+	MsgType         int64  `json:"msgType,omitempty"` // message消息的类型，0 => 当前请求用户接收的消息， 1 => 当前请求用户发送的消息
 }
 
-func QueryFriendListInfo(hostId uint) (*FriendListInfo, error) {
+func QueryFriendListInfo(hostId int64) (*FriendListInfo, error) {
 	return NewQueryFriendListInfoFlow(hostId).Do()
 }
 
 type QueryFriendListInfoFlow struct {
-	hostId         uint
+	hostId         int64
 	friendListInfo *FriendListInfo
 
 	userinfoList []*FriendUserInfo
 }
 
-func NewQueryFriendListInfoFlow(hostId uint) *QueryFriendListInfoFlow {
+func NewQueryFriendListInfoFlow(hostId int64) *QueryFriendListInfoFlow {
 	return &QueryFriendListInfoFlow{
 		hostId: hostId,
 	}
@@ -70,40 +70,37 @@ func (f *QueryFriendListInfoFlow) checkParam() error {
 }
 
 func (f *QueryFriendListInfoFlow) prepareFriendInfo() error {
-	friendList, err := FollowingDao.QueryFriendById(f.hostId)
+	friendIdList, err := FollowingDao.QueryFriendIdListById(f.hostId)
 	if err != nil {
-		return errors.New("DB Find Friend Error")
+		return errors.New("DB Find FriendIdList Error")
+	}
+	friendUserInfoList, err := user_service.QueryUserInfoList(f.hostId, &friendIdList)
+	if err != nil {
+		return err
 	}
 
-	var friendInfoList = make([]*FriendUserInfo, len(friendList))
-	for i, friend := range friendList {
+	var friendInfoList = make([]*FriendUserInfo, len(friendUserInfoList))
+	for i, friend := range friendUserInfoList {
 		var msgType int64
-		msgInfo, err := message_service.QueryLastMessage(f.hostId, uint(friend.ID))
+		msgInfo, err := message_service.QueryLastMessage(f.hostId, friend.ID)
 		if err != nil {
 			return errors.New("DB Find Message Error")
 		}
-		if uint(msgInfo.FromUserID) == f.hostId {
+		if msgInfo.FromUserID == f.hostId {
 			msgType = 1
 		} else {
 			msgType = 0
 		}
-		followCnt, err := repository.QueryFollowCnt(friend.ID)
-		if err != nil {
-			return err
-		}
-		followerCnt, err := repository.QueryFollowerCnt(friend.ID)
-		if err != nil {
-			return err
-		}
+
 		friendInfoList[i] = &FriendUserInfo{
 			ID:              friend.ID,
 			Name:            friend.Name,
 			Avatar:          friend.Avatar,
 			BackgroundImage: friend.BackgroundImage,
 			Signature:       friend.Signature,
-			FollowCount:     *followCnt,
-			FollowerCount:   *followerCnt,
-			IsFollow:        true,
+			FollowingCount:  friend.FollowingCount,
+			FollowerCount:   friend.FollowerCount,
+			IsFollow:        friend.IsFollow,
 			TotalFavorited:  friend.TotalFavorited,
 			WorkCount:       friend.WorkCount,
 			FavoriteCount:   friend.FavoriteCount,

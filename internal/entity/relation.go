@@ -10,6 +10,7 @@ import (
 
 type Following struct {
 	gorm.Model
+	ID      int64 `json:"id" gorm:"id,omitempty"`
 	HostId  int64 `gorm:"uniqueIndex:host_guest"`
 	GuestId int64 `gorm:"uniqueIndex:host_guest"`
 }
@@ -140,21 +141,11 @@ func (*FollowingDao) QueryisFollow(hostId int64, guestId int64) (bool, error) {
 	return true, nil
 }
 
-func (*FollowingDao) QueryFriendById(hostId uint) ([]*User, error) {
-	var FriendList []*Following
-	err := storage.DB.Raw("SELECT * FROM following WHERE host_id = ? AND guest_id IN (SELECT host_id FROM following f WHERE f.guest_id = following.host_id)", hostId).Scan(&FriendList).Error
+func (*FollowingDao) QueryFriendIdListById(hostId int64) ([]int64, error) {
+	var idList []int64
+	err := storage.DB.Raw("SELECT guest_id FROM following WHERE host_id = ? AND guest_id IN (SELECT host_id FROM following f WHERE f.guest_id = following.host_id)", hostId).Scan(&idList).Error
 	if err != nil {
 		return nil, err
 	}
-	var UserList []*User
-	var tempUser *User
-	for _, follow := range FriendList {
-		tempUser = nil
-		err := storage.DB.Where("id = ?", follow.GuestId).Find(&tempUser).Error
-		if err != nil {
-			return nil, err
-		}
-		UserList = append(UserList, tempUser)
-	}
-	return UserList, nil
+	return idList, nil
 }
