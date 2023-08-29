@@ -25,7 +25,15 @@ func RedisInit() error {
 			panic("定时任务启动失败")
 		}
 	}()
-	_, err = storage.RdbUserCount.Ping(context.Background()).Result()
+	err = storage.RdbUserCount.Ping(context.Background()).Err()
+	if err != nil {
+		return err
+	}
+	err = storage.RdbFollow.Ping(context.Background()).Err()
+	if err != nil {
+		return err
+	}
+	err = storage.RdbFollower.Ping(context.Background()).Err()
 	if err != nil {
 		return err
 	}
