@@ -27,7 +27,19 @@ type User struct {
 	WorkCount       int64  `json:"work_count" gorm:"comment:作品总数"`
 	FavoriteCount   int64  `json:"favorite_count" gorm:"comment:点赞总数"`
 }
-
+type UserInfo struct {
+	ID              int64  `json:"id"`
+	Name            string `json:"name"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	FollowingCount  int64  `json:"follow_count"`
+	FollowerCount   int64  `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	TotalFavorited  int64  `json:"total_favorited"`
+	WorkCount       int64  `json:"work_count"`
+	FavoriteCount   int64  `json:"favorite_count"`
+}
 type UserDao struct {
 }
 

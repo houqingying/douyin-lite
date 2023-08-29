@@ -20,7 +20,7 @@ func Feed(c *gin.Context) {
 	if rawTimestamp != "" {
 		intTime, err := strconv.ParseInt(rawTimestamp, 10, 64)
 		if err == nil {
-			latestTime = time.Unix(intTime, 0)
+			latestTime = time.Unix(intTime/1000, 0)
 		}
 	} else {
 		latestTime = time.Now()

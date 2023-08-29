@@ -10,8 +10,8 @@ import (
 // @param     hostId      int64         需要查询的hostId, isFollow表示hostId是否对某一个id进行了关注(isFollow)
 // @param     idList    *[]int64        需要查询的一组idList
 // @return    			 []*UserInfo    返回查询的idList对应的一组UserInfo的地址
-func QueryUserInfoList(hostId int64, idList *[]int64) ([]*UserInfo, error) {
-	var userInfoList = make([]*UserInfo, len(*idList))
+func QueryUserInfoList(hostId int64, idList *[]int64) ([]*entity.UserInfo, error) {
+	var userInfoList = make([]*entity.UserInfo, len(*idList))
 	for i, id := range *idList {
 		userInfo, err := QueryAUserInfo1(hostId, id)
 		if err != nil {
@@ -27,7 +27,7 @@ func QueryUserInfoList(hostId int64, idList *[]int64) ([]*UserInfo, error) {
 // @param     hostId      int64         需要查询的hostId, isFollow表示hostId是否对某一个id进行了关注(isFollow)
 // @param     id          int64         需要查询的id
 // @return    			  *UserInfo     返回查询的id对应的UserInfo地址
-func QueryAUserInfo1(hostId int64, id int64) (*UserInfo, error) {
+func QueryAUserInfo1(hostId int64, id int64) (*entity.UserInfo, error) {
 	user, err := entity.NewUserDaoInstance().QueryUserById(id)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func QueryAUserInfo1(hostId int64, id int64) (*UserInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	userInfo := &UserInfo{
+	userInfo := &entity.UserInfo{
 		ID:              user.ID,
 		Name:            user.Name,
 		Avatar:          user.Avatar,
@@ -64,7 +64,7 @@ func QueryAUserInfo1(hostId int64, id int64) (*UserInfo, error) {
 // @description   该方法传入一个id, 查询该id对应的userInfo. 该方法没有参数hostId, isFollow默认为true
 // @param     id          int64         需要查询的id
 // @return    			  *UserInfo     返回查询的id对应的UserInfo地址
-func QueryAUserInfo2(id int64) (*UserInfo, error) {
+func QueryAUserInfo2(id int64) (*entity.UserInfo, error) {
 	user, err := entity.NewUserDaoInstance().QueryUserById(id)
 	if err != nil {
 		return nil, err
@@ -81,7 +81,7 @@ func QueryAUserInfo2(id int64) (*UserInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	userInfo := &UserInfo{
+	userInfo := &entity.UserInfo{
 		ID:              user.ID,
 		Name:            user.Name,
 		Avatar:          user.Avatar,

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"douyin-lite/internal/entity"
 	user_service2 "douyin-lite/internal/service/user_service"
 	"net/http"
 	"strconv"
@@ -9,9 +10,9 @@ import (
 )
 
 type QueryUserInfoResp struct {
-	Code string                  `json:"status_code"`
-	Msg  string                  `json:"status_msg"`
-	User *user_service2.UserInfo `json:"user"`
+	Code string           `json:"status_code"`
+	Msg  string           `json:"status_msg"`
+	User *entity.UserInfo `json:"user"`
 }
 
 func UserInfoHandler(c *gin.Context) {
