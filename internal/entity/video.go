@@ -10,11 +10,11 @@ import (
 
 type Video struct {
 	gorm.Model
-	AuthorId      uint
+	AuthorId      int64
 	PlayUrl       string
 	CoverUrl      string
-	FavoriteCount uint
-	CommentCount  uint
+	FavoriteCount int64
+	CommentCount  int64
 	Title         string
 	Author        User `json:"author,omitempty" gorm:"-"`
 }

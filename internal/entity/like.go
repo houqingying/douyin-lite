@@ -79,7 +79,7 @@ func (*FavoriteDao) AddTotalFavorited(HostId int64) error {
 func (*FavoriteDao) GetVideoAuthor(videoId int64) (int64, error) {
 	var video Video
 	if err := storage.DB.Table("videos").Where("id = ?", videoId).Find(&video).Error; err != nil {
-		return video.ID, err
+		return int64(video.ID), err
 	}
 	return video.AuthorId, nil
 }
