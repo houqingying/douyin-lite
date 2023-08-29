@@ -4,20 +4,21 @@ import (
 	"context"
 	"douyin-lite/internal/repository"
 	"douyin-lite/pkg/storage"
-	"fmt"
 	"sync"
 	"time"
 )
 
 const RdbUserCountFollowKey = "follow_count:"
 const RdbUserCountFollowerKey = "follower_count:"
+const TimeInterval = time.Second * 5
 
 func RedisInit() error {
 	err := storage.InitRedis()
 	if err != nil {
 		return err
 	}
-	ticker := time.NewTicker(time.Second * 5)
+	// 每隔TimeInterval触发一次定时任务
+	ticker := time.NewTicker(TimeInterval)
 	go func() {
 		err := StartTimer(ticker)
 		if err != nil {
@@ -33,24 +34,29 @@ func RedisInit() error {
 
 func StartTimer(ticker *time.Ticker) error {
 	var wg sync.WaitGroup
+	var cursor1 uint64
+	var cursor2 uint64
 	for {
 		select {
 		case <-ticker.C:
 			var err error
-			fmt.Println("定时任务")
+			//定时任务开启
 			wg.Add(2)
 			go func() {
-				err = repository.SaveFollowCntToDB(&wg)
+				err = repository.SaveFollowCntToDB(&wg, &cursor1)
+				if err != nil {
+					panic(err)
+				}
 			}()
 			go func() {
-				err = repository.SaveFollowerCntToDB(&wg)
+				err = repository.SaveFollowerCntToDB(&wg, &cursor2)
+				if err != nil {
+					panic(err)
+				}
 			}()
 			wg.Wait()
-			if err != nil {
-				return err
-			}
-			fmt.Println("刷新完成")
-			return nil
+			//定时任务结束
 		}
 	}
+	return nil
 }
