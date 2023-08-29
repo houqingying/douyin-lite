@@ -75,7 +75,7 @@ func (*MessageDao) QueryMessage(fromUserId uint, toUserId uint) ([]*Message, err
 // @param 	toUserId		uint		接收方用户Id
 // @return message *Message	消息记录
 // @return err		error					当执行出现错误时返回error，否则返回nil
-func (*MessageDao) QueryLastMessage(fromUserId uint, toUserId uint) (*Message, error) {
+func (*MessageDao) QueryLastMessage(fromUserId int64, toUserId int64) (*Message, error) {
 	message := Message{}
 	err := storage.DB.Model(&Message{}).Where("(to_user_id=? and from_user_id=?) or (to_user_id=? and from_user_id=?)",
 		toUserId, fromUserId, fromUserId, toUserId).Order("create_at desc").First(&message).Error
