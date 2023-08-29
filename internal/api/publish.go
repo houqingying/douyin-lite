@@ -20,11 +20,11 @@ type VideoListResponse struct {
 }
 
 type Video struct {
-	AuthorId      uint
+	AuthorId      int64
 	PlayUrl       string
 	CoverUrl      string
-	FavoriteCount uint
-	CommentCount  uint
+	FavoriteCount int64
+	CommentCount  int64
 	Title         string
 	Author        *Author
 }
@@ -106,7 +106,7 @@ func Publish(c *gin.Context) {
 	userId := c.GetInt64("user_id")
 	//保存视频在数据库中
 	var video = entity.Video{
-		AuthorId:      uint(userId),
+		AuthorId:      userId,
 		PlayUrl:       obj["url"].(string),
 		CoverUrl:      imagePath,
 		FavoriteCount: 0,
