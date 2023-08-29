@@ -19,7 +19,7 @@ const (
 
 const (
 	GroupName       = "tiktok"                           // 组名
-	ServerAddress   = "http://192.168.20.56:8085"        // 服务器地址
+	ServerAddress   = "http://47.102.185.103:8085"       // 服务器地址
 	ShowAddress     = ""                                 // 显示地址
 	Account         = "root"                             // 账户名
 	Password        = "d06d6575eb571f01e15ff3e077098ae1" // 密码

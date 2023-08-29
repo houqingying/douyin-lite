@@ -57,6 +57,12 @@ const (
 	StatusInternalServerError = 500
 )
 
+const (
+	SuccessMessage = "操作成功"
+	FailureMessage = "操作失败"
+	UnknownMessage = "未知状态"
+)
+
 // 定义数据库操作异常常量
 const (
 	ErrDatabaseConnectionFailed  = "数据库连接失败"

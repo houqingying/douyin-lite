@@ -45,3 +45,8 @@ func (*VideoDao) QueryVideoListByLimitAndTime(limit int, latestTime time.Time, v
 func (v *Video) SaveVideo() error {
 	return storage.DB.Create(&v).Error
 }
+
+func (v *Video) GetVideoList(userId int64) (videos []*Video, err error) {
+	err = storage.DB.Model(&v).Where("author_id = ?", userId).Find(&videos).Error
+	return
+}
