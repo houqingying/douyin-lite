@@ -102,7 +102,7 @@ func FillVideoListFields(videos *[]*entity.Video) (*time.Time, error) {
 	userDao := entity.NewUserDaoInstance()
 	latestTime := (*videos)[size-1].CreatedAt //获取最近的投稿时间
 	for i := 0; i < size; i++ {
-		userInfo, err := userDao.QueryUserById((*videos)[i].AuthorId)
+		userInfo, err := userDao.QueryUserById(int64((*videos)[i].AuthorId))
 		if err != nil {
 			continue
 		}

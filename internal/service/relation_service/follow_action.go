@@ -1,7 +1,9 @@
-package follow_service
+package relation_service
 
 import (
+	"context"
 	"douyin-lite/internal/entity"
+	"douyin-lite/internal/repository"
 	"errors"
 	"fmt"
 )
@@ -16,17 +18,17 @@ var (
 	ErrIvdFolUsr = errors.New("user not exist")
 )
 
-func FollowAction(hostID, guestId, actionType uint) error {
+func FollowAction(hostID, guestId, actionType int64) error {
 	return NewPostFollowActionFlow(hostID, guestId, actionType).Do()
 }
 
 type PostFollowActionFlow struct {
-	userId     uint
-	userToId   uint
-	actionType uint
+	userId     int64
+	userToId   int64
+	actionType int64
 }
 
-func NewPostFollowActionFlow(userId, userToId, actionType uint) *PostFollowActionFlow {
+func NewPostFollowActionFlow(userId, userToId, actionType int64) *PostFollowActionFlow {
 	return &PostFollowActionFlow{userId: userId, userToId: userToId, actionType: actionType}
 }
 
@@ -65,7 +67,6 @@ func (p *PostFollowActionFlow) action() error {
 	if err != nil {
 		return err
 	}
-
 	switch p.actionType {
 	case FOLLOW:
 		if exist {
@@ -75,11 +76,27 @@ func (p *PostFollowActionFlow) action() error {
 		if err != nil {
 			return err
 		}
+		err = repository.IncFollowingCnt(context.Background(), int64(p.userId))
+		if err != nil {
+			return err
+		}
+		err = repository.IncFollowerCnt(context.Background(), int64(p.userToId))
+		if err != nil {
+			return err
+		}
 	case CANCEL:
 		if !exist {
 			return fmt.Errorf("relation not exist")
 		}
 		err = entity.NewFollowingDaoInstance().UnfollowAction(p.userId, p.userToId)
+		if err != nil {
+			return err
+		}
+		err = repository.DecFollowingCnt(context.Background(), int64(p.userId))
+		if err != nil {
+			return err
+		}
+		err = repository.DecFollowerCnt(context.Background(), int64(p.userToId))
 		if err != nil {
 			return err
 		}

@@ -69,6 +69,12 @@ func (f *RegisterUserFlow) updateRegisterInfo() error {
 		return err
 	}
 	f.userId = regInfo.ID
+	// 初始化Count记录
+	err = entity.NewCountDaoInstance().InitUserCount(f.userId)
+	if err != nil {
+		return err
+	}
+
 	token, err := middleware.ReleaseToken(regInfo.ID)
 	if err != nil {
 		return err

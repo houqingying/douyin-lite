@@ -1,7 +1,7 @@
 package api
 
 import (
-	follow_service2 "douyin-lite/internal/service/follow_service"
+	follow_service2 "douyin-lite/internal/service/relation_service"
 	"net/http"
 	"strconv"
 
@@ -36,17 +36,19 @@ func RelationActionHandler(c *gin.Context) {
 		})
 		return
 	}
-	hostId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
-	if err != nil {
-		klog.Errorf("to_user_id strconv.ParseInt error: %v", err)
-		c.JSON(http.StatusOK, RelationActionResp{
-			StatusCode: -1,
-			StatusMsg:  "user_id is invalid",
-		})
-		return
-	}
 
-	err = follow_service2.FollowAction(uint(hostId), uint(guestId), uint(actionType))
+	hostId := c.GetInt64("user_id")
+	//hostId, err := strconv.ParseInt(c.Get("user_id"), 10, 64)
+	//if err != nil {
+	//	klog.Errorf("to_user_id strconv.ParseInt error: %v", err)
+	//	c.JSON(http.StatusOK, RelationActionResp{
+	//		StatusCode: -1,
+	//		StatusMsg:  "user_id is invalid",
+	//	})
+	//	return
+	//}
+
+	err = follow_service2.FollowAction(hostId, guestId, actionType)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, RelationActionResp{
 			StatusCode: 1,
@@ -85,7 +87,7 @@ func QueryFollowList(hostIdStr string) (*FollowListResp, error) {
 			Msg:  err.Error(),
 		}, err
 	}
-	followListData, err := follow_service2.QueryFollowListInfo(uint(hostId))
+	followListData, err := follow_service2.QueryFollowListInfo(int64(uint(hostId)))
 	if err != nil {
 		return &FollowListResp{
 			Code: "-1",
@@ -124,7 +126,7 @@ func QueryFollowerList(hostIdStr string) (*FollowerListResp, error) {
 			Msg:  err.Error(),
 		}, err
 	}
-	followListData, err := follow_service2.QueryFollowerListInfo(uint(hostId))
+	followListData, err := follow_service2.QueryFollowerListInfo(int64(uint(hostId)))
 	if err != nil {
 		return &FollowerListResp{
 			Code: "-1",

@@ -1,7 +1,6 @@
 package user_service
 
 import (
-	"douyin-lite/internal/entity"
 	"errors"
 )
 
@@ -19,16 +18,16 @@ type UserInfo struct {
 	FavoriteCount   int64  `json:"favorite_count"`
 }
 
-func QueryUserInfo(userId uint) (*UserInfo, error) {
+func QueryUserInfo(userId int64) (*UserInfo, error) {
 	return NewQueryUserInfoFlow(userId).Do()
 }
 
 type QueryUserInfoFlow struct {
-	userId   uint
+	userId   int64
 	userInfo *UserInfo
 }
 
-func NewQueryUserInfoFlow(userId uint) *QueryUserInfoFlow {
+func NewQueryUserInfoFlow(userId int64) *QueryUserInfoFlow {
 	return &QueryUserInfoFlow{
 		userId: userId,
 	}
@@ -47,29 +46,17 @@ func (f *QueryUserInfoFlow) Do() (*UserInfo, error) {
 }
 
 func (f *QueryUserInfoFlow) checkParam() error {
-	if f.userId <= 0 {
+	if f.userId < 0 {
 		return errors.New("user id should be larger than 0")
 	}
 	return nil
 }
 
 func (f *QueryUserInfoFlow) prepareUserInfo() error {
-	qUser, err := entity.NewUserDaoInstance().QueryUserById(f.userId)
+	userInfo, err := QueryAUserInfo2(f.userId)
 	if err != nil {
 		return err
 	}
-	newUserInfo := UserInfo{}
-	newUserInfo.ID = qUser.ID
-	newUserInfo.Name = qUser.Name
-	newUserInfo.FollowingCount = qUser.FollowingCount
-	newUserInfo.FollowerCount = qUser.FollowerCount
-	newUserInfo.IsFollow = true
-	newUserInfo.Avatar = qUser.Avatar
-	newUserInfo.BackgroundImage = qUser.BackgroundImage
-	newUserInfo.Signature = qUser.Signature
-	newUserInfo.TotalFavorited = qUser.TotalFavorited
-	newUserInfo.WorkCount = qUser.WorkCount
-	newUserInfo.FavoriteCount = qUser.FavoriteCount
-	f.userInfo = &newUserInfo
+	f.userInfo = userInfo
 	return nil
 }
