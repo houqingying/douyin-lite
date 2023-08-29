@@ -10,17 +10,17 @@ type FavoriteListInfo struct {
 	UserInfoList []*user_service.UserInfo `json:"user_list"`
 }
 
-func QueryFavoriteListInfo(hostId uint) (*FavoriteListInfo, error) {
+func QueryFavoriteListInfo(hostId int64) (*FavoriteListInfo, error) {
 	return NewQueryFavoriteListInfoFlow(hostId).Do()
 }
 
 type QueryFavoriteInfoFlow struct {
-	hostId           uint
+	hostId           int64
 	favoriteListInfo *FavoriteListInfo
 	userinfoList     []*user_service.UserInfo
 }
 
-func NewQueryFavoriteListInfoFlow(hostId uint) *QueryFavoriteInfoFlow {
+func NewQueryFavoriteListInfoFlow(hostId int64) *QueryFavoriteInfoFlow {
 	return &QueryFavoriteInfoFlow{
 		hostId: hostId,
 	}
@@ -73,7 +73,7 @@ func (f *QueryFavoriteInfoFlow) packFavoriteInfo() error {
 }
 
 // Favorite_List 获取点赞列表
-//func Favorite_List(userId uint) ([]repository.Video, error) {
+//func Favorite_List(userId int64) ([]repository.Video, error) {
 //	videoList, err := repository.NewFavoriteDaoInstance().Query_Favorite_List(userId)
 //	return videoList, err
 //}

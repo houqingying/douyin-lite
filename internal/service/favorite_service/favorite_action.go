@@ -5,7 +5,7 @@ import (
 )
 
 // Favorite_Action 点赞操作
-func Favorite_Action(userId uint, videoId uint, actionType uint) (err error) {
+func Favorite_Action(userId int64, videoId int64, actionType int64) (err error) {
 	//1-点赞
 	if actionType == 1 {
 		favoriteAction := entity.NewFavoriteDaoInstance()
