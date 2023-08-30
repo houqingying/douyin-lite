@@ -4,11 +4,11 @@ system:
 
 mysql:
   default:
-    username: "root"                                                                           # 账号
-    password: "351681578wdp"                                                                      # 密码
-    host: "127.0.0.1"                                                                          # 数据库地址，可以是Ip或者域名
+    username: "douyin"                                                                           # 账号
+    password: "douyin@2023"                                                                      # 密码
+    host: "douyin@2023"                                                                          # 数据库地址，可以是Ip或者域名
     port: "3306"                                                                                 # 数据库端口
-    dbname: "douyin"                                                                             # 数据库名
+    dbname: "douyin"
     parameters: "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true&timeout=10s" # 连接超时，10秒
     debug: false                                                                                 # 是否开启debug模式
     dbType: "mysql"                                                                             # 数据库类型
