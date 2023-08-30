@@ -1,0 +1,26 @@
+system:
+  startTime: "2006-01-02"
+  machineID: 1
+
+mysql:
+  default:
+    username: "root"                                                                           # 账号
+    password: "ZL1314520"                                                                      # 密码
+    host: "cdb-1iftmm02.cd.tencentcdb.com"                                                                          # 数据库地址，可以是Ip或者域名
+    port: "10076"                                                                                 # 数据库端口
+    dbname: "douyin"                                                                             # 数据库名
+    parameters: "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true&timeout=10s" # 连接超时，10秒
+    debug: false                                                                                 # 是否开启debug模式
+    dbType: "mysql"                                                                             # 数据库类型
+    maxLifeTime: 7200                                                                          # 设置连接可以重复使用的最长时间(s)
+    maxOpenConns: 150                                                                          # 最大开启链接
+    maxLdleConns: 50                                                                           # 设置空闲状态下的最大连接数
+    tablePrefix: ""
+
+
+redis:
+  redisDbName: 4
+  redisHost: 127.0.0.1
+  redisPort: 6379
+  redisPassword: 123456
+  redisNetwork: "tcp"
