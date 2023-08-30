@@ -4,9 +4,9 @@ system:
 
 mysql:
   default:
-    username: "douyin"                                                                           # 账号
-    password: "douyin@2023"                                                                      # 密码
-    host: "douyin@2023"                                                                          # 数据库地址，可以是Ip或者域名
+    username: "root"                                                                           # 账号
+    password: "351681578wdp"                                                                      # 密码
+    host: "127.0.0.1"                                                                          # 数据库地址，可以是Ip或者域名
     port: "3306"                                                                                 # 数据库端口
     dbname: "douyin"                                                                             # 数据库名
     parameters: "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true&timeout=10s" # 连接超时，10秒
@@ -17,10 +17,12 @@ mysql:
     maxLdleConns: 50                                                                           # 设置空闲状态下的最大连接数
     tablePrefix: ""
 
-
 redis:
-  redisDbName: 4
-  redisHost: 127.0.0.1
-  redisPort: 6379
-  redisPassword: 123456
-  redisNetwork: "tcp"
+  db0:
+    redisDbName: 0
+    redisAddr: "127.0.0.1:6379"
+    redisPassword: ""
+  db1:
+    redisDbName: 1
+    redisAddr: "127.0.0.1:6379"
+    redisPassword: ""

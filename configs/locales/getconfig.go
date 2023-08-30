@@ -1,9 +1,8 @@
 package locales
 
 import (
-	"os"
-
 	"github.com/spf13/viper"
+	"os"
 )
 
 var Config *Conf
@@ -11,7 +10,7 @@ var Config *Conf
 type Conf struct {
 	System *System           `yaml:"system"`
 	MySql  map[string]*MySql `yaml:"mysql"`
-	Redis  *Redis            `yaml:"redis"`
+	Redis  map[string]*Redis `yaml:"redis"`
 }
 
 type System struct {
@@ -35,12 +34,9 @@ type MySql struct {
 }
 
 type Redis struct {
-	RedisHost     string `yaml:"redisHost"`
-	RedisPort     string `yaml:"redisPort"`
-	RedisUsername string `yaml:"redisUsername"`
+	RedisAddr     string `yaml:"redisAddr"`
 	RedisPassword string `yaml:"redisPwd"`
 	RedisDbName   int    `yaml:"redisDbName"`
-	RedisNetwork  string `yaml:"redisNetwork"`
 }
 
 func InitConfig() {

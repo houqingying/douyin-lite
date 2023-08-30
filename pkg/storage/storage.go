@@ -7,7 +7,9 @@ import (
 )
 
 var DB *gorm.DB
+
 var RdbUserCount *redis.Client
+
 var RdbFollower *redis.Client
 
 func InitDB(cfg ormx.DBConfig) error {
@@ -20,18 +22,4 @@ func InitDB(cfg ormx.DBConfig) error {
 
 func newGormDB(cfg ormx.DBConfig) (*gorm.DB, error) {
 	return ormx.New(cfg)
-}
-
-func InitRedis() error {
-	RdbUserCount = redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "",
-		DB:       0,
-	})
-	RdbFollower = redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "",
-		DB:       1,
-	})
-	return nil
 }

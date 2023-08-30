@@ -2,8 +2,10 @@ package configs
 
 import (
 	"context"
+	conf "douyin-lite/configs/locales"
 	"douyin-lite/internal/repository"
 	"douyin-lite/pkg/storage"
+	"github.com/go-redis/redis/v8"
 	"sync"
 	"time"
 )
@@ -13,10 +15,27 @@ const RdbUserCountFollowerKey = "follower_count:"
 const TimeInterval = time.Second * 5
 
 func RedisInit() error {
-	err := storage.InitRedis()
+	mConfigDB0 := conf.Config.Redis["db0"]
+	storage.RdbUserCount = redis.NewClient(&redis.Options{
+		Addr:     mConfigDB0.RedisAddr,
+		Password: mConfigDB0.RedisPassword,
+		DB:       mConfigDB0.RedisDbName,
+	})
+	mConfigDB1 := conf.Config.Redis["db1"]
+	storage.RdbFollower = redis.NewClient(&redis.Options{
+		Addr:     mConfigDB1.RedisAddr,
+		Password: mConfigDB1.RedisPassword,
+		DB:       mConfigDB1.RedisDbName,
+	})
+	err := storage.RdbUserCount.Ping(context.Background()).Err()
 	if err != nil {
 		return err
 	}
+	err = storage.RdbFollower.Ping(context.Background()).Err()
+	if err != nil {
+		return err
+	}
+
 	// 每隔TimeInterval触发一次定时任务
 	ticker := time.NewTicker(TimeInterval)
 	go func() {
@@ -25,14 +44,6 @@ func RedisInit() error {
 			panic("定时任务启动失败")
 		}
 	}()
-	err = storage.RdbUserCount.Ping(context.Background()).Err()
-	if err != nil {
-		return err
-	}
-	err = storage.RdbFollower.Ping(context.Background()).Err()
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
