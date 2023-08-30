@@ -23,8 +23,8 @@ func newGormDB(cfg ormx.DBConfig) (*gorm.DB, error) {
 
 func InitRedis() error {
 	RdbUserCount = redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "",
+		Addr:     "39.105.199.147:6379",
+		Password: "helloworld",
 		DB:       0,
 	})
 	return nil

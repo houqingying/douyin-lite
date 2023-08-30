@@ -2,6 +2,7 @@ package video_service
 
 import (
 	"douyin-lite/internal/entity"
+	"douyin-lite/internal/service/user_service"
 	"errors"
 	"fmt"
 	"time"
@@ -12,13 +13,13 @@ const (
 )
 
 type VideoVO struct {
-	Id            int64       `json:"id,omitempty"`
-	Author        entity.User `json:"author,omitempty"`
-	PlayUrl       string      `json:"play_url,omitempty"`
-	CoverUrl      string      `json:"cover_url,omitempty"`
-	FavoriteCount int64       `json:"favorite_count,omitempty"`
-	CommentCount  int64       `json:"comment_count,omitempty"`
-	Title         string      `json:"title,omitempty"`
+	Id            int64           `json:"id,omitempty"`
+	Author        entity.UserInfo `json:"author,omitempty"`
+	PlayUrl       string          `json:"play_url,omitempty"`
+	CoverUrl      string          `json:"cover_url,omitempty"`
+	FavoriteCount int64           `json:"favorite_count,omitempty"`
+	CommentCount  int64           `json:"comment_count,omitempty"`
+	Title         string          `json:"title,omitempty"`
 }
 type FeedVideoListVO struct {
 	Videos   []VideoVO `json:"video_list,omitempty"`
@@ -66,10 +67,10 @@ func (q *QueryFeedVideoListFlow) prepareData() error {
 	//准备好时间戳
 	if latestTime != nil {
 		fmt.Println(*latestTime)
-		q.nextTime = (*latestTime).UnixNano() / 1e9
+		q.nextTime = (*latestTime).UnixNano() / 1e6
 		return nil
 	}
-	q.nextTime = time.Now().UnixNano() / 1e9
+	q.nextTime = time.Now().UnixNano() / 1e6
 	return nil
 }
 func (q *QueryFeedVideoListFlow) packData() (*FeedVideoListVO, error) {
@@ -83,7 +84,7 @@ func (q *QueryFeedVideoListFlow) Video2VideoVO() []VideoVO {
 	for i, video := range q.videos {
 		videoVO := VideoVO{
 			Id:            int64(video.ID),
-			Author:        video.Author,
+			Author:        e2sUserInfo(video.Author),
 			PlayUrl:       video.PlayUrl,
 			CoverUrl:      video.CoverUrl,
 			FavoriteCount: int64(video.FavoriteCount),
@@ -99,14 +100,43 @@ func FillVideoListFields(videos *[]*entity.Video) (*time.Time, error) {
 	if videos == nil || size == 0 {
 		return nil, errors.New("util.FillVideoListFields videos为空")
 	}
-	userDao := entity.NewUserDaoInstance()
 	latestTime := (*videos)[size-1].CreatedAt //获取最近的投稿时间
 	for i := 0; i < size; i++ {
-		userInfo, err := userDao.QueryUserById(int64((*videos)[i].AuthorId))
+		userInfo, err := user_service.QueryAUserInfo2(int64((*videos)[i].AuthorId))
 		if err != nil {
 			continue
 		}
-		(*videos)[i].Author = *userInfo
+		(*videos)[i].Author = s2eUserInfo(*userInfo)
 	}
 	return &latestTime, nil
+}
+func e2sUserInfo(info entity.UserInfo) entity.UserInfo {
+	return entity.UserInfo{
+		ID:              info.ID,
+		Name:            info.Name,
+		Avatar:          info.Avatar,
+		BackgroundImage: info.BackgroundImage,
+		Signature:       info.Signature,
+		FollowingCount:  info.FollowingCount,
+		FollowerCount:   info.FollowerCount,
+		IsFollow:        info.IsFollow,
+		TotalFavorited:  info.TotalFavorited,
+		WorkCount:       info.WorkCount,
+		FavoriteCount:   info.FavoriteCount,
+	}
+}
+func s2eUserInfo(info entity.UserInfo) entity.UserInfo {
+	return entity.UserInfo{
+		ID:              info.ID,
+		Name:            info.Name,
+		Avatar:          info.Avatar,
+		BackgroundImage: info.BackgroundImage,
+		Signature:       info.Signature,
+		FollowingCount:  info.FollowingCount,
+		FollowerCount:   info.FollowerCount,
+		IsFollow:        info.IsFollow,
+		TotalFavorited:  info.TotalFavorited,
+		WorkCount:       info.WorkCount,
+		FavoriteCount:   info.FavoriteCount,
+	}
 }

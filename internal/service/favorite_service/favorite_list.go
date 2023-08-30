@@ -2,12 +2,11 @@ package favorite_service
 
 import (
 	"douyin-lite/internal/entity"
-	"douyin-lite/internal/service/user_service"
 	"errors"
 )
 
 type FavoriteListInfo struct {
-	UserInfoList []*user_service.UserInfo `json:"user_list"`
+	UserInfoList []*entity.UserInfo `json:"user_list"`
 }
 
 func QueryFavoriteListInfo(hostId int64) (*FavoriteListInfo, error) {
@@ -17,7 +16,7 @@ func QueryFavoriteListInfo(hostId int64) (*FavoriteListInfo, error) {
 type QueryFavoriteInfoFlow struct {
 	hostId           int64
 	favoriteListInfo *FavoriteListInfo
-	userinfoList     []*user_service.UserInfo
+	userinfoList     []*entity.UserInfo
 }
 
 func NewQueryFavoriteListInfoFlow(hostId int64) *QueryFavoriteInfoFlow {
@@ -54,9 +53,9 @@ func (f *QueryFavoriteInfoFlow) prepareFavoriteInfo() error {
 	if err != nil {
 		return errors.New("DB Find Favorite Error")
 	}
-	var userInfoList = make([]*user_service.UserInfo, len(userList))
+	var userInfoList = make([]*entity.UserInfo, len(userList))
 	for i := 0; i < len(userList); i++ {
-		userInfoList[i] = &user_service.UserInfo{}
+		userInfoList[i] = &entity.UserInfo{}
 		userInfoList[i].ID = int64(userList[i].ID)
 		userInfoList[i].Name = userList[i].Title
 		userInfoList[i].FavoriteCount = int64(userList[i].FavoriteCount)
