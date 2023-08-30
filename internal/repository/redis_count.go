@@ -204,7 +204,6 @@ func queryFollowerCnt(ctx context.Context, hostId int64) (*int64, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("返回的值为 %d\n", atoi)
 	return &fc, nil
 }
 
@@ -219,7 +218,6 @@ func queryFollowingCnt(ctx context.Context, hostId int64) (*int64, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("返回的值为 %d\n", atoi)
 	return &fc, nil
 }
 
