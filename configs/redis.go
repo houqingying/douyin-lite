@@ -29,10 +29,6 @@ func RedisInit() error {
 	if err != nil {
 		return err
 	}
-	err = storage.RdbFollow.Ping(context.Background()).Err()
-	if err != nil {
-		return err
-	}
 	err = storage.RdbFollower.Ping(context.Background()).Err()
 	if err != nil {
 		return err

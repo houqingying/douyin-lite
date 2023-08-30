@@ -121,10 +121,17 @@ func (*FollowingDao) CreateFollowing(hostId int64, guestId int64) error {
 }
 
 func (*FollowingDao) DeleteFollowing(hostId int64, guestId int64) error {
-	err := storage.DB.Where("host_id = ? AND guest_id = ?", hostId, guestId).
-		Delete(&Following{}).Error
-	if err != nil {
-		return err
+	// 先查db是否存在关注关系
+	err := storage.DB.First(&Following{
+		HostId:  hostId,
+		GuestId: guestId,
+	}).Error
+	// 如果存在就执行删除
+	if err == nil {
+		err := storage.DB.Where("host_id = ? AND guest_id = ?", hostId, guestId).Delete(&Following{}).Error
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

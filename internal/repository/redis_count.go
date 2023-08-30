@@ -9,8 +9,8 @@ import (
 	"sync"
 )
 
-// ScanNum 每次定时任务Scan从redis删除写入到mysql的数量
-const ScanNum = 500
+// CountScanNum 每次定时任务Scan从redis删除写入到mysql的数量
+const CountScanNum = 500
 
 //type RdbUserCountDao struct {
 //}
@@ -100,7 +100,7 @@ func DecFollowerCnt(ctx context.Context, hostId int64) error {
 func SaveFollowCntToDB(wg *sync.WaitGroup, cursor *uint64) error {
 	defer wg.Done()
 	// 得到redis所有键
-	keys, res, err := storage.RdbUserCount.Scan(context.Background(), *cursor, "follow_count:*", ScanNum).Result()
+	keys, res, err := storage.RdbUserCount.Scan(context.Background(), *cursor, "follow_count:*", CountScanNum).Result()
 	*cursor = res
 	if err != nil {
 		return err
@@ -139,12 +139,12 @@ func SaveFollowCntToDB(wg *sync.WaitGroup, cursor *uint64) error {
 
 func SaveFollowerCntToDB(wg *sync.WaitGroup, cursor *uint64) error {
 	defer wg.Done()
-	// 得到redis所有键
-	keys, res, err := storage.RdbUserCount.Scan(context.Background(), *cursor, "follower_count:*", ScanNum).Result()
-	*cursor = res
+	// 得到redis一部分键, scan防止阻塞
+	keys, res, err := storage.RdbUserCount.Scan(context.Background(), *cursor, "follower_count:*", CountScanNum).Result()
 	if err != nil {
 		return err
 	}
+	*cursor = res
 	for _, key := range keys {
 		value, err := storage.RdbUserCount.Get(context.Background(), key).Result()
 		if err != nil {
