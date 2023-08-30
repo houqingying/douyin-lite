@@ -40,7 +40,7 @@ func QueryAUserInfo1(hostId int64, id int64) (*entity.UserInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	isFollow, err := entity.NewFollowingDaoInstance().QueryisFollow(hostId, id)
+	isFollow, err := repository.QueryIsFollow(hostId, id)
 	if err != nil {
 		return nil, err
 	}

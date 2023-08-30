@@ -34,11 +34,10 @@ func NewFollowingDaoInstance() *FollowingDao {
 
 func (*FollowingDao) FollowAction(hostId int64, guestId int64) error {
 	errTran := storage.DB.Transaction(func(tx *gorm.DB) error {
-		err := followingDao.CreateFollowing(hostId, guestId)
-		if err != nil {
-			return err
-		}
-		//TODO
+		//err := followingDao.CreateFollowing(hostId, guestId)
+		//if err != nil {
+		//	return err
+		//}
 		//err = followingDao.IncFollowingCnt(hostId)
 		//if err != nil {
 		//	return err
@@ -57,11 +56,10 @@ func (*FollowingDao) FollowAction(hostId int64, guestId int64) error {
 
 func (*FollowingDao) UnfollowAction(hostId int64, guestId int64) error {
 	errTran := storage.DB.Transaction(func(tx *gorm.DB) error {
-		err := followingDao.DeleteFollowing(hostId, guestId)
-		if err != nil {
-			return err
-		}
-		//TODO
+		//err := followingDao.DeleteFollowing(hostId, guestId)
+		//if err != nil {
+		//	return err
+		//}
 		//err = followingDao.DecFollowingCnt(hostId)
 		//if err != nil {
 		//	return err
@@ -121,10 +119,17 @@ func (*FollowingDao) CreateFollowing(hostId int64, guestId int64) error {
 }
 
 func (*FollowingDao) DeleteFollowing(hostId int64, guestId int64) error {
-	err := storage.DB.Where("host_id = ? AND guest_id = ?", hostId, guestId).
-		Delete(&Following{}).Error
-	if err != nil {
-		return err
+	// 先查db是否存在关注关系
+	err := storage.DB.First(&Following{
+		HostId:  hostId,
+		GuestId: guestId,
+	}).Error
+	// 如果存在就执行删除
+	if err == nil {
+		err := storage.DB.Where("host_id = ? AND guest_id = ?", hostId, guestId).Delete(&Following{}).Error
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
