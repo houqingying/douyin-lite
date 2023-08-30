@@ -34,11 +34,10 @@ func NewFollowingDaoInstance() *FollowingDao {
 
 func (*FollowingDao) FollowAction(hostId int64, guestId int64) error {
 	errTran := storage.DB.Transaction(func(tx *gorm.DB) error {
-		err := followingDao.CreateFollowing(hostId, guestId)
-		if err != nil {
-			return err
-		}
-		//TODO
+		//err := followingDao.CreateFollowing(hostId, guestId)
+		//if err != nil {
+		//	return err
+		//}
 		//err = followingDao.IncFollowingCnt(hostId)
 		//if err != nil {
 		//	return err
@@ -57,11 +56,10 @@ func (*FollowingDao) FollowAction(hostId int64, guestId int64) error {
 
 func (*FollowingDao) UnfollowAction(hostId int64, guestId int64) error {
 	errTran := storage.DB.Transaction(func(tx *gorm.DB) error {
-		err := followingDao.DeleteFollowing(hostId, guestId)
-		if err != nil {
-			return err
-		}
-		//TODO
+		//err := followingDao.DeleteFollowing(hostId, guestId)
+		//if err != nil {
+		//	return err
+		//}
 		//err = followingDao.DecFollowingCnt(hostId)
 		//if err != nil {
 		//	return err

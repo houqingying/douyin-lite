@@ -40,12 +40,13 @@ func StartTimer(ticker *time.Ticker) error {
 	var wg sync.WaitGroup
 	var cursor1 uint64
 	var cursor2 uint64
+	var cursor3 uint64
 	for {
 		select {
 		case <-ticker.C:
 			var err error
 			//定时任务开启
-			wg.Add(2)
+			wg.Add(3)
 			go func() {
 				err = repository.SaveFollowCntToDB(&wg, &cursor1)
 				if err != nil {
@@ -54,6 +55,12 @@ func StartTimer(ticker *time.Ticker) error {
 			}()
 			go func() {
 				err = repository.SaveFollowerCntToDB(&wg, &cursor2)
+				if err != nil {
+					panic(err)
+				}
+			}()
+			go func() {
+				err = repository.SaveFollowRelationToDB(&wg, &cursor3)
 				if err != nil {
 					panic(err)
 				}

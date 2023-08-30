@@ -63,7 +63,7 @@ func (p *PostFollowActionFlow) checkNum() error {
 }
 
 func (p *PostFollowActionFlow) action() error {
-	exist, err := entity.NewFollowingDaoInstance().QueryisFollow(p.userId, p.userToId)
+	exist, err := repository.QueryIsFollow(p.userId, p.userToId)
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func (p *PostFollowActionFlow) action() error {
 		if exist {
 			return fmt.Errorf("relation already exist")
 		}
-		err = entity.NewFollowingDaoInstance().FollowAction(p.userId, p.userToId)
+		err = repository.FollowAction(p.userId, p.userToId)
 		if err != nil {
 			return err
 		}
@@ -88,7 +88,7 @@ func (p *PostFollowActionFlow) action() error {
 		if !exist {
 			return fmt.Errorf("relation not exist")
 		}
-		err = entity.NewFollowingDaoInstance().UnfollowAction(p.userId, p.userToId)
+		err = repository.UnfollowAction(p.userId, p.userToId)
 		if err != nil {
 			return err
 		}

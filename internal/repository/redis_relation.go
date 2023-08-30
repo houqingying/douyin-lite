@@ -24,7 +24,7 @@ func QueryIsFollow(hostId int64, guestId int64) (bool, error) {
 		}
 		// 如果存在关注关系,回写redis
 		if isFollow {
-			err = PostFollow(hostId, guestId)
+			err = FollowAction(hostId, guestId)
 			if err != nil {
 				return false, err
 			}
@@ -33,7 +33,7 @@ func QueryIsFollow(hostId int64, guestId int64) (bool, error) {
 	return isFollow, nil
 }
 
-func PostFollow(hostId int64, guestId int64) error {
+func FollowAction(hostId int64, guestId int64) error {
 	hostIdStr := strconv.FormatInt(hostId, 10)
 	guestIdStr := strconv.FormatInt(guestId, 10)
 	followStateIdStr := hostIdStr + ":1"
@@ -44,7 +44,7 @@ func PostFollow(hostId int64, guestId int64) error {
 	return nil
 }
 
-func PostUnfollow(hostId int64, guestId int64) error {
+func UnfollowAction(hostId int64, guestId int64) error {
 	hostIdStr := strconv.FormatInt(hostId, 10)
 	guestIdStr := strconv.FormatInt(guestId, 10)
 	unfollowStateIdStr := hostIdStr + ":0"
