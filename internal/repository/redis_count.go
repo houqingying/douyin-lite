@@ -4,6 +4,7 @@ import (
 	"context"
 	"douyin-lite/internal/entity"
 	"douyin-lite/pkg/storage"
+	"errors"
 	"fmt"
 	"strconv"
 	"sync"
@@ -12,18 +13,18 @@ import (
 // CountScanNum 每次定时任务Scan从redis删除写入到mysql的数量
 const CountScanNum = 500
 
-//type RdbUserCountDao struct {
-//}
+// type RdbUserCountDao struct {
+// }
 //
-//var rdbUserCountDao *RdbUserCountDao
-//var rdbUserCountOnce sync.Once
+// var rdbUserCountDao *RdbUserCountDao
+// var rdbUserCountOnce sync.Once
 //
-//func NewRdbUserCountDaoInstance() *RdbUserCountDao {
-//	rdbUserCountOnce.Do(func() {
-//		rdbUserCountDao = &RdbUserCountDao{}
-//	})
-//	return rdbUserCountDao
-//}
+//	func NewRdbUserCountDaoInstance() *RdbUserCountDao {
+//		rdbUserCountOnce.Do(func() {
+//			rdbUserCountDao = &RdbUserCountDao{}
+//		})
+//		return rdbUserCountDao
+//	}
 
 func QueryFollowCnt(id int64) (*int64, error) {
 	// 查redis
@@ -62,8 +63,11 @@ func QueryFollowerCnt(id int64) (*int64, error) {
 }
 
 func IncFollowingCnt(ctx context.Context, hostId int64) error {
-	key := fmt.Sprintf("follow_count:%d", hostId)
-	_, err := storage.RdbUserCount.Incr(ctx, key).Result()
+	_, err := QueryFollowCnt(hostId)
+	if err != nil {
+		return err
+	}
+	err = incFollowingCnt(ctx, hostId)
 	if err != nil {
 		return err
 	}
@@ -71,8 +75,14 @@ func IncFollowingCnt(ctx context.Context, hostId int64) error {
 }
 
 func DecFollowingCnt(ctx context.Context, hostId int64) error {
-	key := fmt.Sprintf("follow_count:%d", hostId)
-	_, err := storage.RdbUserCount.Decr(ctx, key).Result()
+	followCnt, err := QueryFollowCnt(hostId)
+	if err != nil {
+		return err
+	}
+	if *followCnt == 0 {
+		return errors.New("数量为0")
+	}
+	err = decFollowingCnt(ctx, hostId)
 	if err != nil {
 		return err
 	}
@@ -80,8 +90,11 @@ func DecFollowingCnt(ctx context.Context, hostId int64) error {
 }
 
 func IncFollowerCnt(ctx context.Context, hostId int64) error {
-	key := fmt.Sprintf("follower_count:%d", hostId)
-	_, err := storage.RdbUserCount.Incr(ctx, key).Result()
+	_, err := QueryFollowerCnt(hostId)
+	if err != nil {
+		return err
+	}
+	err = incFollowerCnt(ctx, hostId)
 	if err != nil {
 		return err
 	}
@@ -89,8 +102,14 @@ func IncFollowerCnt(ctx context.Context, hostId int64) error {
 }
 
 func DecFollowerCnt(ctx context.Context, hostId int64) error {
-	key := fmt.Sprintf("follower_count:%d", hostId)
-	_, err := storage.RdbUserCount.Decr(ctx, key).Result()
+	followCnt, err := QueryFollowerCnt(hostId)
+	if err != nil {
+		return err
+	}
+	if *followCnt == 0 {
+		return errors.New("数量为0")
+	}
+	err = decFollowerCnt(ctx, hostId)
 	if err != nil {
 		return err
 	}
@@ -216,6 +235,41 @@ func addFollowingCnt(ctx context.Context, hostId int64, cnt int64) error {
 func addFollowerCnt(ctx context.Context, hostId int64, cnt int64) error {
 	key := fmt.Sprintf("follower_count:%d", hostId)
 	_, err := storage.RdbUserCount.Set(ctx, key, cnt, 0).Result()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func incFollowingCnt(ctx context.Context, hostId int64) error {
+	key := fmt.Sprintf("follow_count:%d", hostId)
+	_, err := storage.RdbUserCount.Incr(ctx, key).Result()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func decFollowingCnt(ctx context.Context, hostId int64) error {
+	key := fmt.Sprintf("follow_count:%d", hostId)
+	_, err := storage.RdbUserCount.Decr(ctx, key).Result()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func incFollowerCnt(ctx context.Context, hostId int64) error {
+	key := fmt.Sprintf("follower_count:%d", hostId)
+	_, err := storage.RdbUserCount.Incr(ctx, key).Result()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func decFollowerCnt(ctx context.Context, hostId int64) error {
+	key := fmt.Sprintf("follower_count:%d", hostId)
+	_, err := storage.RdbUserCount.Decr(ctx, key).Result()
 	if err != nil {
 		return err
 	}
