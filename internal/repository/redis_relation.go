@@ -37,7 +37,16 @@ func FollowAction(hostId int64, guestId int64) error {
 	hostIdStr := strconv.FormatInt(hostId, 10)
 	guestIdStr := strconv.FormatInt(guestId, 10)
 	followStateIdStr := hostIdStr + ":1"
-	err := storage.RdbFollower.SAdd(context.Background(), guestIdStr, followStateIdStr).Err()
+	unfollowStateIdStr := hostIdStr + ":0"
+	isUnfollowRes, err := storage.RdbFollower.SIsMember(context.Background(), guestIdStr, unfollowStateIdStr).Result()
+	if isUnfollowRes {
+		//先删
+		err := storage.RdbFollower.SRem(context.Background(), guestIdStr, unfollowStateIdStr).Err()
+		if err != nil {
+			return err
+		}
+	}
+	err = storage.RdbFollower.SAdd(context.Background(), guestIdStr, followStateIdStr).Err()
 	if err != nil {
 		return err
 	}
