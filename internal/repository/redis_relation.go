@@ -77,7 +77,7 @@ func SaveFollowRelationToDB(wg *sync.WaitGroup, cursor *uint64) error {
 	}
 	*cursor = res
 	for _, key := range keys {
-		hostId, err := strconv.ParseInt(key, 10, 64)
+		guestId, err := strconv.ParseInt(key, 10, 64)
 		if err != nil {
 			return err
 		}
@@ -95,7 +95,7 @@ func SaveFollowRelationToDB(wg *sync.WaitGroup, cursor *uint64) error {
 			return err
 		}
 		for _, state := range stateList {
-			guestId, flag, err := split(state)
+			hostId, flag, err := split(state)
 			if err != nil {
 				return err
 			}
