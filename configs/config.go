@@ -1,6 +1,13 @@
 package configs
 
+import (
+	conf "douyin-lite/configs/locales"
+)
+
 func Init() error {
+
+	conf.InitConfig()
+
 	// 初始化数据库
 	if err := DbInit(); err != nil {
 		return err

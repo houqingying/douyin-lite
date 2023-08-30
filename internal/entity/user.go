@@ -5,14 +5,10 @@ import (
 	"errors"
 	"sync"
 
+	conf "douyin-lite/configs/locales"
 	"douyin-lite/pkg/snowflake"
 
 	"gorm.io/gorm"
-)
-
-const (
-	startTime = "2006-01-02"
-	machineID = 1
 )
 
 type User struct {
@@ -61,7 +57,7 @@ func (user *User) BeforeCreate(tx *gorm.DB) error {
 }
 
 func (*UserDao) CreateUser(name string) error {
-	err := snowflake.InitSnowflakeNode(startTime, machineID)
+	err := snowflake.InitSnowflakeNode(conf.Config.System.StartTime, int64(conf.Config.System.MachineID))
 	if err != nil {
 		return err
 	}
@@ -78,7 +74,7 @@ func (*UserDao) CreateUser(name string) error {
 }
 
 func (*UserDao) CreateRegisterUser(name string, password string) (*User, error) {
-	err := snowflake.InitSnowflakeNode(startTime, machineID)
+	err := snowflake.InitSnowflakeNode(conf.Config.System.StartTime, int64(conf.Config.System.MachineID))
 	if err != nil {
 		return nil, err
 	}
