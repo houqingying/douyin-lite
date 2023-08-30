@@ -47,18 +47,21 @@ func StartTimer(ticker *time.Ticker) error {
 			var err error
 			//定时任务开启
 			wg.Add(3)
+			// 定时任务: 每隔一段时间将Redis的FollowCnt写到DB
 			go func() {
 				err = repository.SaveFollowCntToDB(&wg, &cursor1)
 				if err != nil {
 					panic(err)
 				}
 			}()
+			// 定时任务: 每隔一段时间将Redis的FollowerCnt写到DB
 			go func() {
 				err = repository.SaveFollowerCntToDB(&wg, &cursor2)
 				if err != nil {
 					panic(err)
 				}
 			}()
+			// 定时任务: 每隔一段时间将Redis的FollowRelation写到DB
 			go func() {
 				err = repository.SaveFollowRelationToDB(&wg, &cursor3)
 				if err != nil {
