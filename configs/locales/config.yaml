@@ -6,7 +6,7 @@ mysql:
   default:
     username: "douyin"                                                                           # 账号
     password: "douyin@2023"                                                                      # 密码
-    host: "douyin@2023"                                                                          # 数据库地址，可以是Ip或者域名
+    host: "39.105.199.147"                                                                          # 数据库地址，可以是Ip或者域名
     port: "3306"                                                                                 # 数据库端口
     dbname: "douyin"
     parameters: "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true&timeout=10s" # 连接超时，10秒
