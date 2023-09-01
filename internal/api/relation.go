@@ -63,8 +63,8 @@ func RelationActionHandler(c *gin.Context) {
 }
 
 type FollowListResp struct {
-	Code string `json:"status_code"`
-	Msg  string `json:"status_msg"`
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 	*follow_service2.FollowListInfo
 }
 
@@ -83,27 +83,27 @@ func QueryFollowList(hostIdStr string) (*FollowListResp, error) {
 	hostId, err := strconv.ParseInt(hostIdStr, 10, 64)
 	if err != nil {
 		return &FollowListResp{
-			Code: "-1",
-			Msg:  err.Error(),
+			StatusCode: -1,
+			StatusMsg:  err.Error(),
 		}, err
 	}
 	followListData, err := follow_service2.QueryFollowListInfo(int64(uint(hostId)))
 	if err != nil {
 		return &FollowListResp{
-			Code: "-1",
-			Msg:  err.Error(),
+			StatusCode: -1,
+			StatusMsg:  err.Error(),
 		}, err
 	}
 	return &FollowListResp{
-		Code:           "0",
-		Msg:            "success",
+		StatusCode:     0,
+		StatusMsg:      "success",
 		FollowListInfo: followListData,
 	}, nil
 }
 
 type FollowerListResp struct {
-	Code string `json:"status_code"`
-	Msg  string `json:"status_msg"`
+	StatusCode int32  `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 	*follow_service2.FollowerListInfo
 }
 
@@ -122,20 +122,20 @@ func QueryFollowerList(hostIdStr string) (*FollowerListResp, error) {
 	hostId, err := strconv.ParseInt(hostIdStr, 10, 64)
 	if err != nil {
 		return &FollowerListResp{
-			Code: "-1",
-			Msg:  err.Error(),
+			StatusCode: -1,
+			StatusMsg:  err.Error(),
 		}, err
 	}
 	followListData, err := follow_service2.QueryFollowerListInfo(int64(uint(hostId)))
 	if err != nil {
 		return &FollowerListResp{
-			Code: "-1",
-			Msg:  err.Error(),
+			StatusCode: -1,
+			StatusMsg:  err.Error(),
 		}, err
 	}
 	return &FollowerListResp{
-		Code:             "0",
-		Msg:              "success",
+		StatusCode:       0,
+		StatusMsg:        "success",
 		FollowerListInfo: followListData,
 	}, nil
 }
