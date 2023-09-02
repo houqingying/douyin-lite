@@ -20,6 +20,7 @@ type VideoVO struct {
 	FavoriteCount int64           `json:"favorite_count,omitempty"`
 	CommentCount  int64           `json:"comment_count,omitempty"`
 	Title         string          `json:"title,omitempty"`
+	IsFavorite    bool            `json:"is_favorite,omitempty"`
 }
 type FeedVideoListVO struct {
 	Videos   []VideoVO `json:"video_list,omitempty"`
@@ -28,16 +29,16 @@ type FeedVideoListVO struct {
 
 type QueryFeedVideoListFlow struct {
 	latestTime time.Time
-
-	videos   []*entity.Video
-	nextTime int64
+	userId     int64
+	videos     []*entity.Video
+	nextTime   int64
 }
 
-func QueryFeedVideoList(latestTime time.Time) (*FeedVideoListVO, error) {
-	return NewQueryFeedVideoListFlow(latestTime).Do()
+func QueryFeedVideoList(userId int64, latestTime time.Time) (*FeedVideoListVO, error) {
+	return NewQueryFeedVideoListFlow(userId, latestTime).Do()
 }
-func NewQueryFeedVideoListFlow(latestTime time.Time) *QueryFeedVideoListFlow {
-	return &QueryFeedVideoListFlow{latestTime: latestTime}
+func NewQueryFeedVideoListFlow(userId int64, latestTime time.Time) *QueryFeedVideoListFlow {
+	return &QueryFeedVideoListFlow{userId: userId, latestTime: latestTime}
 }
 
 func (q *QueryFeedVideoListFlow) Do() (*FeedVideoListVO, error) {
@@ -63,7 +64,7 @@ func (q *QueryFeedVideoListFlow) prepareData() error {
 	if err != nil {
 		return err
 	}
-	latestTime, _ := FillVideoListFields(&q.videos) //不是致命错误，不返回
+	latestTime, _ := FillVideoListFields(&q.videos, q.userId) //不是致命错误，不返回
 	//准备好时间戳
 	if latestTime != nil {
 		fmt.Println(*latestTime)
@@ -75,11 +76,11 @@ func (q *QueryFeedVideoListFlow) prepareData() error {
 }
 func (q *QueryFeedVideoListFlow) packData() (*FeedVideoListVO, error) {
 	return &FeedVideoListVO{
-		Videos:   q.Video2VideoVO(),
+		Videos:   q.Video2VideoVO(q.userId),
 		NextTime: q.nextTime,
 	}, nil
 }
-func (q *QueryFeedVideoListFlow) Video2VideoVO() []VideoVO {
+func (q *QueryFeedVideoListFlow) Video2VideoVO(userId int64) []VideoVO {
 	var videoVOList = make([]VideoVO, len(q.videos))
 	for i, video := range q.videos {
 		videoVO := VideoVO{
@@ -91,18 +92,19 @@ func (q *QueryFeedVideoListFlow) Video2VideoVO() []VideoVO {
 			CommentCount:  int64(video.CommentCount),
 			Title:         video.Title,
 		}
+		videoVO.IsFavorite, _ = entity.NewFavoriteDaoInstance().Query_Check_Favorite(userId, videoVO.Id)
 		videoVOList[i] = videoVO
 	}
 	return videoVOList
 }
-func FillVideoListFields(videos *[]*entity.Video) (*time.Time, error) {
+func FillVideoListFields(videos *[]*entity.Video, userId int64) (*time.Time, error) {
 	size := len(*videos)
 	if videos == nil || size == 0 {
 		return nil, errors.New("util.FillVideoListFields videos为空")
 	}
 	latestTime := (*videos)[size-1].CreatedAt //获取最近的投稿时间
 	for i := 0; i < size; i++ {
-		userInfo, err := user_service.QueryAUserInfo2(int64((*videos)[i].AuthorId))
+		userInfo, err := user_service.QueryAUserInfo1(userId, int64((*videos)[i].AuthorId))
 		if err != nil {
 			continue
 		}
