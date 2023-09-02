@@ -17,13 +17,14 @@ type VideoListResponse struct {
 }
 
 type Video struct {
-	AuthorId      int64
-	PlayUrl       string
-	CoverUrl      string
-	FavoriteCount int64
-	CommentCount  int64
-	Title         string
-	Author        *Author
+	Id            int64   `json:"id,omitempty"`
+	Author        *Author `json:"author,omitempty"`
+	PlayUrl       string  `json:"play_url,omitempty"`
+	CoverUrl      string  `json:"cover_url,omitempty"`
+	FavoriteCount int64   `json:"favorite_count,omitempty"`
+	IsFavorite    bool    `json:"is_favorite,omitempty"`
+	CommentCount  int64   `json:"comment_count,omitempty"`
+	Title         string  `json:"title,omitempty"`
 }
 
 type Author struct {
@@ -101,7 +102,8 @@ func PublishList(c *gin.Context) {
 	var videoList = make([]*Video, len(videos))
 	for i := 0; i < len(videos); i++ {
 		videoList[i] = &Video{
-			AuthorId:      videos[i].AuthorId,
+			IsFavorite:    true,
+			Id:            videos[i].ID,
 			PlayUrl:       videos[i].PlayUrl,
 			CoverUrl:      videos[i].CoverUrl,
 			FavoriteCount: videos[i].FavoriteCount,

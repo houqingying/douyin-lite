@@ -1,12 +1,9 @@
 package ffmpeg
 
 import (
-	"bytes"
 	"fmt"
-	"os"
-
-	"github.com/disintegration/imaging"
-	ffmpeg "github.com/u2takey/ffmpeg-go"
+	"golang.org/x/crypto/ssh"
+	"log"
 )
 
 // ReadFrameAsJpeg 从视频文件中读取指定帧并将其保存为 JPEG 图像。
@@ -14,31 +11,41 @@ import (
 // outImagePath 是保存 JPEG 图像的输出路径。
 // frameNum 是要提取的帧的帧号。
 // 返回可能的错误。
-func ReadFrameAsJpeg(inFileName, outImagePath string, frameNum int) (err error) {
-	// 创建一个用于存储 ffmpeg 输出的内存缓冲区。
-	reader := bytes.NewBuffer(nil)
+func ReadFrameAsJpeg(inFileName, outImagePath string) (err error) {
+	// SSH连接配置
+	serverAddr := "47.102.185.103:22"
+	username := "root"
+	password := "a#A6@FLVaDnsyH"
 
-	// 使用 ffmpeg 库执行以下操作：
-	// 1. 输入视频文件 inFileName。
-	// 2. 使用 select 过滤器选择帧号大于等于 frameNum 的帧。
-	// 3. 输出一帧图像到标准输出，格式为 JPEG。
-	if err = ffmpeg.Input(inFileName).
-		Filter("select", ffmpeg.Args{fmt.Sprintf("gte(n,%d)", frameNum)}).
-		Output("pipe:", ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "mjpeg"}).
-		WithOutput(reader, os.Stdout).
-		Run(); err != nil {
-		return err
+	// 创建SSH客户端配置
+	config := &ssh.ClientConfig{
+		User: username,
+		Auth: []ssh.AuthMethod{
+			ssh.Password(password),
+		},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(), // 不验证服务器主机密钥
 	}
 
-	// 使用 imaging 库解码从 ffmpeg 输出中读取的 JPEG 数据。
-	img, err := imaging.Decode(reader)
+	// 连接SSH服务器
+	client, err := ssh.Dial("tcp", serverAddr, config)
 	if err != nil {
+		log.Fatalf("无法连接到SSH服务器：%v", err)
+	}
+	defer client.Close()
+
+	// 执行FFmpeg截图命令
+	ffmpegCommand := fmt.Sprintf("ffmpeg -i %s -ss 00:00:01 -vframes 1 %s", inFileName, outImagePath)
+
+	session, err := client.NewSession()
+	if err != nil {
+		log.Fatalf("无法创建SSH会话：%v", err)
 		return err
 	}
+	defer session.Close()
 
-	// 将解码后的图像保存到指定的输出路径。
-	err = imaging.Save(img, outImagePath)
+	_, err = session.CombinedOutput(ffmpegCommand)
 	if err != nil {
+		log.Fatalf("FFmpeg截图命令执行失败：%v", err)
 		return err
 	}
 
