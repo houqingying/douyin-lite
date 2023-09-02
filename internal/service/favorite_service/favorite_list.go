@@ -2,45 +2,30 @@ package favorite_service
 
 import (
 	"douyin-lite/internal/entity"
-	"douyin-lite/internal/service/user_service"
 	"errors"
 )
 
 type FavoriteListInfo struct {
-	UserInfoList []*QueryFavoriteInfo `json:"user_list"`
+	UserInfoList []*entity.UserInfo `json:"user_list"`
 }
 
 func QueryFavoriteListInfo(hostId int64) (*FavoriteListInfo, error) {
 	return NewQueryFavoriteListInfoFlow(hostId).Do()
 }
 
-type QueryFavoriteInfo struct {
-	ID              int64  `json:"id"`
-	Name            string `json:"name"`
-	Avatar          string `json:"avatar"`
-	BackgroundImage string `json:"background_image"`
-	Signature       string `json:"signature"`
-	FollowingCount  int64  `json:"follow_count"`
-	FollowerCount   int64  `json:"follower_count"`
-	IsFollow        bool   `json:"is_follow"`
-	TotalFavorited  int64  `json:"total_favorited"`
-	WorkCount       int64  `json:"work_count"`
-	FavoriteCount   int64  `json:"favorite_count"`
-}
-
-type QueryFavoriteListInfoFlow struct {
+type QueryFavoriteInfoFlow struct {
 	hostId           int64
 	favoriteListInfo *FavoriteListInfo
-	favoriteinfoList []*QueryFavoriteInfo
+	userinfoList     []*entity.UserInfo
 }
 
-func NewQueryFavoriteListInfoFlow(hostId int64) *QueryFavoriteListInfoFlow {
-	return &QueryFavoriteListInfoFlow{
+func NewQueryFavoriteListInfoFlow(hostId int64) *QueryFavoriteInfoFlow {
+	return &QueryFavoriteInfoFlow{
 		hostId: hostId,
 	}
 }
 
-func (f *QueryFavoriteListInfoFlow) Do() (*FavoriteListInfo, error) {
+func (f *QueryFavoriteInfoFlow) Do() (*FavoriteListInfo, error) {
 	err := f.checkParam()
 	if err != nil {
 		return nil, err
@@ -49,38 +34,45 @@ func (f *QueryFavoriteListInfoFlow) Do() (*FavoriteListInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	// err = f.packFavoriteInfo()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	err = f.packFavoriteInfo()
+	if err != nil {
+		return nil, err
+	}
 	return f.favoriteListInfo, nil
 }
 
-func (f *QueryFavoriteListInfoFlow) checkParam() error {
+func (f *QueryFavoriteInfoFlow) checkParam() error {
 	if f.hostId <= 0 {
 		return errors.New("host id should be larger than 0")
 	}
 	return nil
 }
 
-func (f *QueryFavoriteListInfoFlow) prepareFavoriteInfo() error {
-	videoList, err := entity.NewFavoriteDaoInstance().Query_Favorite_List(f.hostId)
+func (f *QueryFavoriteInfoFlow) prepareFavoriteInfo() error {
+	userList, err := entity.NewFavoriteDaoInstance().Query_Favorite_List(f.hostId)
 	if err != nil {
 		return errors.New("DB Find Favorite Error")
 	}
-	var AuthorInfoList = make([]*QueryFavoriteInfo, len(videoList))
-	for i := 0; i < len(videoList); i++ {
-		AuthorId := videoList[i].AuthorId
-		authorInfo, _ := user_service.QueryAUserInfo2(AuthorId)
-		AuthorInfoList = append(AuthorInfoList, (*QueryFavoriteInfo)(authorInfo))
+	var userInfoList = make([]*entity.UserInfo, len(userList))
+	for i := 0; i < len(userList); i++ {
+		userInfoList[i] = &entity.UserInfo{}
+		userInfoList[i].ID = int64(userList[i].ID)
+		userInfoList[i].Name = userList[i].Title
+		userInfoList[i].FavoriteCount = int64(userList[i].FavoriteCount)
 	}
-	f.favoriteinfoList = AuthorInfoList
+	f.userinfoList = userInfoList
 	return nil
 }
 
-// func (f *QueryFavoriteListInfoFlow) packFavoriteInfo() error {
-// 	f.favoriteListInfo = &FavoriteListInfo{
-// 		UserInfoList: f.QueryFavoriteInfo,
-// 	}
-// 	return nil
-// }
+func (f *QueryFavoriteInfoFlow) packFavoriteInfo() error {
+	f.favoriteListInfo = &FavoriteListInfo{
+		UserInfoList: f.userinfoList,
+	}
+	return nil
+}
+
+// Favorite_List 获取点赞列表
+//func Favorite_List(userId int64) ([]repository.Video, error) {
+//	videoList, err := repository.NewFavoriteDaoInstance().Query_Favorite_List(userId)
+//	return videoList, err
+//}
