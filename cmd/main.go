@@ -9,7 +9,7 @@ import (
 func main() {
 
 	if err := configs.Init(); err != nil {
-		fmt.Println("初始化失败")
+		fmt.Printf("初始化失败:%s", err.Error())
 		return
 	}
 
