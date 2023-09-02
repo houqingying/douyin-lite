@@ -80,14 +80,24 @@ func Publish(c *gin.Context, userId int64, title string, fileHeader *multipart.F
 		return
 	}
 
-	//更改用户数据在数据库中
-	/*if err = video.SaveVideo(); err != nil {
+	// 获取发布总数
+	count, err := video.GetVideoCount(userId)
+	if err != nil {
 		c.JSON(http.StatusOK, configs.Response{
 			StatusCode: http.StatusInternalServerError,
 			StatusMsg:  configs.ErrDatabaseInsertFailed,
 		})
 		return
-	}*/
+	}
+
+	user := entity.User{ID: userId}
+	if err = user.UpdateUserWorkCount(count); err != nil {
+		c.JSON(http.StatusOK, configs.Response{
+			StatusCode: http.StatusInternalServerError,
+			StatusMsg:  configs.ErrDatabaseInsertFailed,
+		})
+		return
+	}
 
 	// 删除本地临时文件
 	if err = os.Remove(filePath); err != nil {

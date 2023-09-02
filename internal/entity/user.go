@@ -137,3 +137,7 @@ func (*UserDao) QueryUserById(userId int64) (*User, error) {
 	}
 	return &qUser, nil
 }
+
+func (u *User) UpdateUserWorkCount(count int64) error {
+	return storage.DB.Model(&User{}).Where("id = ?", u.ID).Update("work_count", count).Error
+}

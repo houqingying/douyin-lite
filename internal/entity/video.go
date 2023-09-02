@@ -51,3 +51,8 @@ func (v *Video) GetVideoList(userId int64) (videos []*Video, err error) {
 	err = storage.DB.Model(&v).Where("author_id = ?", userId).Find(&videos).Error
 	return
 }
+
+func (v *Video) GetVideoCount(userId int64) (count int64, err error) {
+	err = storage.DB.Model(&v).Where("author_id = ?", userId).Count(&count).Error
+	return
+}
