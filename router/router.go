@@ -56,10 +56,10 @@ func Init() *gin.Engine {
 		publishGroup := douyinGroup.Group("/publish")
 		{
 			publishGroup.POST("/action/", middleware.JWTMiddleWare(), api.Publish)
-			publishGroup.GET("/list/", api.PublishList)
+			publishGroup.GET("/list/", middleware.JWTMiddleWare(), api.PublishList)
 		}
 
-		douyinGroup.GET("/feed/", api.Feed)
+		douyinGroup.GET("/feed/", middleware.JWTMiddleWare(), api.Feed)
 	}
 
 	return r
