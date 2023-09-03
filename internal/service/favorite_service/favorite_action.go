@@ -2,22 +2,26 @@ package favorite_service
 
 import (
 	"douyin-lite/internal/entity"
+	"fmt"
 )
 
 // Favorite_Action 点赞操作
 func Favorite_Action(userId int64, videoId int64, actionType int64) (err error) {
 	//1-点赞
 	if actionType == 1 {
+		fmt.Println("点赞")
 		favoriteAction := entity.NewFavoriteDaoInstance()
 		//找不到时会返回错误
 		//如果没有记录-Create，如果有了记录-修改State
 		result, favoriteExist := favoriteAction.IsFavoriteExist(userId, videoId)
 		if !result { //不存在
+			fmt.Println("记录不存在")
 			err := favoriteAction.CreateFavorite(userId, videoId)
 			if err != nil {
 				return err
 			}
 			favoriteAction.UpdateFavoriteCount(videoId, 1)
+			fmt.Println("2222")
 			//userId的favorite_count增加
 			if err := favoriteAction.AddFavoriteCount(userId); err != nil {
 				return err
@@ -31,6 +35,7 @@ func Favorite_Action(userId int64, videoId int64, actionType int64) (err error) 
 				return err
 			}
 		} else { //存在
+			fmt.Println("记录存在")
 			if favoriteExist.State == 0 { //state为0-video的favorite_count加1
 				favoriteAction.UpdateFavoriteCount(videoId, 1)
 				favoriteAction.UpdateFavoriteState(videoId, 1)
@@ -51,6 +56,7 @@ func Favorite_Action(userId int64, videoId int64, actionType int64) (err error) 
 			return nil
 		}
 	} else { //2-取消点赞
+		fmt.Printf("取消点赞")
 		favoriteCancel := entity.NewFavoriteDaoInstance()
 		result, favoriteExist := favoriteCancel.IsFavoriteExist(userId, videoId)
 		if !result { //找不到这条记录，取消点赞失败，创建记录

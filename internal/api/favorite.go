@@ -2,7 +2,9 @@ package api
 
 import (
 	favorite_service2 "douyin-lite/internal/service/favorite_service"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"k8s.io/klog"
 	"net/http"
 	"strconv"
 )
@@ -15,17 +17,19 @@ type FavoriteActionResp struct {
 func Favorite(c *gin.Context) {
 	// klog.Info("post relation action")
 	// get guest_id
-	user_Id, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
-	if err != nil {
-		c.JSON(http.StatusOK, FavoriteActionResp{
-			StatusCode: 403,
-			StatusMsg:  "用户不存在",
+	user_Id, got := c.Get("user_id")
+	if !got {
+		klog.Errorf("user_id didn't set properly, something may be wrong with the jwt")
+		c.JSON(http.StatusOK, SendMessageResp{
+			Code: 403,
+			Msg:  "user_id is invalid",
 		})
 		return
 	}
-	// get action_type
+	user_IdInt64, _ := user_Id.(int64)
 	actionType, err := strconv.ParseInt(c.Query("action_type"), 10, 64)
-	if err != nil || (actionType != 1 && actionType != 0) {
+	if err != nil || (actionType != 1 && actionType != 2) {
+		fmt.Println("actionType=?", actionType)
 		c.JSON(http.StatusOK, FavoriteActionResp{
 			StatusCode: -1,
 			StatusMsg:  "操作无效",
@@ -41,7 +45,7 @@ func Favorite(c *gin.Context) {
 		return
 	}
 
-	err = favorite_service2.Favorite_Action(user_Id, video_id, actionType)
+	err = favorite_service2.Favorite_Action(user_IdInt64, video_id, actionType)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, FavoriteActionResp{
 			StatusCode: 1,

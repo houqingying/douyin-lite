@@ -2,6 +2,7 @@ package entity
 
 import (
 	"douyin-lite/pkg/storage"
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"sync"
 )
@@ -36,7 +37,7 @@ func (*FavoriteDao) Query_Favorite_List(userId int64) ([]Video, error) {
 	//查询当前用户点赞视频
 	var favoriteList []Favorite
 	videoList := make([]Video, 0)
-	if err := storage.DB.Table("favorite").Where("user_id=? AND state=?", userId, 1).Find(&favoriteList).Error; err != nil { //找不到记录
+	if err := storage.DB.Table("favorites").Where("user_id=? AND state=?", userId, 1).Find(&favoriteList).Error; err != nil { //找不到记录
 		return videoList, nil
 	}
 	for _, m := range favoriteList {
@@ -62,6 +63,7 @@ func (*FavoriteDao) Query_Check_Favorite(userId int64, videoId int64) (bool, err
 }
 
 func (*FavoriteDao) AddFavoriteCount(HostId int64) error {
+	fmt.Println("hostid=?", HostId)
 	if err := storage.DB.Model(&User{}).Where("id=?", HostId).
 		Update("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error; err != nil {
 		return err
@@ -106,6 +108,7 @@ func (*FavoriteDao) IsFavoriteExist(userId int64, videoId int64) (bool, Favorite
 	var favoriteExist = Favorite{} //找不到时会返回错误
 	result := storage.DB.Table("favorite").Where("user_id = ? AND video_id = ?", userId, videoId).First(&favoriteExist)
 	if result != nil {
+		fmt.Println("result=?", result)
 		return false, favoriteExist
 	}
 	return true, favoriteExist
@@ -118,17 +121,19 @@ func (*FavoriteDao) CreateFavorite(userId int64, videoId int64) error {
 		State:   1,
 	}
 	err := storage.DB.Create(&newFavorite).Error
+	fmt.Printf("创建成功")
 	if err != nil {
+		fmt.Println("创建失败")
 		return err
 	}
 	return nil
 }
 
-func (*FavoriteDao) UpdateFavoriteCount(VideoId int64, count int8) {
-	storage.DB.Table("video").Where("id = ?", VideoId).
-		Update("favorite_count", gorm.Expr("favorite_count + ?", count))
+func (*FavoriteDao) UpdateFavoriteCount(VideoId int64, count int8) error {
+	return storage.DB.Table("video").Where("id = ?", VideoId).
+		Update("favorite_count", gorm.Expr("favorite_count + ?", count)).Error
 }
 
-func (*FavoriteDao) UpdateFavoriteState(VideoId int64, state int32) {
-	storage.DB.Table("favorite").Where("video_id = ?", VideoId).Update("state", state)
+func (*FavoriteDao) UpdateFavoriteState(VideoId int64, state int32) error {
+	return storage.DB.Table("favorite").Where("video_id = ?", VideoId).Update("state", state).Error
 }
