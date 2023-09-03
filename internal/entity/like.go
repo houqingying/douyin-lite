@@ -62,22 +62,41 @@ func (*FavoriteDao) Query_Check_Favorite(userId int64, videoId int64) (bool, err
 	return true, nil
 }
 
-func (*FavoriteDao) AddFavoriteCount(HostId int64) error {
-	fmt.Println("hostid=?", HostId)
+func (*FavoriteDao) AddFavoriteCount(HostId int64) {
+	/*fmt.Println("hostid=?", HostId)
 	if err := storage.DB.Model(&User{}).Where("id=?", HostId).
 		Update("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error; err != nil {
 		return err
 	}
-	return nil
+	return nil*/
+	result := storage.DB.Exec("UPDATE user SET favorite_count = favorite_count + 1 WHERE id = ?", HostId)
+
+	if result.Error != nil {
+		// 处理更新操作失败的情况
+		fmt.Println("更新失败err", result.Error)
+	} else {
+		// 更新操作成功
+		fmt.Println("更新ing")
+	}
 }
 
-func (*FavoriteDao) AddTotalFavorited(HostId int64) error {
-	if err := storage.DB.Model(&User{}).Where("id=?", HostId).
-		Update("total_favorited", gorm.Expr("total_favorited + ?", 1)).Error; err != nil {
-		return err
+func (*FavoriteDao) AddTotalFavorited(HostId int64) {
+	//if err := storage.DB.Model(&User{}).Where("id=?", HostId).
+	//	Update("total_favorited", gorm.Expr("total_favorited + ?", 1)).Error; err != nil {
+	//	return err
+	//}
+	//return nil
+	result := storage.DB.Exec("UPDATE user SET total_favorited = total_favorited + 1 WHERE id = ?", HostId)
+
+	if result.Error != nil {
+		// 处理更新操作失败的情况
+		fmt.Println("更新失败err", result.Error)
+	} else {
+		// 更新操作成功
+		fmt.Println("更新ing")
 	}
-	return nil
 }
+
 func (*FavoriteDao) GetVideoAuthor(videoId int64) (int64, error) {
 	var video Video
 	if err := storage.DB.Table("video").Where("id = ?", videoId).Find(&video).Error; err != nil {
@@ -86,22 +105,48 @@ func (*FavoriteDao) GetVideoAuthor(videoId int64) (int64, error) {
 	return video.AuthorId, nil
 }
 
-func (*FavoriteDao) ReduceFavoriteCount(HostId int64) error {
-	if err := storage.DB.Model(&User{}).
-		Where("id=?", HostId).
-		Update("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error; err != nil {
-		return err
+func (*FavoriteDao) ReduceFavoriteCount(HostId int64) {
+	//if err := storage.DB.Model(&User{}).
+	//	Where("id=?", HostId).
+	//	Update("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error; err != nil {
+	//	return err
+	//}
+	//return nil
+
+	query := "UPDATE user SET favorite_count = favorite_count - 1 WHERE id = ?"
+
+	// 使用 Exec 方法执行更新操作
+	result := storage.DB.Exec(query, HostId)
+
+	if result.Error != nil {
+		// 处理更新操作失败的情况
+		fmt.Println("更新失败err", result.Error)
+	} else {
+		// 更新操作成功
+		fmt.Println("更新ing")
 	}
-	return nil
 }
 
-func (*FavoriteDao) ReduceTotalFavorited(HostId int64) error {
-	if err := storage.DB.Model(&User{}).
-		Where("id=?", HostId).
-		Update("total_favorited", gorm.Expr("total_favorited - ?", 1)).Error; err != nil {
-		return err
+func (*FavoriteDao) ReduceTotalFavorited(HostId int64) {
+	//if err := storage.DB.Table("user").
+	//	Where("id = ?", HostId).
+	//	Update("total_favorited", gorm.Expr("total_favorited - ?", 1)).Error; err != nil {
+	//	return err
+	//}
+	//return nil
+
+	query := "UPDATE user SET total_favorited = total_favorited - 1 WHERE id = ?"
+
+	// 使用 Exec 方法执行更新操作
+	result := storage.DB.Exec(query, HostId)
+
+	if result.Error != nil {
+		// 处理更新操作失败的情况
+		fmt.Println("更新失败err", result.Error)
+	} else {
+		// 更新操作成功
+		fmt.Println("更新ing")
 	}
-	return nil
 }
 
 func (*FavoriteDao) IsFavoriteExist(userId int64, videoId int64) (bool, Favorite) {
@@ -129,11 +174,30 @@ func (*FavoriteDao) CreateFavorite(userId int64, videoId int64) error {
 	return nil
 }
 
-func (*FavoriteDao) UpdateFavoriteCount(VideoId int64, count int8) error {
-	return storage.DB.Table("video").Where("id = ?", VideoId).
-		Update("favorite_count", gorm.Expr("favorite_count + ?", count)).Error
+func (*FavoriteDao) UpdateFavoriteCount(VideoId int64, count int64) {
+	//result := storage.DB.Table("video").
+	//	Where("id = ?", VideoId).
+	//	Update("favorite_count", gorm.Expr("favorite_count + ?", count))
+	result := storage.DB.Exec("UPDATE video SET favorite_count = favorite_count + ? WHERE id = ?", count, VideoId)
+
+	if result.Error != nil {
+		// 处理更新操作失败的情况
+		fmt.Println("更新失败err", result.Error)
+	} else {
+		// 更新操作成功
+		fmt.Println("更新ing")
+	}
+
 }
 
-func (*FavoriteDao) UpdateFavoriteState(VideoId int64, state int32) error {
-	return storage.DB.Table("favorite").Where("video_id = ?", VideoId).Update("state", state).Error
+func (*FavoriteDao) UpdateFavoriteState(VideoId int64, state int32) {
+	//return storage.DB.Table("favorite").Where("video_id = ?", VideoId).Update("state", state).Error
+	result := storage.DB.Exec("UPDATE favorite SET state = ? WHERE video_id = ?", state, VideoId)
+	if result.Error != nil {
+		// 处理更新操作失败的情况
+		fmt.Println("更新失败err", result.Error)
+	} else {
+		// 更新操作成功
+		fmt.Println("更新ing")
+	}
 }

@@ -66,8 +66,17 @@ type FavoriteListResp struct {
 }
 
 func FavoriteList(c *gin.Context) {
-	userIdStr := c.Query("user_id")
-	followListResp, err := QueryFavoriteList(userIdStr)
+	user_Id, got := c.Get("user_id")
+	if !got {
+		klog.Errorf("user_id didn't set properly, something may be wrong with the jwt")
+		c.JSON(http.StatusOK, SendMessageResp{
+			Code: 403,
+			Msg:  "user_id is invalid",
+		})
+		return
+	}
+	user_IdInt64, _ := user_Id.(int64)
+	followListResp, err := QueryFavoriteList(user_IdInt64)
 	if err != nil {
 		c.JSON(http.StatusOK, followListResp)
 		return
@@ -75,15 +84,15 @@ func FavoriteList(c *gin.Context) {
 	c.JSON(http.StatusOK, followListResp)
 }
 
-func QueryFavoriteList(hostIdStr string) (*FavoriteListResp, error) {
-	hostId, err := strconv.ParseInt(hostIdStr, 10, 64)
-	if err != nil {
-		return &FavoriteListResp{
-			Code: "403",
-			Msg:  "找不到用户",
-		}, err
-	}
-	favoriteListData, err := favorite_service2.QueryFavoriteListInfo(hostId)
+func QueryFavoriteList(hostInt64 int64) (*FavoriteListResp, error) {
+	//hostId, err := strconv.ParseInt(hostIdStr, 10, 64)
+	//if err != nil {
+	//	return &FavoriteListResp{
+	//		Code: "403",
+	//		Msg:  "找不到用户",
+	//	}, err
+	//}
+	favoriteListData, err := favorite_service2.QueryFavoriteListInfo(hostInt64)
 	if err != nil {
 		return &FavoriteListResp{
 			Code: "-1",
