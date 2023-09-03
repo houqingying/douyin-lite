@@ -74,12 +74,13 @@ func (*MessageDao) QueryMessage(fromUserId int64, toUserId int64) ([]*Message, e
 // QueryLastMessage QueryMessageByDate 查询数据库中fromUserId和toUserId间的最后一条聊天记录
 // @param 	fromUserId		int64		发送方用户Id
 // @param 	toUserId		int64		接收方用户Id
-// @return message *Message	消息记录
-// @return err		error					当执行出现错误时返回error，否则返回nil
+// @return 	message 		*Message	消息记录
+// @return 	err				error		当执行出现错误时返回error，否则返回nil
 func (*MessageDao) QueryLastMessage(fromUserId int64, toUserId int64) (*Message, error) {
 	message := Message{}
+	// 消息不存在有可能是合法行为，调用方需要捕捉gorm.ErrRecordNotFound，自行处理
 	err := storage.DB.Model(&Message{}).Where("(to_user_id=? and from_user_id=?) or (to_user_id=? and from_user_id=?)",
-		toUserId, fromUserId, fromUserId, toUserId).Order("create_at desc").First(&message).Error
+		toUserId, fromUserId, fromUserId, toUserId).Order("created_at desc").First(&message).Error
 
 	if err != nil {
 		return nil, err

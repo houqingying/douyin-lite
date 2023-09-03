@@ -3,6 +3,7 @@ package message_service
 import (
 	"douyin-lite/internal/entity"
 	"errors"
+	"strconv"
 )
 
 // MessageInfo 封装消息记录
@@ -58,7 +59,7 @@ func QueryMessage(fromUserId int64, toUserId int64) ([]*MessageInfo, error) {
 			ID:         int64(message.ID),
 			FromUserID: int64(message.FromUserId),
 			ToUserID:   int64(message.ToUserId),
-			CreateTime: message.CreatedAt.Format("2006-01-02 15:04:05"),
+			CreateTime: strconv.FormatInt(message.CreatedAt.Unix(), 10),
 			Content:    message.Content,
 		}
 		messageInfoList[i] = &messageInfo
@@ -81,7 +82,7 @@ func QueryLastMessage(fromUserId int64, toUserId int64) (*MessageInfo, error) {
 		ID:         int64(message.ID),
 		FromUserID: int64(message.FromUserId),
 		ToUserID:   int64(message.ToUserId),
-		CreateTime: message.CreatedAt.Format("2006-01-02 15:04:05"),
+		CreateTime: strconv.FormatInt(message.CreatedAt.Unix(), 10),
 		Content:    message.Content,
 	}
 	return &messageInfo, nil

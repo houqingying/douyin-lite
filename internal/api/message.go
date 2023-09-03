@@ -12,7 +12,7 @@ import (
 
 type SendMessageResp struct {
 	Code int32  `json:"status_code"`
-	Msg  string `json:"status_msg"`
+	Msg  string `json:"status_msg,omitempty"`
 }
 
 func Message(c *gin.Context) {
@@ -61,7 +61,7 @@ func Message(c *gin.Context) {
 
 type QueryMessageResp struct {
 	Code        int32                          `json:"status_code"`
-	Msg         string                         `json:"status_msg"`
+	Msg         string                         `json:"status_msg,omitempty"`
 	MessageList []*message_service.MessageInfo `json:"message_list"`
 }
 
@@ -84,6 +84,23 @@ func MessageList(c *gin.Context) {
 	toUserId, err := strconv.ParseInt(toUserIdStr, 10, 64)
 	if err != nil || toUserId < 0 {
 		c.JSON(http.StatusOK, QueryMessageResp{400, "to_user_id参数错误", nil})
+		return
+	}
+
+	// 获取pre_msg_time 并获取最后一条消息
+	preMsgTime, _ := strconv.ParseInt(c.Query("pre_msg_time"), 10, 64)
+	lastMsg, err := message_service.QueryLastMessage(fromUserId, toUserId)
+
+	if err != nil {
+		// 获取最后一条消息失败
+		c.JSON(http.StatusOK, QueryMessageResp{500, err.Error(), nil})
+		return
+	}
+
+	// 判断最后一条消息时间与pre_msg_time的关系，如果lastTime <= preMsgTime，则无需更新消息，返回空列表
+	lastTime, _ := strconv.ParseInt(lastMsg.CreateTime, 10, 64)
+	if lastTime <= preMsgTime {
+		c.JSON(http.StatusOK, QueryMessageResp{0, "暂时没有新消息", nil})
 		return
 	}
 

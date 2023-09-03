@@ -141,10 +141,9 @@ func QueryFollowerList(hostIdStr string) (*FollowerListResp, error) {
 }
 
 type FriendList struct {
-	StatusCode int32  `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
-
-	FriendInfoList *follow_service2.FriendListInfo `json:"friend_info_list,omitempty"`
+	StatusCode     int32                             `json:"status_code"`
+	StatusMsg      string                            `json:"status_msg"`
+	FriendInfoList []*follow_service2.FriendUserInfo `json:"user_list,omitempty"` // 修改，名称不符合接口要求……
 }
 
 func QueryFriendListHandler(c *gin.Context) {
@@ -175,6 +174,6 @@ func QueryFriendList(hostIdStr string) (*FriendList, error) {
 	return &FriendList{
 		StatusCode:     0,
 		StatusMsg:      "success",
-		FriendInfoList: friendListData,
+		FriendInfoList: friendListData.FrinedUserInfoList,
 	}, nil
 }
