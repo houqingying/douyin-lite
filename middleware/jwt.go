@@ -61,9 +61,9 @@ func JWTMiddleWare() gin.HandlerFunc {
 		if tokenStr == "" {
 			tokenStr = c.PostForm("token")
 		}
-		//用户不存在
+		//token未传递
 		if tokenStr == "" {
-			c.JSON(http.StatusOK, entity.CommonResponse{StatusCode: 401, StatusMsg: "用户不存在"})
+			c.JSON(http.StatusOK, entity.CommonResponse{StatusCode: 401, StatusMsg: "token未传递"})
 			c.Abort() //阻止执行
 			return
 		}

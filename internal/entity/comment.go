@@ -85,7 +85,8 @@ func (c *CommentDao) QueryCommentById(id uint) (*Comment, error) {
 // QueryCommentsByVideoId gets comments by video id
 func (c *CommentDao) QueryCommentsByVideoId(videoId int) ([]Comment, error) {
 	var comments []Comment
-	err := storage.DB.Where("video_id = ?", videoId).Find(&comments).Error
+	// sort by created_at desc
+	err := storage.DB.Where("video_id = ?", videoId).Order("created_at desc").Find(&comments).Error
 	if err != nil {
 		return nil, err
 	}
