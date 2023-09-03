@@ -25,8 +25,9 @@ func Feed(c *gin.Context) {
 	} else {
 		latestTime = time.Now()
 	}
-	//目前没有考虑用户登录的情况
-	videoList, err := video_service.QueryFeedVideoList(latestTime)
+	id, _ := c.Get("user_id")
+	userId, _ := id.(int64)
+	videoList, err := video_service.QueryFeedVideoList(userId, latestTime)
 	if err != nil {
 		c.JSON(http.StatusOK, FeedResp{
 			Code: -1,
