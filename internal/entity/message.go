@@ -37,11 +37,11 @@ func GetMessageDaoInstance() *MessageDao {
 
 // CreateMessage 定义MessageDao类型的发送消息方法，将接收到的消息保存到MySQL数据库
 // @auth	hqy			2023/08/17
-// @param	fromUserId	int64	发送方用户Id
-// @param	toUserId	int64	接收方用户Id
+// @param	fromUserId	uint	发送方用户Id
+// @param	toUserId	uint	接收方用户Id
 // @param	content		string	消息内容
 // @return	err			error	当执行出现错误时返回error，否则返回nil
-func (*MessageDao) CreateMessage(fromUserId int64, toUserId int64, content string) error {
+func (*MessageDao) CreateMessage(fromUserId uint, toUserId uint, content string) error {
 	message := Message{
 		FromUserId: fromUserId,
 		ToUserId:   toUserId,
@@ -53,16 +53,16 @@ func (*MessageDao) CreateMessage(fromUserId int64, toUserId int64, content strin
 
 // QueryMessage 查询数据库中fromUserId和toUserId间的所有聊天记录
 // @auth	hqy				2023/08/17
-// @param	fromUserId		int64		发送方用户Id
-// @param	toUserId		int64		接收方用户Id
+// @param	fromUserId		uint		发送方用户Id
+// @param	toUserId		uint		接收方用户Id
 // @return	messageList 	[]*Message	消息记录列表
 // @return	err				error		当执行出现错误时返回error，否则返回nil
-func (*MessageDao) QueryMessage(fromUserId int64, toUserId int64) ([]*Message, error) {
+func (*MessageDao) QueryMessage(fromUserId uint, toUserId uint) ([]*Message, error) {
 	var messageList []*Message
 
 	// 查询表中发送方和接收方参数均在 {fromUserId, toUserId}中的记录
 	err := storage.DB.Where("from_user_id in ? AND to_user_id in ?",
-		[]int64{fromUserId, toUserId}, []int64{fromUserId, toUserId}).Find(&messageList).Error
+		[]uint{fromUserId, toUserId}, []uint{fromUserId, toUserId}).Find(&messageList).Error
 
 	if err != nil {
 		return nil, err
@@ -72,15 +72,14 @@ func (*MessageDao) QueryMessage(fromUserId int64, toUserId int64) ([]*Message, e
 }
 
 // QueryLastMessage QueryMessageByDate 查询数据库中fromUserId和toUserId间的最后一条聊天记录
-// @param 	fromUserId		int64		发送方用户Id
-// @param 	toUserId		int64		接收方用户Id
-// @return 	message 		*Message	消息记录
-// @return 	err				error		当执行出现错误时返回error，否则返回nil
+// @param 	fromUserId		uint		发送方用户Id
+// @param 	toUserId		uint		接收方用户Id
+// @return message *Message	消息记录
+// @return err		error					当执行出现错误时返回error，否则返回nil
 func (*MessageDao) QueryLastMessage(fromUserId int64, toUserId int64) (*Message, error) {
 	message := Message{}
-	// 消息不存在有可能是合法行为，调用方需要捕捉gorm.ErrRecordNotFound，自行处理
 	err := storage.DB.Model(&Message{}).Where("(to_user_id=? and from_user_id=?) or (to_user_id=? and from_user_id=?)",
-		toUserId, fromUserId, fromUserId, toUserId).Order("created_at desc").First(&message).Error
+		toUserId, fromUserId, fromUserId, toUserId).Order("create_at desc").First(&message).Error
 
 	if err != nil {
 		return nil, err
