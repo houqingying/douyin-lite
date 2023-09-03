@@ -106,7 +106,7 @@ func (*FavoriteDao) ReduceTotalFavorited(HostId int64) error {
 
 func (*FavoriteDao) IsFavoriteExist(userId int64, videoId int64) (bool, Favorite) {
 	var favoriteExist = Favorite{} //找不到时会返回错误
-	result := storage.DB.Table("favorite").Where("user_id = ? AND video_id = ?", userId, videoId).First(&favoriteExist)
+	result := storage.DB.Table("favorite").Where("user_id = ? AND video_id = ?", userId, videoId).First(&favoriteExist).Error
 	if result != nil {
 		fmt.Println("result=?", result)
 		return false, favoriteExist
