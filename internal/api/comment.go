@@ -17,7 +17,7 @@ type ActionResponse struct {
 	Comment    comment_service.CommentInfo `json:"comment"`
 }
 
-// Action comment action
+// Comment comment action
 // @Router /douyin/comment/action/ [post]
 func Comment(c *gin.Context) {
 	id, _ := c.Get("user_id")
@@ -118,7 +118,7 @@ type ListResponse struct {
 	CommentList []comment_service.CommentInfo `json:"comment_list,omitempty"`
 }
 
-// List comment list
+// CommentList comment list
 // @Router /douyin/comment/list/ [get]
 func CommentList(c *gin.Context) {
 	klog.Info("comment list")
