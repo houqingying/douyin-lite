@@ -3,9 +3,10 @@ package entity
 import (
 	"douyin-lite/pkg/storage"
 	"errors"
-	"gorm.io/gorm"
 	"sync"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Video struct {
@@ -55,4 +56,9 @@ func (v *Video) GetVideoList(userId int64) (videos []*Video, err error) {
 func (v *Video) GetVideoCount(userId int64) (count int64, err error) {
 	err = storage.DB.Model(&v).Where("author_id = ?", userId).Count(&count).Error
 	return
+}
+
+// UpdateVideoCommentCount add video count
+func (*VideoDao) UpdateVideoCommentCount(id int64, num int64) error {
+	return storage.DB.Model(&Video{}).Where("id = ?", id).Update("comment_count", gorm.Expr("comment_count + ?", num)).Error
 }
