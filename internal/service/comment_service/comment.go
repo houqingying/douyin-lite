@@ -2,6 +2,7 @@ package comment_service
 
 import (
 	"douyin-lite/internal/entity"
+	"douyin-lite/internal/service/user_service"
 	"time"
 
 	"k8s.io/klog"
@@ -42,8 +43,8 @@ const (
 )
 
 var (
-	CommentDao = entity.NewCommentDaoInstance()
-	UserDao    = entity.NewUserDaoInstance()
+	CommentDao = entity.NewCommentDao()
+	VideoDao   = entity.NewVideoDAO()
 )
 
 type CommentService struct {
@@ -53,7 +54,8 @@ func (c *CommentService) CreateComment(comment entity.Comment) (CommentInfo, err
 
 	// 1. Valid videoId and userId
 	// TODO valid videoId
-	user, err := UserDao.QueryUserById(int64(comment.UserId))
+	//user, err := UserDao.QueryUserById(int64(comment.UserId))
+	user, err := user_service.QueryAUserInfo2(int64(comment.UserId))
 	if err != nil {
 		klog.Errorf("query user error: %s", err)
 		return CommentInfo{}, err
@@ -69,14 +71,14 @@ func (c *CommentService) CreateComment(comment entity.Comment) (CommentInfo, err
 		klog.Errorf("create comment error: %s", err)
 		return CommentInfo{}, err
 	}
+	// add video comment count
+	err = VideoDao.UpdateVideoCommentCount(comment.VideoId, 1)
 	userinfo := User{
-		Id:   int64(user.ID),
-		Name: user.Name,
-		//TODO
-		//FollowCount:   user.FollowingCount,
-		//FollowerCount: user.FollowerCount,
-		// TODO: add is follow
-		IsFollow:       false,
+		Id:             int64(user.ID),
+		Name:           user.Name,
+		FollowCount:    user.FollowingCount,
+		FollowerCount:  user.FollowerCount,
+		IsFollow:       user.IsFollow,
 		TotalFavorited: user.TotalFavorited,
 		FavoriteCount:  user.FavoriteCount,
 	}
@@ -95,6 +97,12 @@ func (c *CommentService) DeleteComment(commentId int64) error {
 		klog.Errorf("delete comment error: %s", err)
 		return err
 	}
+	// decrease video comment count
+	err = VideoDao.UpdateVideoCommentCount(commentId, -1)
+	if err != nil {
+		klog.Errorf("query comment error: %s", err)
+		return err
+	}
 	return nil
 }
 
@@ -109,19 +117,18 @@ func (c *CommentService) GetList(videoId int64) ([]CommentInfo, error) {
 	var commentInfos []CommentInfo
 	for _, comment := range comments {
 		// get user info
-		user, err := UserDao.QueryUserById(int64(comment.UserId))
+		//user, err := UserDao.QueryUserById(int64(comment.UserId))
+		user, err := user_service.QueryAUserInfo2(int64(comment.UserId))
 		if err != nil {
 			klog.Errorf("query user error: %s", err)
 			return nil, err
 		}
 		userinfo := User{
-			Id:   int64(user.ID),
-			Name: user.Name,
-			//TODO
-			//FollowCount:   user.FollowingCount,
-			//FollowerCount: user.FollowerCount,
-			// TODO: add is follow
-			IsFollow:       false,
+			Id:             int64(user.ID),
+			Name:           user.Name,
+			FollowCount:    user.FollowingCount,
+			FollowerCount:  user.FollowerCount,
+			IsFollow:       user.IsFollow,
 			TotalFavorited: user.TotalFavorited,
 			FavoriteCount:  user.FavoriteCount,
 		}

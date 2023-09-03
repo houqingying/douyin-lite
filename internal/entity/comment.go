@@ -9,8 +9,8 @@ import (
 
 type Comment struct {
 	gorm.Model
-	VideoId uint   `gorm:"column:video_id;not null" json:"video_id"`
-	UserId  uint   `gorm:"column:user_id;not null" json:"user_id"`
+	VideoId int64  `gorm:"column:video_id;not null" json:"video_id"`
+	UserId  int64  `gorm:"column:user_id;not null" json:"user_id"`
 	Content string `gorm:"column:content;not null" json:"content"`
 }
 
@@ -20,7 +20,7 @@ type CommentDao struct {
 var commentDao *CommentDao
 var CommentOnce sync.Once
 
-func NewCommentDaoInstance() *CommentDao {
+func NewCommentDao() *CommentDao {
 	CommentOnce.Do(func() {
 		commentDao = &CommentDao{}
 	})
