@@ -44,11 +44,12 @@ func SendMessage(fromUserId int64, toUserId int64, content string) error {
 // @auth	hqy				2023/08/17
 // @param	fromUserId		int64			发送方用户Id
 // @param	toUserId		int64			接收方用户Id
+// @param	preMsgTime		int64			时间戳，只返回preMsgTime之后的时间
 // @return	messageInfoList	[]*MessageInfo	需要将Id转换为int64类型，并转换时间格式
 // @return	err				error			当执行出现错误时返回error，否则返回nil
-func QueryMessage(fromUserId int64, toUserId int64) ([]*MessageInfo, error) {
+func QueryMessage(fromUserId int64, toUserId int64, preMsgTime int64) ([]*MessageInfo, error) {
 	// 从DAO层查询消息列表
-	messageList, err := messageDao.QueryMessage(fromUserId, toUserId)
+	messageList, err := messageDao.QueryMessage(fromUserId, toUserId, preMsgTime)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +60,7 @@ func QueryMessage(fromUserId int64, toUserId int64) ([]*MessageInfo, error) {
 			ID:         int64(message.ID),
 			FromUserID: int64(message.FromUserId),
 			ToUserID:   int64(message.ToUserId),
-			CreateTime: strconv.FormatInt(message.CreatedAt.Unix(), 10),
+			CreateTime: strconv.FormatInt(message.CreatedAt.UnixNano()/1e6, 10),
 			Content:    message.Content,
 		}
 		messageInfoList[i] = &messageInfo
@@ -82,7 +83,7 @@ func QueryLastMessage(fromUserId int64, toUserId int64) (*MessageInfo, error) {
 		ID:         int64(message.ID),
 		FromUserID: int64(message.FromUserId),
 		ToUserID:   int64(message.ToUserId),
-		CreateTime: strconv.FormatInt(message.CreatedAt.Unix(), 10),
+		CreateTime: strconv.FormatInt(message.CreatedAt.UnixNano()/1e6, 10),
 		Content:    message.Content,
 	}
 	return &messageInfo, nil

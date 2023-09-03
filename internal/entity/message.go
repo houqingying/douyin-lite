@@ -3,6 +3,7 @@ package entity
 import (
 	"douyin-lite/pkg/storage"
 	"sync"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -55,14 +56,17 @@ func (*MessageDao) CreateMessage(fromUserId int64, toUserId int64, content strin
 // @auth	hqy				2023/08/17
 // @param	fromUserId		int64		发送方用户Id
 // @param	toUserId		int64		接收方用户Id
+// @param	preMsgTime		int64		只返回preMsgTime之后的时间
 // @return	messageList 	[]*Message	消息记录列表
 // @return	err				error		当执行出现错误时返回error，否则返回nil
-func (*MessageDao) QueryMessage(fromUserId int64, toUserId int64) ([]*Message, error) {
+func (*MessageDao) QueryMessage(fromUserId int64, toUserId int64, preMsgTime int64) ([]*Message, error) {
 	var messageList []*Message
 
+	time := time.Unix(preMsgTime/1000, (preMsgTime%1000)*int64(time.Millisecond)).Format("2006-01-02 15:04:05.999")
+
 	// 查询表中发送方和接收方参数均在 {fromUserId, toUserId}中的记录
-	err := storage.DB.Where("from_user_id in ? AND to_user_id in ?",
-		[]int64{fromUserId, toUserId}, []int64{fromUserId, toUserId}).Find(&messageList).Error
+	err := storage.DB.Where("from_user_id in ? AND to_user_id in ? AND created_at > ?",
+		[]int64{fromUserId, toUserId}, []int64{fromUserId, toUserId}, time).Find(&messageList).Error
 
 	if err != nil {
 		return nil, err

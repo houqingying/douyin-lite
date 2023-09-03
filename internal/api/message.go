@@ -87,25 +87,11 @@ func MessageList(c *gin.Context) {
 		return
 	}
 
-	// 获取pre_msg_time 并获取最后一条消息
+	// 获取pre_msg_time
 	preMsgTime, _ := strconv.ParseInt(c.Query("pre_msg_time"), 10, 64)
-	lastMsg, err := message_service.QueryLastMessage(fromUserId, toUserId)
-
-	if err != nil {
-		// 获取最后一条消息失败
-		c.JSON(http.StatusOK, QueryMessageResp{500, err.Error(), nil})
-		return
-	}
-
-	// 判断最后一条消息时间与pre_msg_time的关系，如果lastTime <= preMsgTime，则无需更新消息，返回空列表
-	lastTime, _ := strconv.ParseInt(lastMsg.CreateTime, 10, 64)
-	if lastTime <= preMsgTime {
-		c.JSON(http.StatusOK, QueryMessageResp{0, "暂时没有新消息", nil})
-		return
-	}
 
 	// 调用Service层，完成查找
-	messageInfoList, err := message_service.QueryMessage(fromUserId, toUserId)
+	messageInfoList, err := message_service.QueryMessage(fromUserId, toUserId, preMsgTime)
 	if err != nil {
 		c.JSON(http.StatusOK, QueryMessageResp{500, err.Error(), nil})
 		return
