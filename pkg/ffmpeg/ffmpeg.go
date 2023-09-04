@@ -6,17 +6,14 @@ import (
 	"log"
 )
 
-// ReadFrameAsJpeg 从视频文件中读取指定帧并将其保存为 JPEG 图像。
-// inFileName 是输入视频文件的路径。
-// outImagePath 是保存 JPEG 图像的输出路径。
-// frameNum 是要提取的帧的帧号。
-// 返回可能的错误。
-func ReadFrameAsJpeg(inFileName, outImagePath string) (err error) {
-	// SSH连接配置
-	serverAddr := "47.102.185.103:22"
-	username := "root"
-	password := "a#A6@FLVaDnsyH"
+var FfmpegClient *FfmpegConfig
 
+type FfmpegConfig struct {
+	config     *ssh.ClientConfig
+	serverAddr string
+}
+
+func NewFfmpegClient(serverAddr, username, password string) {
 	// 创建SSH客户端配置
 	config := &ssh.ClientConfig{
 		User: username,
@@ -25,9 +22,21 @@ func ReadFrameAsJpeg(inFileName, outImagePath string) (err error) {
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(), // 不验证服务器主机密钥
 	}
+	FfmpegClient = &FfmpegConfig{
+		config:     config,
+		serverAddr: serverAddr,
+	}
+}
+
+// ReadFrameAsJpeg 从视频文件中读取指定帧并将其保存为 JPEG 图像。
+// inFileName 是输入视频文件的路径。
+// outImagePath 是保存 JPEG 图像的输出路径。
+// frameNum 是要提取的帧的帧号。
+// 返回可能的错误。
+func ReadFrameAsJpeg(inFileName, outImagePath string) (err error) {
 
 	// 连接SSH服务器
-	client, err := ssh.Dial("tcp", serverAddr, config)
+	client, err := ssh.Dial("tcp", FfmpegClient.serverAddr, FfmpegClient.config)
 	if err != nil {
 		log.Fatalf("无法连接到SSH服务器：%v", err)
 	}

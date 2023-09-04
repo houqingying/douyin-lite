@@ -20,5 +20,8 @@ func Init() error {
 	// 初始化Fast DFS分布式存储
 	FastDFSInit()
 
+	// 初始化ffmpeg
+	FfmpegInit()
+
 	return nil
 }

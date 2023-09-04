@@ -1,6 +1,9 @@
 package configs
 
-import fastDFS "douyin-lite/pkg/fastdfs"
+import (
+	conf "douyin-lite/configs/locales"
+	fastDFS "douyin-lite/pkg/fastdfs"
+)
 
 // 错误消息常量
 const (
@@ -29,12 +32,12 @@ const (
 
 func FastDFSInit() {
 	fastDFS.NewFDClient(
-		GroupName,
-		ServerAddress,
-		ShowAddress,
-		Account,
-		Password,
-		Name,
-		CredentialsSalt,
+		conf.Config.GoFastDFS.GroupName,
+		conf.Config.GoFastDFS.ServerAddress,
+		conf.Config.GoFastDFS.ShowAddress,
+		conf.Config.GoFastDFS.Account,
+		conf.Config.GoFastDFS.Password,
+		conf.Config.GoFastDFS.Name,
+		conf.Config.GoFastDFS.CredentialsSalt,
 	)
 }

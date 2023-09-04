@@ -4,17 +4,17 @@ system:
 
 mysql:
   default:
-    username: "douyin"                                                                           # 账号
-    password: "douyin@2023"                                                                      # 密码
-    host: "39.105.199.147"                                                                          # 数据库地址，可以是Ip或者域名
-    port: "3306"                                                                                 # 数据库端口
+    username: "douyin"     # 账号
+    password: "douyin@2023"# 密码
+    host: "39.105.199.147"    # 数据库地址，可以是Ip或者域名
+    port: "3306"    # 数据库端口
     dbname: "douyin"
     parameters: "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true&timeout=10s" # 连接超时，10秒
-    debug: false                                                                                 # 是否开启debug模式
-    dbType: "mysql"                                                                             # 数据库类型
-    maxLifeTime: 7200                                                                          # 设置连接可以重复使用的最长时间(s)
-    maxOpenConns: 150                                                                          # 最大开启链接
-    maxLdleConns: 50                                                                           # 设置空闲状态下的最大连接数
+    debug: false    # 是否开启debug模式
+    dbType: "mysql"# 数据库类型
+    maxLifeTime: 7200    # 设置连接可以重复使用的最长时间(s)
+    maxOpenConns: 150    # 最大开启链接
+    maxLdleConns: 50     # 设置空闲状态下的最大连接数
     tablePrefix: ""
 
 redis:
@@ -26,3 +26,17 @@ redis:
     redisDbName: 1
     redisAddr: "39.105.199.147:6379"
     redisPassword: "helloworld"
+
+ffmpeg:
+  serverAddr: "39.105.199.147"
+  username: "root"
+  password: "@LearnSQLWell0"
+
+goFastDFS:
+  groupName: "tiktok"       # 组名
+  serverAddress: "http://39.105.199.147:8085" # 服务器地址
+  showAddress: ""      # 显示地址
+  account: "root"  # 账户名
+  password: "d06d6575eb571f01e15ff3e077098ae1"  # 密码
+  name: "root"  # 名称
+  credentialsSalt: "f40bc3eccfa4e9985e5298be1254001"   # 凭据盐值
