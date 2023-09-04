@@ -121,13 +121,13 @@ func FavoriteVideoList(c *gin.Context) {
 	var videoList = make([]*Video, len(videos))
 	for i := 0; i < len(videos); i++ {
 		videoList[i] = &Video{
-			IsFavorite: true,
-			Id:         videos[i].ID,
-			//PlayUrl:       videos[i].PlayUrl,
-			//CoverUrl:      videos[i].CoverUrl,
-			//FavoriteCount: videos[i].FavoriteCount,
-			//CommentCount:  videos[i].CommentCount,
-			//Title:         videos[i].Title,
+			IsFavorite:    true,
+			Id:            videos[i].ID,
+			PlayUrl:       videos[i].PlayUrl,
+			CoverUrl:      videos[i].CoverUrl,
+			FavoriteCount: videos[i].FavoriteCount,
+			CommentCount:  videos[i].CommentCount,
+			Title:         videos[i].Title,
 			Author: &Author{
 				ID:              userInfo.ID,
 				Name:            userInfo.Name,

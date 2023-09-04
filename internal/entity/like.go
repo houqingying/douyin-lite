@@ -16,6 +16,18 @@ type Favorite struct {
 	State   int32
 }
 
+type FavoriteVideo struct {
+	ID            int64 `json:"id" gorm:"id,omitempty"`
+	UserId        int64 `json:"user_id"`
+	VideoId       int64 `json:"video_id"`
+	State         int32
+	PlayUrl       string
+	CoverUrl      string
+	FavoriteCount int64
+	CommentCount  int64
+	Title         string
+}
+
 func (Favorite) TableName() string {
 	return "favorite"
 }
@@ -51,8 +63,10 @@ func (*FavoriteDao) Query_Favorite_List(userId int64) ([]Video, error) {
 	return videoList, nil
 }
 
-func (f *Favorite) GetFavoriteListResp(userId int64) (videos []*Favorite, err error) {
-	err = storage.DB.Model(&f).
+func (f *Favorite) GetFavoriteListResp(userId int64) (videos []*FavoriteVideo, err error) {
+	err = storage.DB.Table("favorite").
+		Select("user_id, video_id, state, video.*").
+		Joins("LEFT JOIN video ON favorite.video_id = video.id").
 		Where("user_id = ?", userId).
 		Where("state = ?", 1).
 		Find(&videos).Error
