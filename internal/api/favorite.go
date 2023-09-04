@@ -65,7 +65,7 @@ func Favorite(c *gin.Context) {
 
 type FavoriteListResp struct {
 	configs.Response
-	FavoriteList []*Video `json:"favorite_list"`
+	FavoriteList []*Video `json:"video_list"`
 }
 
 func FavoriteVideoList(c *gin.Context) {
