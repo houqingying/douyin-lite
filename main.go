@@ -14,7 +14,7 @@ func main() {
 	}
 
 	r := router.Init()
-	err := r.Run(":8080")
+	err := r.Run(":8888")
 	if err != nil {
 		fmt.Println("启动服务失败")
 		return
