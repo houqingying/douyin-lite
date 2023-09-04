@@ -49,7 +49,7 @@ func Init() *gin.Engine {
 		favoriteGroup := douyinGroup.Group("/favorite")
 		{
 			favoriteGroup.POST("/action/", middleware.JWTMiddleWare(), api.Favorite)
-			favoriteGroup.GET("/list/", api.FavoriteList)
+			favoriteGroup.GET("/list/", api.FavoriteVideoList)
 		}
 
 		// favorite路由组

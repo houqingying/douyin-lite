@@ -3,8 +3,9 @@ package entity
 import (
 	"douyin-lite/pkg/storage"
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"sync"
+
+	"github.com/jinzhu/gorm"
 )
 
 type Favorite struct {
@@ -48,6 +49,14 @@ func (*FavoriteDao) Query_Favorite_List(userId int64) ([]Video, error) {
 		videoList = append(videoList, video)
 	}
 	return videoList, nil
+}
+
+func (f *Favorite) GetFavoriteListResp(userId int64) (videos []*Favorite, err error) {
+	err = storage.DB.Model(&f).
+		Where("user_id = ?", userId).
+		Where("state = ?", 1).
+		Find(&videos).Error
+	return
 }
 
 // 查看当前用户对已知视频是否点赞
