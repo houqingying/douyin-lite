@@ -28,13 +28,19 @@ redis:
     redisPassword: "helloworld"
 
 ffmpeg:
-  serverAddr: "39.105.199.147"
+  serverAddr: "39.105.199.147:22"
   username: "root"
   password: "@LearnSQLWell0"
+
+#ffmpeg:
+#  serverAddr: "47.102.185.103:22"
+#  username: "root"
+#  password: "a#A6@FLVaDnsyH"
 
 goFastDFS:
   groupName: "tiktok"       # 组名
   serverAddress: "http://39.105.199.147:8085" # 服务器地址
+#  serverAddress: "http://47.102.185.103:8085"
   showAddress: ""      # 显示地址
   account: "root"  # 账户名
   password: "d06d6575eb571f01e15ff3e077098ae1"  # 密码

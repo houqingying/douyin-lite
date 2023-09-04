@@ -2,6 +2,7 @@ package service
 
 import (
 	"douyin-lite/configs"
+	conf "douyin-lite/configs/locales"
 	"douyin-lite/internal/entity"
 	fastDFS "douyin-lite/pkg/fastdfs"
 	"douyin-lite/pkg/ffmpeg"
@@ -63,7 +64,7 @@ func Publish(c *gin.Context, userId int64, title string, fileHeader *multipart.F
 	}
 
 	//保存视频在数据库中
-	imagePath = "http://47.102.185.103:8085/tiktok/video/" + imagePath
+	imagePath = conf.Config.GoFastDFS.ServerAddress + "/tiktok/video/" + imagePath
 	var video = entity.Video{
 		AuthorId:      userId,
 		PlayUrl:       obj["url"].(string),
