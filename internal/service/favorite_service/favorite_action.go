@@ -5,8 +5,8 @@ import (
 	"fmt"
 )
 
-// Favorite_Action 点赞操作
-func Favorite_Action(userId int64, videoId int64, actionType int64) (err error) {
+// FavoriteAction 点赞操作
+func FavoriteAction(userId int64, videoId int64, actionType int64) (err error) {
 	//1-点赞
 	if actionType == 1 {
 		fmt.Println("点赞")
@@ -55,7 +55,10 @@ func Favorite_Action(userId int64, videoId int64, actionType int64) (err error) 
 		favoriteCancel := entity.NewFavoriteDaoInstance()
 		result, favoriteExist := favoriteCancel.IsFavoriteExist(userId, videoId)
 		if !result { //找不到这条记录，取消点赞失败，创建记录
-			favoriteCancel.CreateFavorite(userId, videoId)
+			err := favoriteCancel.CreateFavorite(userId, videoId)
+			if err != nil {
+				return err
+			}
 			//userId的favorite_count增加
 			favoriteCancel.ReduceFavoriteCount(userId)
 			//videoId对应的userId的total_favorite增加

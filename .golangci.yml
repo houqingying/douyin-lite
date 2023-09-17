@@ -36,6 +36,7 @@ linters-settings:
       - G505 # Import blocklist: crypto/sha1
   staticcheck:
     checks: ["all"]
+
 linters:
   # Disable all linters.
   # Default: false
@@ -52,7 +53,7 @@ linters:
     # - cyclop # checks function and package cyclomatic complexity. We choose 'gocyclo' which is more popular used.
     # - deadcode  # The owner seems to have abandoned the linter. Replaced by unused.
     # - decorder # check declaration order and count of types, constants, variables and functions. We don't need this style check.
-    - depguard
+#    - depguard
     # - dogsled # Checks assignments with too many blank identifiers (e.g. x, , , _, := f()). style. Seems no useful for me.
     - dupl
     - durationcheck
@@ -81,7 +82,7 @@ linters:
     # - gofmt # Gofmt checks whether code was gofmt-ed. By default this tool runs with -s option to check for code simplification. It will format(auto change) the code.
     # - gofumpt # Gofumpt checks whether code was gofumpt-ed.
     # - goheader # Checks is file header matches to pattern. We don't need this style check.
-#    - goimports # In addition to fixing imports, goimports also formats your code in the same style as gofmt. It will format(auto change) the code.
+    - goimports # In addition to fixing imports, goimports also formats your code in the same style as gofmt. It will format(auto change) the code.
     # - golint  # The repository of the linter has been archived by the owner. Replaced by revive.
     # - gomnd # An analyzer to detect magic numbers. TODO try to use it. What is a magic number? A magic number is a numeric literal that is not defined as a constant, but which may change, and therefore can be hard to update. It's considered a bad programming practice to use numbers directly in any source code without an explanation. It makes programs harder to read, understand, and maintain.
     # - gomoddirectives # Manage the use of 'replace', 'retract', and 'excludes' directives in go.mod. We don't need this.
@@ -111,7 +112,7 @@ linters:
     # - noctx # noctx finds sending http request without context.Context. performance, bugs. TODO to use it to controle sending http request.
     # - nolintlint # Reports ill-formed or insufficient nolint directives. We don't need this style check.
     # - nonamedreturns # Reports all named returns. We don't need this style check.
-    # - nosnakecase # The repository of the linter has been deprecated by the owner. Replaced by revive(var-naming).
+#    - nosnakecase # The repository of the linter has been deprecated by the owner. Replaced by revive(var-naming).
     # - nosprintfhostport # Checks for misuse of Sprintf to construct a host with port in a URL. We don't need this style check.
     # - paralleltest # paralleltest detects missing usage of t.Parallel() method in your Go test. Linter has bugs, is not good to use.
     # - prealloc # Finds slice declarations that could potentially be pre-allocated. performance. don't recommend using this linter before doing performance profiling.
@@ -184,7 +185,4 @@ run:
   skip-dirs:
     - test/testdata_etc
     - internal/cache
-    - internal/renameio
-    - internal/robustio
-    - kobe
   timeout: 30m

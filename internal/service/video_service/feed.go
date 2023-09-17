@@ -1,11 +1,12 @@
 package video_service
 
 import (
-	"douyin-lite/internal/entity"
-	"douyin-lite/internal/service/user_service"
 	"errors"
 	"fmt"
 	"time"
+
+	"douyin-lite/internal/entity"
+	"douyin-lite/internal/service/user_service"
 )
 
 const (
@@ -67,8 +68,8 @@ func (q *QueryFeedVideoListFlow) prepareData() error {
 	latestTime, _ := FillVideoListFields(&q.videos, q.userId) //不是致命错误，不返回
 	//准备好时间戳
 	if latestTime != nil {
-		fmt.Println(*latestTime)
-		q.nextTime = (*latestTime).UnixNano() / 1e6
+		fmt.Println(latestTime)
+		q.nextTime = (latestTime).UnixNano() / 1e6
 		return nil
 	}
 	q.nextTime = time.Now().UnixNano() / 1e6
@@ -92,14 +93,14 @@ func (q *QueryFeedVideoListFlow) Video2VideoVO(userId int64) []VideoVO {
 			CommentCount:  int64(video.CommentCount),
 			Title:         video.Title,
 		}
-		videoVO.IsFavorite, _ = entity.NewFavoriteDaoInstance().Query_Check_Favorite(userId, videoVO.Id)
+		videoVO.IsFavorite, _ = entity.NewFavoriteDaoInstance().QueryCheckFavorite(userId, videoVO.Id)
 		videoVOList[i] = videoVO
 	}
 	return videoVOList
 }
 func FillVideoListFields(videos *[]*entity.Video, userId int64) (*time.Time, error) {
 	size := len(*videos)
-	if videos == nil || size == 0 {
+	if nil == *videos || size == 0 {
 		return nil, errors.New("util.FillVideoListFields videos为空")
 	}
 	latestTime := (*videos)[size-1].CreatedAt //获取最近的投稿时间

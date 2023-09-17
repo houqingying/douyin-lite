@@ -1,8 +1,9 @@
 package entity
 
 import (
-	"douyin-lite/pkg/storage"
 	"sync"
+
+	"douyin-lite/pkg/storage"
 
 	"gorm.io/gorm"
 )

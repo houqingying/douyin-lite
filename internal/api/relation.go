@@ -1,9 +1,10 @@
 package api
 
 import (
-	follow_service2 "douyin-lite/internal/service/relation_service"
 	"net/http"
 	"strconv"
+
+	follow_service2 "douyin-lite/internal/service/relation_service"
 
 	"github.com/gin-gonic/gin"
 	"k8s.io/klog"

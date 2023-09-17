@@ -2,12 +2,14 @@ package rabbitMQ
 
 import (
 	"fmt"
-	//"github.com/go-redis/redis/v8"
-	"douyin-lite/pkg/storage"
-	"github.com/streadway/amqp"
 	"log"
 	"strconv"
 	"strings"
+
+	"douyin-lite/pkg/storage"
+
+	"github.com/streadway/amqp"
+	"k8s.io/klog"
 )
 
 type FollowMQ struct {
@@ -56,7 +58,7 @@ func (f *FollowMQ) Publish(message string) {
 		panic(err)
 	}
 
-	f.channel.Publish(
+	err = f.channel.Publish(
 		f.exchange,
 		f.queueName,
 		false,
@@ -65,6 +67,10 @@ func (f *FollowMQ) Publish(message string) {
 			ContentType: "text/plain",
 			Body:        []byte(message),
 		})
+	if err != nil {
+		klog.Errorf("MQ Publish error: %v", err)
+		return
+	}
 
 }
 

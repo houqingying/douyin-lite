@@ -2,12 +2,13 @@ package repository
 
 import (
 	"context"
-	"douyin-lite/internal/entity"
-	"douyin-lite/pkg/storage"
 	"errors"
 	"strconv"
 	"strings"
 	"sync"
+
+	"douyin-lite/internal/entity"
+	"douyin-lite/pkg/storage"
 )
 
 // RelationScanNum 每次定时任务Scan从redis删除写入到mysql的数量
@@ -39,6 +40,9 @@ func FollowAction(hostId int64, guestId int64) error {
 	followStateIdStr := hostIdStr + ":1"
 	unfollowStateIdStr := hostIdStr + ":0"
 	isUnfollowRes, err := storage.RdbFollower.SIsMember(context.Background(), guestIdStr, unfollowStateIdStr).Result()
+	if err != nil {
+		return err
+	}
 	if isUnfollowRes {
 		//先删
 		err := storage.RdbFollower.SRem(context.Background(), guestIdStr, unfollowStateIdStr).Err()
@@ -110,10 +114,16 @@ func SaveFollowRelationToDB(wg *sync.WaitGroup, cursor *uint64) error {
 			}
 			if flag == 0 {
 				//数据库删除关注关系
-				entity.NewFollowingDaoInstance().DeleteFollowing(hostId, guestId)
+				err := entity.NewFollowingDaoInstance().DeleteFollowing(hostId, guestId)
+				if err != nil {
+					return err
+				}
 			} else {
 				//数据库增加关注关系
-				entity.NewFollowingDaoInstance().CreateFollowing(hostId, guestId)
+				err := entity.NewFollowingDaoInstance().CreateFollowing(hostId, guestId)
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}

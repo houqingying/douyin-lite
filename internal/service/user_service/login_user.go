@@ -1,9 +1,10 @@
 package user_service
 
 import (
+	"errors"
+
 	"douyin-lite/internal/entity"
 	"douyin-lite/middleware"
-	"errors"
 )
 
 type LoginInfo struct {

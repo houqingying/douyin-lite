@@ -6,9 +6,10 @@ import (
 	"douyin-lite/internal/service"
 	"douyin-lite/internal/service/user_service"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type VideoListResponse struct {
@@ -69,7 +70,7 @@ func Publish(c *gin.Context) {
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
 	//获取用户id
-	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	userId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	var video = entity.Video{}
 
 	// 获取视频信息
