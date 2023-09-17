@@ -21,7 +21,7 @@ type FavoriteActionResp struct {
 func Favorite(c *gin.Context) {
 	// klog.Info("post relation action")
 	// get guest_id
-	user_Id, got := c.Get("user_id")
+	userId, got := c.Get("user_id")
 	if !got {
 		klog.Errorf("user_id didn't set properly, something may be wrong with the jwt")
 		c.JSON(http.StatusOK, SendMessageResp{
@@ -30,7 +30,7 @@ func Favorite(c *gin.Context) {
 		})
 		return
 	}
-	user_IdInt64, _ := user_Id.(int64)
+	userIdInt64, _ := userId.(int64)
 	actionType, err := strconv.ParseInt(c.Query("action_type"), 10, 64)
 	if err != nil || (actionType != 1 && actionType != 2) {
 		fmt.Println("actionType=?", actionType)
@@ -40,7 +40,7 @@ func Favorite(c *gin.Context) {
 		})
 		return
 	}
-	video_id, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
+	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusOK, FavoriteActionResp{
 			StatusCode: -1,
@@ -49,7 +49,7 @@ func Favorite(c *gin.Context) {
 		return
 	}
 
-	err = favorite_service2.Favorite_Action(user_IdInt64, video_id, actionType)
+	err = favorite_service2.FavoriteAction(userIdInt64, videoId, actionType)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, FavoriteActionResp{
 			StatusCode: 1,
@@ -87,7 +87,7 @@ func FavoriteVideoList(c *gin.Context) {
 	// c.JSON(http.StatusOK, followListResp)
 
 	//获取用户id
-	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	userId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	var video = entity.Favorite{}
 
 	// 获取当前用户点赞的视频列表

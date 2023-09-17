@@ -2,13 +2,16 @@ package ffmpeg
 
 import (
 	"fmt"
+
 	"golang.org/x/crypto/ssh"
+	"k8s.io/klog"
+
 	"log"
 )
 
-var FfmpegClient *FfmpegConfig
+var Client *Config
 
-type FfmpegConfig struct {
+type Config struct {
 	config     *ssh.ClientConfig
 	serverAddr string
 }
@@ -22,7 +25,7 @@ func NewFfmpegClient(serverAddr, username, password string) {
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(), // 不验证服务器主机密钥
 	}
-	FfmpegClient = &FfmpegConfig{
+	Client = &Config{
 		config:     config,
 		serverAddr: serverAddr,
 	}
@@ -36,7 +39,7 @@ func NewFfmpegClient(serverAddr, username, password string) {
 func ReadFrameAsJpeg(inFileName, outImagePath string) (err error) {
 
 	// 连接SSH服务器
-	client, err := ssh.Dial("tcp", FfmpegClient.serverAddr, FfmpegClient.config)
+	client, err := ssh.Dial("tcp", Client.serverAddr, Client.config)
 	if err != nil {
 		log.Fatalf("无法连接到SSH服务器：%v", err)
 	}
@@ -47,14 +50,14 @@ func ReadFrameAsJpeg(inFileName, outImagePath string) (err error) {
 
 	session, err := client.NewSession()
 	if err != nil {
-		log.Fatalf("无法创建SSH会话：%v", err)
+		klog.Fatalf("无法创建SSH会话：%v", err)
 		return err
 	}
 	defer session.Close()
 
 	_, err = session.CombinedOutput(ffmpegCommand)
 	if err != nil {
-		log.Fatalf("FFmpeg截图命令执行失败：%v", err)
+		klog.Errorf("FFmpeg截图命令执行失败：%v", err)
 		return err
 	}
 

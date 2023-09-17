@@ -36,6 +36,15 @@ linters-settings:
       - G505 # Import blocklist: crypto/sha1
   staticcheck:
     checks: ["all"]
+#  custom:
+#    snake-case-filenames:
+#      # check if golang file name is snake case
+#        description: "check if go file name is snake case"
+#        command: "grep -L -E '^[a-z0-9_]+\.go$$' $(find . -name '*.go')"
+#        pattern: "^(?P<filename>.+):(?P<line>\\d+):(?P<column>\\d+):(?P<message>.+)$"
+#        severity: error
+#        path: "(?P<filename>.+)"
+#        enabled: true
 linters:
   # Disable all linters.
   # Default: false

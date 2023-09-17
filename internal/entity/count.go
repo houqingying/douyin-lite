@@ -2,8 +2,9 @@ package entity
 
 import (
 	"douyin-lite/pkg/storage"
-	"gorm.io/gorm"
 	"sync"
+
+	"gorm.io/gorm"
 )
 
 type Count struct {
@@ -66,7 +67,7 @@ func (*CountDao) SaveFollowingCount(id int64, val int64) error {
 		ID:       id,
 		CountKey: countKey,
 	}).Error
-	var err2 error = nil
+	var err2 error
 	if err != nil {
 		err2 = storage.DB.Create(&Count{
 			ID:       id,
@@ -91,7 +92,7 @@ func (*CountDao) SaveFollowerCount(id int64, val int64) error {
 		ID:       id,
 		CountKey: countKey,
 	}).Error
-	var err2 error = nil
+	var err2 error
 	if err != nil {
 		err2 = storage.DB.Create(&Count{
 			ID:       id,

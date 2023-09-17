@@ -73,6 +73,10 @@ func (c *CommentService) CreateComment(comment entity.Comment) (CommentInfo, err
 	}
 	// add video comment count
 	err = VideoDao.UpdateVideoCommentCount(comment.VideoId, 1)
+	if err != nil {
+		klog.Errorf("query comment error: %s", err)
+		return CommentInfo{}, err
+	}
 	userinfo := User{
 		Id:             int64(user.ID),
 		Name:           user.Name,

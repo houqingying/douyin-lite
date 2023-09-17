@@ -5,9 +5,10 @@ import (
 	conf "douyin-lite/configs/locales"
 	"douyin-lite/internal/repository"
 	"douyin-lite/pkg/storage"
-	"github.com/go-redis/redis/v8"
 	"sync"
 	"time"
+
+	"github.com/go-redis/redis/v8"
 )
 
 const RdbUserCountFollowKey = "follow_count:"
@@ -83,5 +84,4 @@ func StartTimer(ticker *time.Ticker) error {
 			//定时任务结束
 		}
 	}
-	return nil
 }
