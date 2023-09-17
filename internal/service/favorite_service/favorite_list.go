@@ -65,7 +65,7 @@ func (f *QueryFavoriteListInfoFlow) checkParam() error {
 }
 
 func (f *QueryFavoriteListInfoFlow) prepareFavoriteInfo() error {
-	videoList, err := entity.NewFavoriteDaoInstance().Query_Favorite_List(f.hostId)
+	videoList, err := entity.NewFavoriteDaoInstance().QueryFavoriteList(f.hostId)
 	if err != nil {
 		return errors.New("DB Find Favorite Error")
 	}

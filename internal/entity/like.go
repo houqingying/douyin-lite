@@ -1,9 +1,10 @@
 package entity
 
 import (
-	"douyin-lite/pkg/storage"
 	"fmt"
 	"sync"
+
+	"douyin-lite/pkg/storage"
 
 	"github.com/jinzhu/gorm"
 )
@@ -45,8 +46,8 @@ func NewFavoriteDaoInstance() *FavoriteDao {
 	return favoriteDao
 }
 
-// 查询当前用户点赞视频
-func (*FavoriteDao) Query_Favorite_List(userId int64) ([]Video, error) {
+// QueryFavoriteList 查询当前用户点赞视频
+func (*FavoriteDao) QueryFavoriteList(userId int64) ([]Video, error) {
 	//查询当前用户点赞视频
 	var favoriteList []Favorite
 	videoList := make([]Video, 0)
@@ -73,8 +74,8 @@ func (f *Favorite) GetFavoriteListResp(userId int64) (videos []*FavoriteVideo, e
 	return
 }
 
-// 查看当前用户对已知视频是否点赞
-func (*FavoriteDao) Query_Check_Favorite(userId int64, videoId int64) (bool, error) {
+// QueryCheckFavorite 查看当前用户对已知视频是否点赞
+func (*FavoriteDao) QueryCheckFavorite(userId int64, videoId int64) (bool, error) {
 	var total int64
 	if err := storage.DB.Table("favorite").Where("user_id = ? AND video_id = ? AND state = 1", userId, videoId).Count(&total).Error; gorm.IsRecordNotFoundError(err) { //没有该条记录
 		return false, err

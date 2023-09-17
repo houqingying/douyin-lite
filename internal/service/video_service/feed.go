@@ -93,7 +93,7 @@ func (q *QueryFeedVideoListFlow) Video2VideoVO(userId int64) []VideoVO {
 			CommentCount:  int64(video.CommentCount),
 			Title:         video.Title,
 		}
-		videoVO.IsFavorite, _ = entity.NewFavoriteDaoInstance().Query_Check_Favorite(userId, videoVO.Id)
+		videoVO.IsFavorite, _ = entity.NewFavoriteDaoInstance().QueryCheckFavorite(userId, videoVO.Id)
 		videoVOList[i] = videoVO
 	}
 	return videoVOList

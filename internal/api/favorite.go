@@ -1,13 +1,14 @@
 package api
 
 import (
+	"fmt"
+	"net/http"
+	"strconv"
+
 	"douyin-lite/configs"
 	"douyin-lite/internal/entity"
 	favorite_service2 "douyin-lite/internal/service/favorite_service"
 	"douyin-lite/internal/service/user_service"
-	"fmt"
-	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"k8s.io/klog"
