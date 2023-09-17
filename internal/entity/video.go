@@ -1,12 +1,13 @@
 package entity
 
 import (
-	"douyin-lite/pkg/storage"
 	"errors"
 	"sync"
 	"time"
 
 	"gorm.io/gorm"
+
+	"douyin-lite/pkg/storage"
 )
 
 type Video struct {

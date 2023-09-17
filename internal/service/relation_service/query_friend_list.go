@@ -1,11 +1,13 @@
 package relation_service
 
 import (
+	"errors"
+
+	"gorm.io/gorm"
+
 	"douyin-lite/internal/entity"
 	"douyin-lite/internal/service/message_service"
 	"douyin-lite/internal/service/user_service"
-	"errors"
-	"gorm.io/gorm"
 )
 
 type FriendListInfo struct {

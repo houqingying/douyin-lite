@@ -1,10 +1,11 @@
 package api
 
 import (
-	"douyin-lite/internal/entity"
-	"douyin-lite/internal/service/comment_service"
 	"net/http"
 	"strconv"
+
+	"douyin-lite/internal/entity"
+	"douyin-lite/internal/service/comment_service"
 
 	"github.com/gin-gonic/gin"
 	"k8s.io/klog"

@@ -5,6 +5,8 @@ import (
 	"os"
 	"regexp"
 	"strings"
+
+	"k8s.io/klog"
 )
 
 func main() {
@@ -21,11 +23,31 @@ func main() {
 	}
 
 	for _, file := range files {
-		if file.IsDir() {
+		// just for .go file
+		//klog.Info("Checking file: ", file.Name())
+		if !strings.HasSuffix(file.Name(), ".go") && !file.IsDir() {
 			continue
 		}
+		klog.Info("Checking directory: ", file.Name())
+		// if dir, recursively check
+		if file.IsDir() {
 
+			err := os.Chdir(file.Name())
+			if err != nil {
+				fmt.Printf("Error changing directory: %v\n", err)
+				os.Exit(1)
+			}
+			main()
+			err = os.Chdir("..")
+			if err != nil {
+				fmt.Printf("Error changing directory: %v\n", err)
+				os.Exit(1)
+			}
+			continue
+		}
 		fileName := file.Name()
+		// we don't need .go
+		fileName = strings.TrimSuffix(fileName, ".go")
 		if !isValidSnakeCase(fileName) {
 			fmt.Printf("File name '%s' does not follow snake_case naming convention\n", fileName)
 			os.Exit(1)
@@ -35,5 +57,5 @@ func main() {
 
 func isValidSnakeCase(s string) bool {
 	snakeCasePattern := regexp.MustCompile("^[a-z0-9_]+$")
-	return snakeCasePattern.MatchString(s) && strings.Contains(s, "_")
+	return snakeCasePattern.MatchString(s)
 }

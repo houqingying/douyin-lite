@@ -2,15 +2,14 @@ package rabbitMQ
 
 import (
 	"fmt"
-	//"github.com/go-redis/redis/v8"
+	"log"
+	"strconv"
+	"strings"
+
 	"douyin-lite/pkg/storage"
 
 	"github.com/streadway/amqp"
 	"k8s.io/klog"
-
-	"log"
-	"strconv"
-	"strings"
 )
 
 type FollowMQ struct {

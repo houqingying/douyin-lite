@@ -2,11 +2,10 @@ package ffmpeg
 
 import (
 	"fmt"
+	"log"
 
 	"golang.org/x/crypto/ssh"
 	"k8s.io/klog"
-
-	"log"
 )
 
 var Client *Config

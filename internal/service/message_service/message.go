@@ -1,9 +1,10 @@
 package message_service
 
 import (
-	"douyin-lite/internal/entity"
 	"errors"
 	"strconv"
+
+	"douyin-lite/internal/entity"
 )
 
 // MessageInfo 封装消息记录

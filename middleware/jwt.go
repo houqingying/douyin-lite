@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"douyin-lite/internal/entity"
 	"net/http"
 	"time"
+
+	"douyin-lite/internal/entity"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"

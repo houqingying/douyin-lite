@@ -1,10 +1,11 @@
 package api
 
 import (
-	"douyin-lite/internal/entity"
-	user_service2 "douyin-lite/internal/service/user_service"
 	"net/http"
 	"strconv"
+
+	"douyin-lite/internal/entity"
+	userservice2 "douyin-lite/internal/service/user_service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,7 +36,7 @@ func QueryUserInfo(userIdStr string) (*QueryUserInfoResp, error) {
 			User: nil,
 		}, err
 	}
-	userInfo, err := user_service2.QueryUserInfo(int64(uint(userId)))
+	userInfo, err := userservice2.QueryUserInfo(int64(uint(userId)))
 	if err != nil {
 		return &QueryUserInfoResp{
 			Code: "-1",
@@ -67,7 +68,7 @@ func LoginUserHandler(c *gin.Context) {
 			Msg:  "密码解析错误",
 		})
 	}
-	loginInfo, err := user_service2.LoginUser(userName, password)
+	loginInfo, err := userservice2.LoginUser(userName, password)
 	if err != nil {
 		c.JSON(http.StatusOK, &LoginResp{
 			Code: "-1",
@@ -100,7 +101,7 @@ func RegisterUserHandler(c *gin.Context) {
 			Msg:  "密码解析错误",
 		})
 	}
-	registerInfo, err := user_service2.RegisterUser(userName, password)
+	registerInfo, err := userservice2.RegisterUser(userName, password)
 
 	if err != nil {
 		c.JSON(http.StatusOK, &RegisterResp{

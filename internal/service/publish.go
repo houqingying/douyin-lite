@@ -1,18 +1,20 @@
 package service
 
 import (
+	"fmt"
+	"mime/multipart"
+	"net/http"
+	"os"
+
 	"douyin-lite/configs"
 	conf "douyin-lite/configs/locales"
 	"douyin-lite/internal/entity"
 	fastDFS "douyin-lite/pkg/fastdfs"
 	"douyin-lite/pkg/ffmpeg"
 	"douyin-lite/pkg/file"
-	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"mime/multipart"
-	"net/http"
-	"os"
 )
 
 func Publish(c *gin.Context, userId int64, title string, fileHeader *multipart.FileHeader) {

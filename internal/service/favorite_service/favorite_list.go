@@ -1,9 +1,10 @@
 package favorite_service
 
 import (
+	"errors"
+
 	"douyin-lite/internal/entity"
 	"douyin-lite/internal/service/user_service"
-	"errors"
 )
 
 type FavoriteListInfo struct {

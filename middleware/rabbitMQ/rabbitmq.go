@@ -2,8 +2,9 @@ package rabbitMQ
 
 import (
 	"fmt"
-	"github.com/streadway/amqp"
 	"log"
+
+	"github.com/streadway/amqp"
 )
 
 const MQURL = "amqp://user@39.105.199.147:5672/"
@@ -15,7 +16,7 @@ type RabbitMQ struct {
 
 var Rmq *RabbitMQ
 
-// 初始化
+// InitRabbitMQ 初始化
 func InitRabbitMQ() {
 	Rmq = &RabbitMQ{
 		mqurl: MQURL,

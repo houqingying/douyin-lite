@@ -1,11 +1,12 @@
 package video_service
 
 import (
-	"douyin-lite/internal/entity"
-	"douyin-lite/internal/service/user_service"
 	"errors"
 	"fmt"
 	"time"
+
+	"douyin-lite/internal/entity"
+	"douyin-lite/internal/service/user_service"
 )
 
 const (

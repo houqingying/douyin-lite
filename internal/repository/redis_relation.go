@@ -2,12 +2,13 @@ package repository
 
 import (
 	"context"
-	"douyin-lite/internal/entity"
-	"douyin-lite/pkg/storage"
 	"errors"
 	"strconv"
 	"strings"
 	"sync"
+
+	"douyin-lite/internal/entity"
+	"douyin-lite/pkg/storage"
 )
 
 // RelationScanNum 每次定时任务Scan从redis删除写入到mysql的数量
