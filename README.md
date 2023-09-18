@@ -2,6 +2,8 @@
 
 使用gorm + gin + mysql + redis + rabbitmq 编写的极简版抖音，实现基础接口，社交接口和互动接口。
 
+![image](https://github.com/houqingying/douyin-lite/assets/59137245/1a538518-aa8c-40ba-be7c-798e17ca0251)
+
 视频展示网站：https://www.bilibili.com/video/BV1334y1T73z/?share_source=copy_web&vd_source=21cac58a94f918e40674f147fb0b2fc2
 
 项目文档：https://l0wshqly3u6.feishu.cn/docx/JMRfdJyRkoDelaxOLiJcC0qcnQf?from=from_copylink
