@@ -8,6 +8,9 @@
 
 项目文档：https://l0wshqly3u6.feishu.cn/docx/JMRfdJyRkoDelaxOLiJcC0qcnQf?from=from_copylink
 
+决赛答辩名次：9
+![image](https://github.com/houqingying/douyin-lite/assets/59137245/9e70e82f-bad4-4a04-b0c0-fab73b74402f)
+
 ## 技术栈
 
 - Gin：Http框架，提供路由和 HTTP 服务；
